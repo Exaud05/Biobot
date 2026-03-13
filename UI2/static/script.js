@@ -122,6 +122,65 @@ function escapeHtml(unsafe) {
     .replace(/>/g, "&gt;");
 }
 
+// --- Build a styled code block with copy + download buttons ---
+function buildCodeBlock(code) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "code-block-wrapper";
+
+  // Top toolbar with language label + action buttons
+  const toolbar = document.createElement("div");
+  toolbar.className = "code-toolbar";
+
+  const langLabel = document.createElement("span");
+  langLabel.className = "code-lang-label";
+  langLabel.textContent = "python";
+
+  const actions = document.createElement("div");
+  actions.className = "code-actions";
+
+  const copyBtn = document.createElement("button");
+  copyBtn.className = "code-action-btn";
+  copyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+  copyBtn.addEventListener("click", () => {
+    navigator.clipboard.writeText(code).then(() => {
+      copyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+      setTimeout(() => {
+        copyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+      }, 1500);
+    }).catch(err => console.error("Copy error:", err));
+  });
+
+  const downloadBtn = document.createElement("button");
+  downloadBtn.className = "code-action-btn";
+  downloadBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download';
+  downloadBtn.addEventListener("click", () => {
+    const blob = new Blob([code], { type: "text/x-python" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "generated_script.py";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  actions.appendChild(copyBtn);
+  actions.appendChild(downloadBtn);
+  toolbar.appendChild(langLabel);
+  toolbar.appendChild(actions);
+
+  const pre = document.createElement("pre");
+  pre.className = "code-block-pre";
+  const codeElem = document.createElement("code");
+  codeElem.textContent = code;
+  pre.appendChild(codeElem);
+
+  wrapper.appendChild(toolbar);
+  wrapper.appendChild(pre);
+  return wrapper;
+}
+
 // --- Create a message element ---
 function addMessage(text, sender) {
   const div = document.createElement("div");
@@ -144,7 +203,7 @@ function addMessage(text, sender) {
 function appendChunkToBotMessage(div, chunk) {
   div._buffer += chunk;
 
-  const codeBlockRegex = /```(?:python)?\n([\s\S]*?)```/g;
+  const codeBlockRegex = /```(?:\w*)\s*\n([\s\S]*?)```/g;
   let lastIndex = 0;
   let match;
   const fragments = [];
@@ -163,27 +222,7 @@ function appendChunkToBotMessage(div, chunk) {
     if (frag.type === "text") {
       div.innerHTML += escapeHtml(frag.content).replace(/\n/g, "<br>");
     } else if (frag.type === "code") {
-      const container = document.createElement("div");
-      container.style.position = "relative";
-
-      const codeElem = document.createElement("pre");
-      codeElem.innerHTML = `<code>${escapeHtml(frag.content)}</code>`;
-
-      const copyBtn = document.createElement("button");
-      copyBtn.textContent = "Copy";
-      copyBtn.className = "copy-btn";
-      copyBtn.addEventListener("click", () => {
-        navigator.clipboard.writeText(frag.content).then(() => {
-          copyBtn.textContent = "Copied!";
-          setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
-        }).catch(err => {
-          console.error("Copy error:", err);
-        });
-      });
-
-      container.appendChild(copyBtn);
-      container.appendChild(codeElem);
-      div.appendChild(container);
+      div.appendChild(buildCodeBlock(frag.content));
     }
   }
 
@@ -399,10 +438,13 @@ function addThinkingMessage() {
   div.className = "chat-message chat-bot";
   div.id = "thinking-message";
 
+  const label = document.createElement("span");
+  label.textContent = "Analyzing";
+  div.appendChild(label);
+
   const dots = document.createElement("span");
   dots.textContent = "...";
   dots.style.display = "inline-block";
-  dots.style.marginLeft = "2px";
   div.appendChild(dots);
 
   chatHistoryElem.appendChild(div);
@@ -448,6 +490,7 @@ async function sendMessage() {
   let botDiv = null;
   let firstChunkReceived = false;
   let statusDiv = null;
+  let isRagResponse = false;  // true if we received __STATUS__ messages → content is raw code
 
   try {
     const res = await fetch(`/chat/${currentChatId}/stream`, {
@@ -474,6 +517,8 @@ async function sendMessage() {
       for (const statusText of statusParts) {
         if (!statusText.trim()) continue;
 
+        isRagResponse = true;
+
         clearInterval(thinkingInterval);
         const thinkingElem = document.getElementById("thinking-message");
         if (thinkingElem) thinkingElem.remove();
@@ -496,10 +541,38 @@ async function sendMessage() {
           if (statusDiv) { statusDiv.remove(); statusDiv = null; }
           botDiv = addMessage("", "bot");
         }
-        if (contentPart.length > 120) {
-          typewriterAppend(botDiv, contentPart);
-        } else {
-          appendChunkToBotMessage(botDiv, contentPart);
+
+        // --- RAG failure: message + code ---
+        if (contentPart.includes("__FAILED_CODE__:")) {
+          const failedContent = contentPart.split("__FAILED_CODE__:").pop();
+          const sepParts = failedContent.split("___CODE_SEP___");
+          const message = (sepParts[0] || "").trim();
+          const code = (sepParts[1] || "").trim();
+
+          // Render the failure message as text
+          if (message) {
+            const msgP = document.createElement("p");
+            msgP.textContent = message;
+            msgP.style.marginBottom = "12px";
+            botDiv.appendChild(msgP);
+          }
+          // Render code block
+          if (code) {
+            botDiv.appendChild(buildCodeBlock(code));
+          }
+          isRagResponse = false;
+        }
+        // --- RAG success: raw code ---
+        else if (isRagResponse) {
+          botDiv.appendChild(buildCodeBlock(contentPart));
+        }
+        // --- Normal streaming (general/out) ---
+        else {
+          if (contentPart.length > 120) {
+            typewriterAppend(botDiv, contentPart);
+          } else {
+            appendChunkToBotMessage(botDiv, contentPart);
+          }
         }
       }
     }
