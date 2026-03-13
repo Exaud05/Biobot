@@ -364,15 +364,32 @@ def chat_stream(chat_id):
     # ---- STREAM RESPONSE ----
     def generate():
         full_reply = ""
+        is_rag = False
 
-        from engine import RAG_STATUS_PREFIX
+        from engine import RAG_STATUS_PREFIX, FAILED_CODE_MARKER
         for chunk in process_user_query(user_message, messages, MODEL_NAME, api_key=user_api_key):
             if chunk.startswith(RAG_STATUS_PREFIX):
+                is_rag = True
                 status_text = chunk[len(RAG_STATUS_PREFIX):]
                 yield "__STATUS__:" + status_text
                 continue
             full_reply += chunk
             yield chunk
+
+        # Before saving: wrap RAG code in markdown fences so it renders
+        # correctly when reloaded from chat history
+        save_content = full_reply
+        if is_rag and full_reply:
+            if full_reply.startswith(FAILED_CODE_MARKER):
+                # Failed code: extract message and code, format for storage
+                failed_content = full_reply[len(FAILED_CODE_MARKER):]
+                sep_parts = failed_content.split("___CODE_SEP___", 1)
+                message = sep_parts[0].strip() if sep_parts else ""
+                code = sep_parts[1].strip() if len(sep_parts) > 1 else ""
+                save_content = message + "\n\n```python\n" + code + "\n```" if code else message
+            else:
+                # Successful code
+                save_content = "```python\n" + full_reply + "\n```"
 
         # Save assistant message after streaming finishes
         conn2 = None
@@ -383,7 +400,7 @@ def chat_stream(chat_id):
                 INSERT INTO chat_history (user_id, chat_id, role, content, created_at)
                 VALUES (%s, %s, %s, %s, %s)
                 """,
-                (user_id, chat_id, "assistant", full_reply, datetime.now().isoformat()),
+                (user_id, chat_id, "assistant", save_content, datetime.now().isoformat()),
                 commit=True
             )
 
