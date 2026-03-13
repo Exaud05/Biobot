@@ -1,14 +1,8 @@
 import subprocess
+import json
 from openai import OpenAI
 import os
-
-def get_api_key():
-    secret_path = "/run/secrets/brsbot_api_key"
-    if os.path.exists(secret_path):
-        with open(secret_path, "r") as f:
-            return f.read().strip()
-    else:
-        raise ValueError("API KEY not found")
+from config import get_api_key
     
 MODEL_NAME_CLASS = "gpt-4o-mini"
 MODEL_NAME = "gpt-5"
@@ -16,22 +10,38 @@ MODEL_NAME = "gpt-5"
 def get_openai_client(api_key=None):
     return OpenAI(api_key=api_key or get_api_key())
 
-def classify_prompt(prompt, model_name = MODEL_NAME_CLASS, api_key = None):
+def classify_prompt(prompt, chat_history=None, model_name=MODEL_NAME_CLASS, api_key=None):
     client = get_openai_client(api_key)
+
+    # Build a conversation snippet (last 6 non-system messages) for context
+    context_block = ""
+    if chat_history:
+        recent = [m for m in chat_history if m["role"] != "system"][-6:]
+        if recent:
+            lines = []
+            for m in recent:
+                role_label = "User" if m["role"] == "user" else "Assistant"
+                # Truncate long messages so the classifier prompt stays small
+                content = m["content"][:300] + "..." if len(m["content"]) > 300 else m["content"]
+                lines.append(f"{role_label}: {content}")
+            context_block = "\n\nRecent conversation:\n" + "\n".join(lines)
+
     classification_prompt = [
         {
             "role": "system",
-            "content": """You are a classifier assistant. Classify the user request according to 3 possibilities :
+            "content": """You are a classifier assistant. You will be given a user message, and optionally the recent conversation that preceded it.
 
-1. "code" : If the user is asking for a code generation, an automation or a script for a protocol.
-2. "general" : If the user is asking a question in the field of lab, liquid handlers and lab automation, without necessarily asking for a script/code generation.
-3. "out" : If the request is out of scope, and has nothing to do with the specialization of lab automation and liquid handlers and related fields.
-Make in mind that the user is not talking to you, so if he seems to be talking to you, he's not. Your role is just to classify his request by giving only the name of the category and nothing more, you give only one word.
-Your should answer with ONLY one word which is one of these 3 categories : code, general, or out. And nothing more. Return ONLY THE NAME OF THE CATEGORY and don't ever never give an explanation, only the name of the category. If you don't know where to classify, give the most close one and with only THE NAME of one of the 3 categories."""
+Classify the LATEST user message according to 3 categories:
+
+1. "code" : The user is asking for code generation, a protocol script, or an automation — including cases where the user is providing parameters, details, or clarifications in response to a previous assistant request for more information about a protocol (e.g. pipette type, plate name, volumes). If the conversation context shows a code generation was being discussed and the latest message continues that thread, classify as "code".
+2. "general" : The user is asking a question in the field of lab automation or liquid handlers, without asking for a script.
+3. "out" : The request is out of scope and unrelated to lab automation.
+
+Return ONLY one word: code, general, or out. No explanation, no punctuation."""
         },
         {
             "role": "user",
-            "content": prompt
+            "content": f"Latest message: {prompt}{context_block}"
         }
     ]
 
@@ -39,7 +49,7 @@ Your should answer with ONLY one word which is one of these 3 categories : code,
         model=model_name,
         input=classification_prompt
     )
-    return response.output_text
+    return response.output_text.strip().lower()
 
 def run_gpt(chat_history, model=MODEL_NAME, api_key=None):
     client = get_openai_client(api_key)
@@ -92,21 +102,51 @@ def run_gpt_stream(chat_history, model=MODEL_NAME, api_key=None):
 
 
 RAG_STATUS_PREFIX = "__RAG_STATUS__:"
+RAG_STEP_PREFIX = "STEP:"
 
 def process_user_query(user_query, chat_history, model, api_key=None):
-    classification = classify_prompt(user_query, api_key=api_key)
     history = [msg for msg in chat_history]
+    classification = classify_prompt(user_query, chat_history=history, api_key=api_key)
+    print("classification:",classification)
 
     if classification == "code":
         def _rag_generator():
-            yield RAG_STATUS_PREFIX + "Analyzing your request and generating protocol code. This may take up to a minute..."
-            result = subprocess.run(
-                ["python3", "main_rag.py", user_query, api_key or get_api_key()],
-                capture_output=True, text=True
+            env = os.environ.copy()
+            env["API_KEY"] = api_key or get_api_key()
+
+            proc = subprocess.Popen(
+                [
+                    "python3", "main_rag.py",
+                    user_query,
+                    json.dumps(history)
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                bufsize=1,
+                env=env
             )
-            if result.returncode != 0:
-                print("main_rag.py error:", result.stderr)
-            yield result.stdout.strip()
+
+            final_code_lines = []
+
+            for raw_line in proc.stdout:
+                # Split in case the OS batched multiple lines into one read
+                for line_stripped in raw_line.split("\n"):
+                    line_stripped = line_stripped.strip()
+                    if not line_stripped:
+                        continue
+                    if line_stripped.startswith(RAG_STEP_PREFIX):
+                        yield RAG_STATUS_PREFIX + line_stripped[len(RAG_STEP_PREFIX):]
+                    else:
+                        final_code_lines.append(line_stripped + "\n")
+
+            proc.wait()
+            if proc.returncode != 0:
+                stderr_out = proc.stderr.read()
+                print("main_rag.py error:", stderr_out)
+
+            yield "".join(final_code_lines).strip()
+
         return _rag_generator()
 
     elif classification in {"general", "out"}:
