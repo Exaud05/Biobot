@@ -103,10 +103,13 @@ def run_gpt_stream(chat_history, model=MODEL_NAME, api_key=None):
 
 RAG_STATUS_PREFIX = "__RAG_STATUS__:"
 RAG_STEP_PREFIX = "STEP:"
+RAG_FAILED_PREFIX = "FAILED_CODE:"
+FAILED_CODE_MARKER = "__FAILED_CODE__:"
 
 def process_user_query(user_query, chat_history, model, api_key=None):
     history = [msg for msg in chat_history]
     classification = classify_prompt(user_query, chat_history=history, api_key=api_key)
+    print("classification:",classification)
 
     if classification == "code":
         def _rag_generator():
@@ -127,24 +130,38 @@ def process_user_query(user_query, chat_history, model, api_key=None):
             )
 
             final_code_lines = []
+            failed_code_content = None
+            is_failed = False
 
             for raw_line in proc.stdout:
-                # Split in case the OS batched multiple lines into one read
-                for line_stripped in raw_line.split("\n"):
-                    line_stripped = line_stripped.strip()
-                    if not line_stripped:
-                        continue
-                    if line_stripped.startswith(RAG_STEP_PREFIX):
-                        yield RAG_STATUS_PREFIX + line_stripped[len(RAG_STEP_PREFIX):]
-                    else:
-                        final_code_lines.append(line_stripped + "\n")
+                trimmed = raw_line.strip()
+                if not trimmed:
+                    if is_failed:
+                        failed_code_content += "\n"
+                    elif final_code_lines:
+                        final_code_lines.append("\n")
+                    continue
+                if trimmed.startswith(RAG_STEP_PREFIX):
+                    yield RAG_STATUS_PREFIX + trimmed[len(RAG_STEP_PREFIX):]
+                elif trimmed.startswith(RAG_FAILED_PREFIX):
+                    is_failed = True
+                    failed_code_content = trimmed[len(RAG_FAILED_PREFIX):]
+                elif is_failed:
+                    failed_code_content += "\n" + raw_line.rstrip()
+                elif trimmed.startswith("consolidated request:"):
+                    continue
+                else:
+                    final_code_lines.append(raw_line.rstrip() + "\n")
 
             proc.wait()
             if proc.returncode != 0:
                 stderr_out = proc.stderr.read()
                 print("main_rag.py error:", stderr_out)
 
-            yield "".join(final_code_lines).strip()
+            if is_failed and failed_code_content:
+                yield FAILED_CODE_MARKER + failed_code_content
+            else:
+                yield "".join(final_code_lines).strip()
 
         return _rag_generator()
 
