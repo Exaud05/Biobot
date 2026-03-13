@@ -240,12 +240,15 @@ Query: {question}
 """
     print("STEP:Generating protocol code...", flush=True)
     last_error = ""
+    last_code = ""
     for attempt in range(1, max_attempts + 1):
         response = run_gpt(prompt)
         code = response
 
         if not code:
             break
+
+        last_code = code
 
         print(f"STEP:Attempt {attempt} — running simulation check...", flush=True)
         stdout, stderr = simulate_code(code)
@@ -258,7 +261,7 @@ Query: {question}
                 stdout, stderr = simulate_code(suggested_code)
             print("STEP:All checks passed! Returning final code...", flush=True)
             time.sleep(3)
-            return code, retrieved_chunks, retrieved_sources, attempt, ""
+            return code, retrieved_chunks, retrieved_sources, attempt, "", last_code
 
         print(f"STEP:Simulation failed on attempt {attempt} — correcting errors...", flush=True)
         prompt = f"""
@@ -273,7 +276,7 @@ And return the full corrected Python script, don't ask me to complete the code, 
 
         last_error = stderr.strip()
 
-    return None, retrieved_chunks, retrieved_sources, attempt, last_error
+    return None, retrieved_chunks, retrieved_sources, attempt, last_error, last_code
 
 # ----------- PIPELINE INIT -------------
 base_path = "docs"
@@ -305,11 +308,19 @@ else:
             "embeddings": text_embeddings
         }, f)
     
-final_code, sources_used, file_refs, attempts, last_error = run_query_and_fix(consolidated_query, chunks, chunk_sources)
-print(final_code)
+final_code, sources_used, file_refs, attempts, last_error, last_code = run_query_and_fix(consolidated_query, chunks, chunk_sources)
 
-if not final_code:
-        print("\n🛑 Code non fonctionnel après plusieurs tentatives.")
+if final_code:
+    print(final_code)
+else:
+    print("STEP:Generation failed — preparing last attempt for review...", flush=True)
+    time.sleep(3)
+    fail_msg = (
+        "I wasn't able to generate a fully functional script after several attempts. "
+        "The simulation kept returning errors that I couldn't resolve automatically. "
+        "Here is the latest version of the script I generated — it may need some manual adjustments:"
+    )
+    print("FAILED_CODE:" + fail_msg + "___CODE_SEP___" + (last_code or "# No code was generated."), flush=True)
         
 
 
