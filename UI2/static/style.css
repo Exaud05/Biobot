@@ -610,6 +610,69 @@ button.copy-btn:hover {
   border-color: var(--accent);
 }
 
+/* --- Code block with toolbar (RAG output) --- */
+.code-block-wrapper {
+  margin-top: 12px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.code-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: #1a1a1a;
+  border-bottom: 1px solid var(--border);
+}
+
+.code-lang-label {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-transform: lowercase;
+}
+
+.code-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.code-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.code-action-btn:hover {
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border-color: var(--accent);
+}
+
+.code-action-btn svg {
+  flex-shrink: 0;
+}
+
+.code-block-pre {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  padding: 16px 18px;
+  background: var(--bg-code);
+}
+
 /* ========================================
    MODALS
    ======================================== */
@@ -1014,19 +1077,27 @@ button.copy-btn:hover {
    THINKING / LOADING ANIMATION
    ======================================== */
 #thinking-message {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 14px 20px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  padding: 10px 16px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   border-bottom-left-radius: 6px;
-  max-width: 80px;
+  max-width: fit-content;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
 }
 
-#thinking-message span {
-  font-size: 1.4rem;
+#thinking-message span:first-child {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  animation: none;
+}
+
+#thinking-message span:last-child {
+  font-size: 0.85rem;
   color: var(--accent);
   animation: thinkingPulse 1.4s ease-in-out infinite;
 }
