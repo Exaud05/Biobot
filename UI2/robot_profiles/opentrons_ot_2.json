@@ -1,0 +1,41 @@
+{
+  "robot_platform": "Opentrons OT-2",
+  "user_intent": "Requesting a serial dilution protocol for the Opentrons OT-2 (likely as an executable Opentrons Protocol API script).",
+  "will_generate_executable_code": true,
+  "primary_api_or_format": [
+    "Opentrons Protocol API (Python v2)"
+  ],
+  "tools": [
+    {
+      "name": "opentrons_simulate",
+      "capabilities": [
+        "simulate",
+        "validate",
+        "dry-run",
+        "syntax-check"
+      ],
+      "hardware_required": false,
+      "official": true,
+      "notes": "Official CLI included with the Opentrons Python package; analyzes and simulates Protocol API v2 Python protocols locally, printing the command timeline and raising API/labware errors without needing a robot.",
+      "install": "pip install opentrons",
+      "usage_example": "opentrons_simulate /path/to/protocol.py",
+      "links": [
+        "https://docs.opentrons.com",
+        "https://support.opentrons.com/en/articles/3136503-simulating-your-protocol",
+        "https://github.com/Opentrons/opentrons"
+      ]
+    }
+  ],
+  "simulation_validation": {
+    "supported": true,
+    "scope": [
+      "syntax",
+      "typing",
+      "api-usage",
+      "robot-constraints"
+    ],
+    "notes": "Local simulation loads the protocol in a ProtocolContext, detects Python/API errors, labware definition issues, and some pipette/volume constraints; it does not check robot calibration or physical execution."
+  },
+  "recommendation": "opentrons_simulate",
+  "confidence": "high"
+}

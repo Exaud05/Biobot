@@ -1,0 +1,29 @@
+{
+  "robot_platform": "Hamilton Microlab STAR/ STARlet",
+  "code_path": "generated_code/generated_script.py",
+  "validation_tool": "PyHamilton",
+  "environment": {
+    "type": "conda",
+    "name": "pyhamilton_validate_env",
+    "python_version": "3.10"
+  },
+  "steps": [
+    {
+      "name": "create_env",
+      "command": "conda create -y -n pyhamilton_validate_env python=3.10"
+    },
+    {
+      "name": "install_dependencies",
+      "command": "conda run -n pyhamilton_validate_env pip install pyhamilton"
+    },
+    {
+      "name": "run_validation",
+      "command": "conda run -n pyhamilton_validate_env python generated_code/generated_script.py"
+    }
+  ],
+  "checks_performed": [
+    "Python syntax compilation via py_compile",
+    "Attempted PyHamilton dry-run/simulation by executing the script"
+  ],
+  "notes": "The script uses PyHamilton with simulate=True to avoid hardware. PyHamilton may require Hamilton VENUS installed on Windows."
+}

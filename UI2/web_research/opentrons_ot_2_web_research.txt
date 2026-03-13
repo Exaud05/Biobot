@@ -1,0 +1,46 @@
+References
+- Python API Tutorial: Serial Dilution workflow, showing row slicing and list-to-list transfer across a 96‑well plate, and adding solution to row[0] with mix_after. ([docs.opentrons.com](https://docs.opentrons.com/python-api/tutorial/))
+- API v2 reference for InstrumentContext.distribute: accepts a single source and list of destination wells; notes that mix_after is ignored for distribute. ([docs.opentrons.com](https://docs.opentrons.com/v2/new_protocol_api.html?utm_source=openai))
+- Labware accessor methods (wells(), rows(), rows() returns list-of-lists; wells_by_name() and dict-indexing like plate["A1"]). ([docs.opentrons.com](https://docs.opentrons.com/v2/new_labware.html?utm_source=openai))
+- Deck slots: OT‑2 accepts numeric slots; load_labware() may take int like 1, 2, 3, etc. ([docs.opentrons.com](https://docs.opentrons.com/v2/deck_slots.html?utm_source=openai))
+- Example load names for this hardware set (OT‑2 p300_single_gen2; tip rack and common reservoir/plate load names). ([docs.opentrons.com](https://docs.opentrons.com/python-api/tutorial/))
+- Transfer parameters (new_tip supports "never", "once", "always"; can be combined with manual pick_up_tip / drop_tip). ([docs.opentrons.com](https://docs.opentrons.com/v2/new_protocol_api.html?utm_source=openai))
+- Fixed trash behavior on OT‑2: in API ≤2.15 fixed_trash is a Labware with a single well addressable as ["A1"]; changes in ≥2.16. ([docs.opentrons.com](https://docs.opentrons.com/v2/new_protocol_api.html?utm_source=openai))
+
+Comparison
+- Imports and entry point
+  - Uses from opentrons import protocol_api and def run(protocol: protocol_api.ProtocolContext): This matches the tutorial and API v2 style. ([docs.opentrons.com](https://docs.opentrons.com/python-api/tutorial/))
+  - metadata includes "apiLevel": "2.14". That’s valid for an OT‑2 API v2 protocol and consistent with using fixed_trash as a single-well Labware if needed (see note below). ([docs.opentrons.com](https://docs.opentrons.com/v2/new_protocol_api.html?utm_source=openai))
+
+- Labware loading
+  - plate = protocol.load_labware("corning_96_wellplate_360ul_flat", 1) and tip racks in slots 2 and 3: Numeric slots are accepted on OT‑2. The load name for the Corning 96‑well flat plate and the Opentrons 300 µL tip rack are standard. ([docs.opentrons.com](https://docs.opentrons.com/v2/deck_slots.html?utm_source=openai))
+  - reservoir = protocol.load_labware("usascientific_12_reservoir_22ml", 4): This is a valid, commonly used load name in Opentrons examples. ([staging.docs.opentrons.com](https://staging.docs.opentrons.com/python-api/examples/?utm_source=openai))
+
+- Pipette loading
+  - protocol.load_instrument("p300_single_gen2", "left", tip_racks=[...]) matches the documented instrument name and call signature. ([docs.opentrons.com](https://docs.opentrons.com/python-api/tutorial/))
+
+- Well access patterns and list slicing
+  - plate.wells() returning a flat list (A1, B1, … A2, …) and plate.rows() returning a list of 8 row-lists are standard; indexing row[0] for column 1 and slicing row[:11] → row[1:] for stepwise serial transfers across the row is exactly the documented serial dilution pattern. ([docs.opentrons.com](https://docs.opentrons.com/v2/new_labware.html?utm_source=openai))
+  - wells_by_name() and dictionary indexing for reservoir["A12"] (and plate["A1"] if used) are standard. The script’s diluent = reservoir.wells_by_name()["A12"] is correct. ([docs.opentrons.com](https://docs.opentrons.com/v2/new_labware.html?utm_source=openai))
+  - samples = reservoir.wells()[:8] correctly yields A1–A8 from a 12‑column single‑row reservoir. This matches the documented wells() ordering. ([docs.opentrons.com](https://docs.opentrons.com/v2/new_labware.html?utm_source=openai))
+
+- Liquid handling commands
+  - p300.distribute(50, diluent, plate.wells()): distribute supports one source well to a list of destination wells; using plate.wells() is valid; mix_after would be ignored for distribute (not used here). ([docs.opentrons.com](https://docs.opentrons.com/v2/new_protocol_api.html?utm_source=openai))
+  - Serial dilution loop:
+    - pick_up_tip() then transfer(..., new_tip="never") is a supported pattern (manual tip control). ([docs.opentrons.com](https://docs.opentrons.com/v2/new_protocol_api.html?utm_source=openai))
+    - p300.transfer(30, source, row[0], mix_after=(3, 25), new_tip="never") matches the tutorial’s approach of seeding the first well in each row and mixing after dispense. ([docs.opentrons.com](https://docs.opentrons.com/python-api/tutorial/))
+    - p300.transfer(30, row[:11], row[1:], mix_after=(3, 25), new_tip="never") matches the documented list-to-list transfer for stepwise dilution across a row, with optional mix_after. ([docs.opentrons.com](https://docs.opentrons.com/python-api/tutorial/))
+
+- Trash handling (commented line)
+  - The commented example using protocol.fixed_trash["A1"] would work under the declared apiLevel 2.14 because fixed_trash is a single-well Labware in ≤2.15. If this protocol were updated to apiLevel ≥2.16, fixed_trash becomes a TrashBin (no wells), so that line would need to be adjusted (e.g., rely on default drop_tip behavior). Since it’s commented and apiLevel is 2.14, there’s no runtime issue. ([docs.opentrons.com](https://docs.opentrons.com/v2/new_protocol_api.html?utm_source=openai))
+
+- Slots and formats
+  - Using integer deck slots (1, 2, 3, 4) is correct for OT‑2; the API explicitly allows integers or strings. ([docs.opentrons.com](https://docs.opentrons.com/v2/deck_slots.html?utm_source=openai))
+
+- Minor consistency notes (not errors)
+  - The tutorial currently shows metadata/apiLevel examples at 2.16 and recommends including a requirements block for ≥2.15; using 2.14 without requirements is still valid, but if you later bump apiLevel, consider adopting the newer style. This does not affect syntactic correctness today. ([docs.opentrons.com](https://docs.opentrons.com/python-api/tutorial/))
+
+Verdict
+- The script is syntactically plausible and structurally consistent with Opentrons OT‑2 Python API v2 patterns for a single‑channel serial dilution.
+- Key API usages (load_labware, load_instrument, wells()/rows() access, distribute to plate.wells(), list‑to‑list transfer with mix_after, manual tip control with new_tip="never") match documented examples. It should simulate and run on an OT‑2 with API Level 2.14 as declared. ([docs.opentrons.com](https://docs.opentrons.com/python-api/tutorial/))
+- Caution only if upgrading API level later: the fixed_trash access method changes in ≥2.16; as written for 2.14, no change is required. ([docs.opentrons.com](https://docs.opentrons.com/v2/new_protocol_api.html?utm_source=openai))

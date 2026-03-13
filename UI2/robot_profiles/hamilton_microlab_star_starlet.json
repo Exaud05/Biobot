@@ -1,0 +1,76 @@
+{
+  "robot_platform": "Hamilton Microlab STAR / STARlet",
+  "user_intent": "User asks for a serial dilution protocol on a Hamilton STAR liquid handler; they likely want runnable method code.",
+  "will_generate_executable_code": false,
+  "primary_api_or_format": [
+    "Hamilton VENUS (Method Editor + HSL)",
+    "PyHamilton (Python wrapper over VENUS/STAR OEM)",
+    "PyLabRobot (Python SDK; Hamilton STAR backend)"
+  ],
+  "tools": [
+    {
+      "name": "PyLabRobot (Chatterbox backend + Visualizer)",
+      "capabilities": [
+        "simulate",
+        "dry-run",
+        "api-usage",
+        "robot-constraints",
+        "visualize"
+      ],
+      "hardware_required": false,
+      "official": false,
+      "notes": "Use the STARChatterboxBackend to exercise Hamilton STAR API calls without a robot; Visualizer provides a browser-based deck/state view. Good for catching API misuse and basic deck/volume constraints before touching hardware. Docs emphasize PLR is distinct from PyHamilton and runs cross\u2011platform. ([docs.pylabrobot.org](https://docs.pylabrobot.org/user_guide/00_liquid-handling/hamilton-star/hamilton-liquid-classes.html?utm_source=openai))",
+      "install": "pip install 'pylabrobot[all]'",
+      "usage_example": "python /path/to/script.py"
+    },
+    {
+      "name": "PyHamilton (simulate mode)",
+      "capabilities": [
+        "simulate",
+        "dry-run",
+        "api-usage"
+      ],
+      "hardware_required": false,
+      "official": false,
+      "notes": "Community Python interface for STAR/STARlet. Can run on a PC not connected to a robot using from pyhamilton import HamiltonInterface\nwith HamiltonInterface(simulate=True) as ham:\n    pass  # dry-run context opens without hardware to validate imports and API calls; requires Hamilton VENUS installed on Windows. ([github.com](https://github.com/dgretton/pyhamilton))",
+      "install": "pip install pyhamilton",
+      "usage_example": "python path/to/script.py"
+    },
+    {
+      "name": "Hamilton VENUS Run Control (Simulation Mode)",
+      "capabilities": [
+        "simulate",
+        "dry-run",
+        "api-usage"
+      ],
+      "hardware_required": false,
+      "official": true,
+      "notes": "Official offline simulation in VENUS; training indicates no liquid handler required to develop/run during course access. Simulation mode is controlled in VENUS/Run Control (can be toggled via settings/config, not at runtime by API). ([hamiltoncompany.com](https://www.hamiltoncompany.com/automated-liquid-handling/training/vb_r_pac25.10?utm_source=openai))",
+      "install": "N/A (install via Hamilton VENUS 6 installer)",
+      "usage_example": "N/A (open Run Control, load method, run in Simulation Mode)"
+    },
+    {
+      "name": "Hamilton HSL Method Editor (HxHSLMetEd)",
+      "capabilities": [
+        "syntax"
+      ],
+      "hardware_required": false,
+      "official": true,
+      "notes": "Used to author and validate HSL; supports file/library validation and catches HSL syntax issues referenced in VENUS documentation and community guidance. ([scribd.com](https://www.scribd.com/document/991990355/VENUS-21-CFR-Part-11-Guide-Rev-B?utm_source=openai))",
+      "install": "N/A (included with VENUS installation)",
+      "usage_example": "N/A (open HxHSLMetEd to validate HSL/libraries)"
+    }
+  ],
+  "simulation_validation_via_code": {
+    "supported": true,
+    "scope": [
+      "syntax",
+      "typing",
+      "api-usage",
+      "robot-constraints"
+    ],
+    "notes": "Python-based approaches (PyLabRobot, PyHamilton) enable script-level checks without hardware: run PLR Chatterbox + Visualizer for API/deck/volume constraints; PyHamilton simulate=True for VENUS-backed dry-runs on a Windows PC. For native VENUS/HSL methods, use HSL Method Editor for syntax and Run Control Simulation Mode for offline execution. VENUS also provides built-in Serial Dilution via Power Steps if staying in the GUI. ([docs.pylabrobot.org](https://docs.pylabrobot.org/user_guide/00_liquid-handling/hamilton-star/hamilton-liquid-classes.html?utm_source=openai))"
+  },
+  "recommendation": "To develop a serial dilution method without hardware, prefer PyLabRobot with the STARChatterboxBackend and Visualizer to iterate and catch API/constraint issues, then move to firmware/robot when ready. \u2014no robot needed. ([docs.pylabrobot.org](https://docs.pylabrobot.org/user_guide/00_liquid-handling/hamilton-star/hamilton-liquid-classes.html?utm_source=openai))",
+  "confidence": "high"
+}

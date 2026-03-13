@@ -1,0 +1,20 @@
+{
+  "robot_platform": "Opentrons OT-2",
+  "code_path": "generated_code/generated_script.py",
+  "validation_tool": "opentrons_simulate",
+  "install_required": true,
+  "install_command": "pip install opentrons",
+  "execution_command": "opentrons_simulate generated_code/generated_script.py",
+  "checks_performed": [
+    "Python syntax and import resolution",
+    "Opentrons Protocol API v2 compatibility",
+    "Labware definition loading and deck slot validity",
+    "Pipette configuration and volume/aspirate/dispense constraints",
+    "Module presence/usage and placement rules",
+    "Command timeline (dry-run) generation",
+    "Basic typing/argument validation for API calls",
+    "Robot and labware API usage/constraints validation"
+  ],
+  "hardware_required": false,
+  "notes": "Validate by locally simulating the Protocol API v2 script with the official Opentrons CLI. No robot is required. If custom labware is used, include the definitions with: opentrons_simulate -L /path/to/custom_labware generated_code/generated_script.py. The simulation will raise errors for API misuse, missing/invalid labware, and pipette/volume constraints. It does not verify robot calibration or physical execution."
+}

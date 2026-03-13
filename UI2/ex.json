@@ -1,0 +1,83 @@
+{
+  "robot_platform": "Opentrons OT-2",
+  "user_intent": "Requesting a serial dilution protocol",
+  "will_generate_executable_code": true,
+  "primary_api_or_format": [
+    "Opentrons Protocol API v2 (Python)",
+    "Protocol Designer JSON (exportable to Python for OT-2)"
+  ],
+  "tools": [
+    {
+      "name": "opentrons_simulate (CLI)",
+      "capabilities": [
+        "simulate",
+        "validate",
+        "dry-run"
+      ],
+      "hardware_required": false,
+      "official": true,
+      "notes": "Offline simulator; executes protocol logic, prints command log, and catches many runtime errors (labware/pipette compatibility, volume bounds, etc.).",
+      "usage_example": "opentrons_simulate path/to/protocol.py",
+      "links": [
+        "https://docs.opentrons.com/"
+      ]
+    },
+    {
+      "name": "Opentrons App \u2014 Protocol Analysis",
+      "capabilities": [
+        "simulate",
+        "validate"
+      ],
+      "hardware_required": false,
+      "official": true,
+      "notes": "Analyzes protocols on upload; verifies required labware, pipettes, modules, and tip usage; surfaces errors and warnings before any run.",
+      "links": [
+        "https://opentrons.com/"
+      ]
+    },
+    {
+      "name": "Protocol Designer (web app)",
+      "capabilities": [
+        "simulate",
+        "validate"
+      ],
+      "hardware_required": false,
+      "official": true,
+      "notes": "Visual builder for OT-2. Provides step previews and deck validation and can export ready-to-run protocols.",
+      "links": [
+        "https://opentrons.com/"
+      ]
+    },
+    {
+      "name": "opentrons.simulate (Python API)",
+      "capabilities": [
+        "simulate",
+        "dry-run"
+      ],
+      "hardware_required": false,
+      "official": true,
+      "notes": "Programmatic simulation within Python (useful for CI/unit tests). Returns command logs and surfaces errors without hardware.",
+      "links": [
+        "https://docs.opentrons.com/"
+      ]
+    },
+    {
+      "name": "Labware Creator",
+      "capabilities": [
+        "validate"
+      ],
+      "hardware_required": false,
+      "official": true,
+      "notes": "Create and validate custom labware JSON definitions to ensure compatibility during simulation and analysis.",
+      "links": [
+        "https://labware.opentrons.com/"
+      ]
+    }
+  ],
+  "static_checking": {
+    "dedicated_static_type_checker": false,
+    "notes": "No robot-specific static type checker exists. Use opentrons_simulate and Opentrons App analysis for pre-run validation; general Python linters/type checkers help with syntax/types but not robot semantics."
+  },
+  "recommendation": "Design or implement the serial dilution protocol using Protocol Designer or the Opentrons Protocol API v2, then validate via opentrons_simulate and Opentrons App analysis before running on hardware.",
+  "confidence": "high"
+}

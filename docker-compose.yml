@@ -1,0 +1,37 @@
+services:
+  biobot:
+    build: UI2
+    image: biobot:latest
+    ports:
+      - "5000:5000"
+    env_file :
+      - .env
+    environment:
+      - DB_HOST=${DB_HOST:-postgres}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-biobotdb}
+      - DB_USER=${DB_USER:-biobotuser}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - API_KEY=${API_KEY:-your_api_key}
+    restart : always
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    env_file :
+      - .env
+    environment:
+      - POSTGRES_DB=${DB_NAME:-biobotdb}
+      - POSTGRES_USER=${DB_USER:-biobotuser}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-password}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "biobotuser", "-d","biobotdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:

@@ -1,0 +1,28 @@
+{
+  "robot_platform": "Hamilton Microlab STAR/ STARlet",
+  "code_path": "generated_code/generated_script.py",
+  "validation_tool": "pylabrobot",
+  "environment": {
+    "type": "conda",
+    "name": "pylabrobot_validate_env",
+    "python_version": "3.10"
+  },
+  "steps": [
+    {
+      "name": "create_env",
+      "command": "conda create -y -n pylabrobot_validate_env python=3.10"
+    },
+    {
+      "name": "install_dependencies",
+      "command": "conda run -n pylabrobot_validate_env pip install pylabrobot"
+    },
+    {
+      "name": "run_validation",
+      "command": "conda run -n pylabrobot_validate_env python generated_code/generated_script.py"
+    }
+  ],
+  "checks_performed": [
+    "Attempted pylabroot by using the STARChatterboxBackend to exercise Hamilton STAR API calls without a robot; Visualizer provides a browser-based deck/state view."
+  ],
+  "notes": "The script uses pylabrobot to avoid hardware. Good for catching API misuse and basic deck/volume constraints before touching hardware."
+}
