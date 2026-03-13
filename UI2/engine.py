@@ -107,7 +107,6 @@ RAG_STEP_PREFIX = "STEP:"
 def process_user_query(user_query, chat_history, model, api_key=None):
     history = [msg for msg in chat_history]
     classification = classify_prompt(user_query, chat_history=history, api_key=api_key)
-    print("classification:",classification)
 
     if classification == "code":
         def _rag_generator():
