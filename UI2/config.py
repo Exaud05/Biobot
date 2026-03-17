@@ -52,6 +52,7 @@ def init_db():
                 api_key TEXT,
                 role TEXT,
                 country TEXT,
+                encryption_salt TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         """)
