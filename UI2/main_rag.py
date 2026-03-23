@@ -142,6 +142,8 @@ Return ONLY the platform ID. One word, lowercase, no quotes, no explanation."""
         "docs_path": f"docs/{detected}",
         "store_path": f"rag_store_{detected}.pkl",
         "simulate_cmd": None,
+        "validation_strategy": "llm_review",
+        "output_type": "file",
         "keywords": [detected]
     }
 
@@ -177,8 +179,8 @@ Your job is to check whether a user's protocol request contains enough informati
 
 If you judge that there are enough infomations in the whole conversation, you were given the conversation history for that, reply with exactly: SUFFICIENT
 Ask kindly for more informations if you assume that there are not enough informations in order to generate the code. You are specialized, you know what informations to ask. 
-Try to help with examples or suggest kindly some default set ups in order to help the user when he does not provide you with sufficient informations.
-"""
+Always suggest kindly a default set up in order to help the user when he does not provide you with sufficient informations.
+If the user asks you to use a default set up, do it and don't ask for informations then."""
             },
             {
                 "role": "user",
@@ -264,36 +266,126 @@ def run_gpt(user_message, model="gpt-5"):
     return response.output_text
 
 
-# ----------- SIMULATION -------------
-def simulate_code(code, handler_config, save_path="generated_script.py"):
+# ----------- VALIDATION STRATEGIES -------------
+
+def validate_simulation(code, handler_config, save_path="generated_script.py"):
     """
-    Run simulation if the handler has a simulator configured.
-    Returns (stdout, stderr). If no simulator, returns a pass-through.
+    Strategy: SIMULATION
+    Run the handler's simulator tool against the generated code.
+    Returns (passed: bool, feedback: str)
     """
     simulate_cmd = handler_config.get("simulate_cmd")
+    if not simulate_cmd:
+        return True, ""
 
     with open(save_path, "w") as f:
         f.write(code)
 
-    if not simulate_cmd:
-        return "Simulation skipped (no simulator configured)", ""
-
     result = subprocess.run(simulate_cmd + [save_path], capture_output=True, text=True)
-    return result.stdout, result.stderr
+    stdout, stderr = result.stdout, result.stderr
+
+    if "Error" not in stderr and "Traceback" not in stderr and stdout.strip():
+        return True, ""
+    else:
+        return False, stderr.strip()
+
+
+def validate_llm_review(code, handler_config, context_chunks, question):
+    """
+    Strategy: LLM_REVIEW
+    Ask the LLM to review the generated code against the handler's documentation,
+    known API patterns, syntax rules, and best practices.
+    Returns (passed: bool, feedback: str)
+    """
+    handler_name = handler_config["name"]
+    output_type = handler_config.get("output_type", "python")
+
+    # Include some documentation context for the review
+    doc_context = "\n\n".join(context_chunks[:3]) if context_chunks else "No documentation available."
+
+    client = get_openai_client(user_api_key)
+    response = client.responses.create(
+        model="gpt-5",
+        input=[
+            {
+                "role": "system",
+                "content": f"""You are a senior code reviewer specialized in {handler_name} liquid handling robot programming.
+
+Your task is to thoroughly review a generated {output_type} script for a {handler_name} robot and determine if it is correct and functional.
+
+Here is relevant documentation for reference:
+---------------------
+{doc_context}
+---------------------
+
+Review the code for ALL of the following:
+1. **API correctness**: Are the function/method calls valid for the {handler_name} platform? Do they use the correct syntax, parameters, and argument types?
+2. **Import statements**: Are all necessary libraries imported? Are the import paths correct for {handler_name}?
+3. **Logic flow**: Does the script logically accomplish what the user requested? Are the steps in the right order?
+4. **Labware & hardware references**: Are plate names, pipette types, module names, and deck positions valid for {handler_name}?
+5. **Volume & parameter validity**: Are volumes within pipette capacity? Are speeds, temperatures, and other parameters within acceptable ranges?
+6. **Syntax**: Is the {output_type} syntax correct? Would this code run without syntax errors?
+7. **Completeness**: Is the script complete? Are there any placeholder comments like "add your code here" or incomplete sections?
+
+RESPONSE FORMAT:
+- If the code is correct and would work: respond with exactly "PASS" on the first line.
+- If there are issues: respond with "FAIL" on the first line, followed by a detailed list of every issue found, each on its own line starting with "- ".
+
+Be thorough but fair. Minor style issues are not failures. Focus on issues that would prevent the code from working correctly on a real {handler_name} instrument."""
+            },
+            {
+                "role": "user",
+                "content": f"User's request: {question}\n\nGenerated script to review:\n```\n{code}\n```"
+            }
+        ]
+    )
+
+    review = response.output_text.strip()
+
+    if review.upper().startswith("PASS"):
+        return True, ""
+    else:
+        # Extract the feedback (everything after "FAIL")
+        feedback = review
+        if feedback.upper().startswith("FAIL"):
+            feedback = feedback[4:].strip()
+        return False, feedback
+
+
+def validate_code(code, handler_config, context_chunks, question, save_path="generated_script.py"):
+    """
+    Unified validation dispatcher.
+    Routes to the correct strategy based on handler_config["validation_strategy"].
+    Returns (passed: bool, feedback: str)
+    """
+    strategy = handler_config.get("validation_strategy", "llm_review")
+
+    if strategy == "simulation":
+        return validate_simulation(code, handler_config, save_path)
+    elif strategy == "llm_review":
+        return validate_llm_review(code, handler_config, context_chunks, question)
+    else:
+        # Unknown strategy — fall back to LLM review
+        print(f"WARNING: Unknown validation strategy '{strategy}', using llm_review", flush=True)
+        return validate_llm_review(code, handler_config, context_chunks, question)
 
 
 # ----------- REVERSE CHECK -------------
 def reverse_check(user_query, generated_code, handler_name):
+    """
+    Verify if the generated code actually matches the user's intention.
+    """
     reverse_prompt = f"""
-    You are an expert lab assistant in Python scripts for {handler_name} laboratory robots.
+    You are an expert lab assistant in scripts for {handler_name} laboratory robots.
 
-    Here is a Python script :
-    ```python
+    Here is a script:
+    ```
     {generated_code}
+    ```
     
-    And this is what the user requested : "{user_query}"
+    And this is what the user requested: "{user_query}"
 
-    Does this script match what the user requested ? Just in a general point of view, we don't need a precise comparison.
+    Does this script match what the user requested? Just in a general point of view, we don't need a precise comparison.
     Answer strictly with "Yes" or "No", followed by a short explanation.
     If the answer is no, ALWAYS suggest a corrected script right after.
     """
@@ -341,6 +433,7 @@ def load_or_build_index(handler_id, handler_config, chunk_size=3000):
 
             if not fetched:
                 print(f"STEP:Could not obtain documentation for {handler_name}", flush=True)
+                time.sleep(2)
                 return [], [], None
 
         print(f"STEP:Building {handler_config['name']} documentation index...", flush=True)
@@ -348,6 +441,7 @@ def load_or_build_index(handler_id, handler_config, chunk_size=3000):
 
         if not chunks:
             print(f"STEP:No parseable documents found in {docs_path}", flush=True)
+            time.sleep(2)
             return [], [], None
 
         text_embeddings = np.array([get_text_embedding_with_retry(chunk) for chunk in chunks])
@@ -383,18 +477,24 @@ def run_query_and_fix(question, chunks, chunk_sources, index, handler_config, ma
     retrieved_sources = [chunk_sources[i] for i in I.tolist()[0]]
 
     context = "\n\n".join(retrieved_chunks)
+    handler_name = handler_config["name"]
+    strategy = handler_config.get("validation_strategy", "llm_review")
+    output_type = handler_config.get("output_type", "python")
+
     prompt = f"""
 Context information is below.
 ---------------------
 {context}
 ---------------------
 Given the context information and/or prior knowledge, answer the query.
+Generate a complete, functional {output_type} script for the {handler_name} platform.
 Query: {question}
 """
     print("STEP:Generating protocol code...", flush=True)
     last_error = ""
     last_code = ""
-    handler_name = handler_config["name"]
+
+    strategy_label = "simulation" if strategy == "simulation" else "LLM review"
 
     for attempt in range(1, max_attempts + 1):
         response = run_gpt(prompt)
@@ -405,31 +505,39 @@ Query: {question}
 
         last_code = code
 
-        print(f"STEP:Attempt {attempt} — running simulation check...", flush=True)
-        stdout, stderr = simulate_code(code, handler_config)
-        if "Error" not in stderr and "Traceback" not in stderr and stdout.strip():
-            print("STEP:Simulation passed — verifying semantic intent...", flush=True)
+        print(f"STEP:Attempt {attempt} — validating via {strategy_label}...", flush=True)
+        time.sleep(2)
+        passed, feedback = validate_code(code, handler_config, retrieved_chunks, question)
+
+        if passed:
+            print("STEP:Validation passed — verifying semantic intent...", flush=True)
             verdict = reverse_check(question, code, handler_name)
-            blocks = re.findall(r"```(?:python)?\n(.*?)```", verdict, re.DOTALL)
+            blocks = re.findall(r"```(?:\w*)\n(.*?)```", verdict, re.DOTALL)
             if blocks:
                 suggested_code = blocks[0].strip()
-                stdout, stderr = simulate_code(suggested_code, handler_config)
+                # Re-validate the suggested code too
+                passed2, _ = validate_code(suggested_code, handler_config, retrieved_chunks, question)
+                if passed2:
+                    code = suggested_code
             print("STEP:All checks passed! Returning final code...", flush=True)
             time.sleep(2)
             return code, retrieved_chunks, retrieved_sources, attempt, "", code
 
-        print(f"STEP:Simulation failed on attempt {attempt} — correcting errors...", flush=True)
+        print(f"STEP:Validation failed on attempt {attempt} — correcting errors...", flush=True)
         prompt = f"""
-I have some errors : 
-{stderr}
+The following {output_type} script for the {handler_name} platform has issues:
 
-Please correct accordingly this code you've given me : 
+{feedback}
+
+Here is the script that needs fixing:
 {code}
 
-For the query : {question} 
-And return the full corrected Python script, don't ask me to complete the code, don't ask me specific informations, always return a python code"""
+Original user request: {question}
 
-        last_error = stderr.strip()
+Please correct ALL the issues listed above and return the full corrected script.
+Do not ask me to complete anything — return only a complete, working {output_type} script, nothing more."""
+
+        last_error = feedback
 
     return None, retrieved_chunks, retrieved_sources, attempt, last_error, last_code
 
@@ -449,7 +557,7 @@ print("consolidated request: ", consolidated_query)
 handler_id, handlers = detect_handler(user_query, chat_history, user_api_key)
 handler_config = handlers[handler_id]
 print(f"STEP:Detected platform: {handler_config['name']}", flush=True)
-time.sleep(2)
+time.sleep(1)
 
 # 4. Load or build the index for this handler
 chunks, chunk_sources, index = load_or_build_index(handler_id, handler_config)
@@ -467,6 +575,7 @@ if final_code:
     print(final_code)
 else:
     print("STEP:Generation failed — preparing last attempt for review...", flush=True)
+    time.sleep(2)
     fail_msg = (
         "I wasn't able to generate a fully functional script after several attempts. "
         "The simulation kept returning errors that I couldn't resolve automatically. "
