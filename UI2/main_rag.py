@@ -10,6 +10,7 @@ import sys
 import pickle
 from config import get_api_key
 from doc_loader import load_and_chunk_docs
+from doc_fetcher import fetch_documentation
 
 # ----------- ARGS & AUTH -------------
 if len(sys.argv) > 1:
@@ -28,7 +29,7 @@ def get_openai_client(api_key):
 
 
 # ----------- HANDLER DETECTION -------------
-HANDLERS_CONFIG_PATH = "handlers.json"
+HANDLERS_CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "handlers.json")
 
 def load_handlers_config():
     """Load the handler registry from handlers.json."""
@@ -245,42 +246,62 @@ def reverse_check(user_query, generated_code, handler_name):
 
 
 # ----------- INDEX MANAGEMENT -------------
+# Resolve all paths relative to this script's directory
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 def load_or_build_index(handler_id, handler_config, chunk_size=3000):
     """
     Load the FAISS index for a handler from its pickle store,
     or build it from the docs folder if it doesn't exist.
     """
-    store_path = os.path.join(handler_config["docs_path"], handler_config["store_path"])
-    print(f"STEP:store path {handler_config['store_path']}", flush=True)
+    docs_path = os.path.join(SCRIPT_DIR, handler_config["docs_path"])
+    print(f"STEP:docs path {docs_path}", flush=True)
     time.sleep(5)
-    docs_path = handler_config["docs_path"]
-    print(f"STEP:docs path {handler_config['docs_path']}", flush=True)
-    time.sleep(5)
-
     
-
+    store_path = os.path.join(docs_path, handler_config["store_path"])
+    print(f"STEP:store path {store_path}", flush=True)
+    time.sleep(5)
     if os.path.exists(store_path):
         print(f"STEP:Loading {handler_config['name']} documentation index...", flush=True)
-        time.sleep(5)
         with open(store_path, "rb") as f:
             store = pickle.load(f)
         chunks = store["chunks"]
         chunk_sources = store["chunk_sources"]
         text_embeddings = store["embeddings"]
     else:
-        if not os.path.exists(docs_path):
-            print(f"STEP:No documentation found for {handler_config['name']} at {docs_path}", flush=True)
-            return [], [], None
+        # Check if docs folder exists and has content (including subfolders)
+        has_local_docs = False
+        if os.path.exists(docs_path):
+            for root, dirs, files in os.walk(docs_path):
+                for f in files:
+                    if os.path.splitext(f)[1].lower() in ('.rst', '.pdf', '.txt'):
+                        has_local_docs = True
+                        break
+                if has_local_docs:
+                    break
 
-        print(f"STEP:Building {handler_config['name']} documentation index (first run, this may take a while)...", flush=True)
+        if not has_local_docs:
+            # No local docs — try to fetch from the web
+            handler_name = handler_config["name"]
+            handler_keywords = handler_config.get("keywords", [])
+            fetched = fetch_documentation(handler_name, handler_keywords, docs_path, user_api_key)
+
+            if not fetched:
+                print(f"STEP:Could not obtain documentation for {handler_name}", flush=True)
+                return [], [], None
+
+        print(f"STEP:Building {handler_config['name']} documentation index...", flush=True)
         chunks, chunk_sources = load_and_chunk_docs(docs_path, chunk_size)
 
         if not chunks:
-            print(f"STEP:No documents found in {docs_path}", flush=True)
+            print(f"STEP:No parseable documents found in {docs_path}", flush=True)
+            time.sleep(5)
             return [], [], None
 
         text_embeddings = np.array([get_text_embedding_with_retry(chunk) for chunk in chunks])
 
+        # Save the index for future use
+        os.makedirs(os.path.dirname(store_path), exist_ok=True)
         try:
             with open(store_path, "wb") as f:
                 pickle.dump({
