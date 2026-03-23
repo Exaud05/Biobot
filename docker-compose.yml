@@ -1,9 +1,11 @@
 services:
   biobot:
     build: UI2
-    image: biobot:latest
+    image: biobot:C
     ports:
       - "5000:5000"
+    volumes:
+      - ./UI2/docs:/app/docs
     env_file :
       - .env
     environment:
@@ -26,7 +28,7 @@ services:
       - POSTGRES_USER=${DB_USER:-biobotuser}
       - POSTGRES_PASSWORD=${DB_PASSWORD:-password}
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data_claude:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "biobotuser", "-d","biobotdb"]
       interval: 5s
@@ -34,4 +36,4 @@ services:
       retries: 5
 
 volumes:
-  db_data:
+  db_data_claude:

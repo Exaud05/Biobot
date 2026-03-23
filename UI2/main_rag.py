@@ -51,6 +51,8 @@ def detect_handler(query, history, api_key):
     """
     Detect which liquid handler the user is referring to.
     First tries keyword matching, then falls back to LLM classification.
+    If the handler isn't in handlers.json, creates a dynamic entry so
+    the doc fetcher can find and download its documentation.
     """
     handlers = load_handlers_config()
     available_ids = list(handlers.keys())
@@ -64,9 +66,9 @@ def detect_handler(query, history, api_key):
     for handler_id, config in handlers.items():
         for keyword in config.get("keywords", []):
             if keyword.lower() in text_to_check:
-                return handler_id
+                return handler_id, handlers
 
-    # No keyword match — ask the LLM
+    # No keyword match — ask the LLM (allow it to return unknown handlers)
     client = get_openai_client(api_key)
     handler_list = ", ".join(
         f'"{hid}" ({cfg["name"]})'
@@ -80,10 +82,13 @@ def detect_handler(query, history, api_key):
                 "role": "system",
                 "content": f"""You are a lab automation expert. Determine which liquid handling platform the user is asking about.
 
-Available platforms: {handler_list}
+Known platforms: {handler_list}
 
-Based on the user's request and context, return ONLY the platform ID (e.g., "opentrons", "hamilton", "tecan").
-If unclear or the user doesn't specify, return "opentrons" as the default.
+Based on the user's request, return ONLY the platform ID.
+- If it matches a known platform, return its ID (e.g., "opentrons", "hamilton", "tecan").
+- If it's a DIFFERENT platform not listed above, return a new lowercase ID for it (e.g., "beckman", "agilent", "eppendorf").
+- If unclear or the user doesn't specify a platform, return "opentrons" as the default.
+
 Return only the ID, nothing else."""
             },
             {
@@ -93,11 +98,40 @@ Return only the ID, nothing else."""
         ]
     )
 
-    detected = response.output_text.strip().lower().strip('"')
-    if detected in available_ids:
-        return detected
+    detected = response.output_text.strip().lower().strip('"').replace(" ", "_")
 
-    return available_ids[0]
+    if detected in available_ids:
+        return detected, handlers
+
+    # Unknown handler — create a dynamic entry
+    # Ask the LLM for the proper name
+    name_response = client.responses.create(
+        model="gpt-4o-mini",
+        input=[
+            {
+                "role": "system",
+                "content": "Return ONLY the official full name of this liquid handling platform. No explanation, just the name."
+            },
+            {
+                "role": "user",
+                "content": f"Platform ID: {detected}"
+            }
+        ]
+    )
+    handler_name = name_response.output_text.strip()
+
+    print(f"STEP:Detected new platform: {handler_name} (not in config — will search for docs)...", flush=True)
+    time.sleep(4)
+
+    handlers[detected] = {
+        "name": handler_name,
+        "docs_path": f"docs/{detected}",
+        "store_path": f"rag_store_{detected}.pkl",
+        "simulate_cmd": None,
+        "keywords": [detected]
+    }
+
+    return detected, handlers
 
 
 # ----------- SUFFICIENCY CHECK -------------
@@ -255,14 +289,11 @@ def load_or_build_index(handler_id, handler_config, chunk_size=3000):
     or build it from the docs folder if it doesn't exist.
     """
     docs_path = os.path.join(SCRIPT_DIR, handler_config["docs_path"])
-    print(f"STEP:docs path {docs_path}", flush=True)
-    time.sleep(5)
-    
     store_path = os.path.join(docs_path, handler_config["store_path"])
-    print(f"STEP:store path {store_path}", flush=True)
-    time.sleep(5)
+
     if os.path.exists(store_path):
         print(f"STEP:Loading {handler_config['name']} documentation index...", flush=True)
+        time.sleep(4)
         with open(store_path, "rb") as f:
             store = pickle.load(f)
         chunks = store["chunks"]
@@ -295,7 +326,6 @@ def load_or_build_index(handler_id, handler_config, chunk_size=3000):
 
         if not chunks:
             print(f"STEP:No parseable documents found in {docs_path}", flush=True)
-            time.sleep(5)
             return [], [], None
 
         text_embeddings = np.array([get_text_embedding_with_retry(chunk) for chunk in chunks])
@@ -394,8 +424,7 @@ consolidated_query = consolidate_request(user_query, chat_history, user_api_key)
 print("consolidated request: ", consolidated_query)
 
 # 3. Detect which handler the user needs
-handlers = load_handlers_config()
-handler_id = detect_handler(user_query, chat_history, user_api_key)
+handler_id, handlers = detect_handler(user_query, chat_history, user_api_key)
 handler_config = handlers[handler_id]
 print(f"STEP:Detected platform: {handler_config['name']}", flush=True)
 
