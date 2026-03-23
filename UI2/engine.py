@@ -5,7 +5,7 @@ import os
 from config import get_api_key
     
 MODEL_NAME_CLASS = "gpt-4o-mini"
-MODEL_NAME = "gpt-5"
+MODEL_NAME = "gpt-5.4"
 
 def get_openai_client(api_key=None):
     return OpenAI(api_key=api_key or get_api_key())
