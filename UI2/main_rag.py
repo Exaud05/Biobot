@@ -49,68 +49,82 @@ def load_handlers_config():
 
 def detect_handler(query, history, api_key):
     """
-    Detect which liquid handler the user is referring to.
-    First tries keyword matching, then falls back to LLM classification.
+    Detect which liquid handler the user is referring to using LLM classification.
     If the handler isn't in handlers.json, creates a dynamic entry so
     the doc fetcher can find and download its documentation.
     """
     handlers = load_handlers_config()
     available_ids = list(handlers.keys())
-
-    # Quick keyword check on the query + recent history
-    text_to_check = query.lower()
-    recent = [m for m in history if m["role"] != "system"][-4:]
-    for m in recent:
-        text_to_check += " " + m["content"][:300].lower()
-
-    for handler_id, config in handlers.items():
-        for keyword in config.get("keywords", []):
-            if keyword.lower() in text_to_check:
-                return handler_id, handlers
-
-    # No keyword match — ask the LLM (allow it to return unknown handlers)
     client = get_openai_client(api_key)
-    handler_list = ", ".join(
-        f'"{hid}" ({cfg["name"]})'
-        for hid, cfg in handlers.items()
+
+    # Build context from recent conversation
+    recent = [m for m in history if m["role"] != "system"][-4:]
+    conversation_context = "\n".join(
+        f"{'User' if m['role'] == 'user' else 'Assistant'}: {m['content'][:300]}"
+        for m in recent
     )
+
+    # Build the known platforms description
+    if available_ids:
+        known_list = "\n".join(
+            f'  - "{hid}" → {cfg["name"]}'
+            for hid, cfg in handlers.items()
+        )
+    else:
+        known_list = "  (none configured)"
 
     response = client.responses.create(
         model="gpt-4o-mini",
         input=[
             {
                 "role": "system",
-                "content": f"""You are a lab automation expert. Determine which liquid handling platform the user is asking about.
+                "content": f"""You are an expert in lab automation and liquid handling robots.
 
-Known platforms: {handler_list}
+Your task: identify which liquid handling PLATFORM (robot/instrument) the user is requesting a protocol for.
 
-Based on the user's request, return ONLY the platform ID.
-- If it matches a known platform, return its ID (e.g., "opentrons", "hamilton", "tecan").
-- If it's a DIFFERENT platform not listed above, return a new lowercase ID for it (e.g., "beckman", "agilent", "eppendorf").
-- If unclear or the user doesn't specify a platform, return "opentrons" as the default.
+Here are the platforms already configured in our system:
+{known_list}
 
-Return only the ID, nothing else."""
+INSTRUCTIONS:
+1. Read the user's latest message AND the conversation history carefully.
+2. Identify the liquid handling platform they are referring to.
+3. If the platform matches one already configured, return its exact ID (the text in quotes above).
+4. If the platform is NOT in the list above, return a new short lowercase ID for it. Use the brand name in lowercase, no spaces (e.g., "opentrons", "beckman", "agilent", "eppendorf", "gilson", "biomek").
+5. If the user does NOT mention or imply any specific platform anywhere in the conversation, return "unknown".
+
+IMPORTANT:
+- Focus on the INSTRUMENT/ROBOT brand, not reagents, software, or lab techniques.
+- Look at the ENTIRE conversation, not just the latest message — the platform may have been mentioned earlier.
+- Common platforms include: Opentrons, Hamilton, Tecan, Beckman Coulter (Biomek), Agilent, Eppendorf, Gilson, PerkinElmer (JANUS), Formulatrix, Andrew Alliance, etc.
+
+Return ONLY the platform ID. One word, lowercase, no quotes, no explanation."""
             },
             {
                 "role": "user",
-                "content": f"User request: {query}"
+                "content": f"Conversation history:\n{conversation_context}\n\nLatest message: {query}"
             }
         ]
     )
 
     detected = response.output_text.strip().lower().strip('"').replace(" ", "_")
 
+    # Known handler — return directly
     if detected in available_ids:
         return detected, handlers
 
-    # Unknown handler — create a dynamic entry
-    # Ask the LLM for the proper name
+    # "unknown" — default to first available, or opentrons
+    if detected == "unknown":
+        if available_ids:
+            return available_ids[0], handlers
+        detected = "opentrons"
+
+    # New handler — ask the LLM for the proper display name
     name_response = client.responses.create(
         model="gpt-4o-mini",
         input=[
             {
                 "role": "system",
-                "content": "Return ONLY the official full name of this liquid handling platform. No explanation, just the name."
+                "content": "Return ONLY the official full name of this liquid handling robot platform/brand. No explanation, no punctuation, just the name (e.g., 'Opentrons OT-2', 'Hamilton STAR', 'Tecan Fluent')."
             },
             {
                 "role": "user",
@@ -118,7 +132,7 @@ Return only the ID, nothing else."""
             }
         ]
     )
-    handler_name = name_response.output_text.strip()
+    handler_name = name_response.output_text.strip().strip("'\"")
 
     print(f"STEP:Detected new platform: {handler_name} (not in config — will search for docs)...", flush=True)
     time.sleep(4)
