@@ -6,6 +6,7 @@ services:
       - "5000:5000"
     volumes:
       - ./UI2/docs:/app/docs
+      - ./UI2/handlers.json:/app/handlers.json
     env_file :
       - .env
     environment:
