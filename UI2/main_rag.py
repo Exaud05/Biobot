@@ -135,7 +135,7 @@ Return ONLY the platform ID. One word, lowercase, no quotes, no explanation."""
     handler_name = name_response.output_text.strip().strip("'\"")
 
     print(f"STEP:Detected new platform: {handler_name} (not in config — will search for docs)...", flush=True)
-    time.sleep(4)
+    time.sleep(2)
 
     handlers[detected] = {
         "name": handler_name,
@@ -144,6 +144,14 @@ Return ONLY the platform ID. One word, lowercase, no quotes, no explanation."""
         "simulate_cmd": None,
         "keywords": [detected]
     }
+
+    # Save to handlers.json so it persists across sessions
+    try:
+        with open(HANDLERS_CONFIG_PATH, "w") as f:
+            json.dump(handlers, f, indent=4)
+        print(f"STEP:Added {handler_name} to handlers config", flush=True)
+    except Exception as e:
+        print(f"WARNING: Could not save to handlers.json: {e}", flush=True)
 
     return detected, handlers
 
@@ -307,7 +315,7 @@ def load_or_build_index(handler_id, handler_config, chunk_size=3000):
 
     if os.path.exists(store_path):
         print(f"STEP:Loading {handler_config['name']} documentation index...", flush=True)
-        time.sleep(4)
+        time.sleep(1)
         with open(store_path, "rb") as f:
             store = pickle.load(f)
         chunks = store["chunks"]
@@ -407,7 +415,7 @@ Query: {question}
                 suggested_code = blocks[0].strip()
                 stdout, stderr = simulate_code(suggested_code, handler_config)
             print("STEP:All checks passed! Returning final code...", flush=True)
-            time.sleep(3)
+            time.sleep(2)
             return code, retrieved_chunks, retrieved_sources, attempt, "", code
 
         print(f"STEP:Simulation failed on attempt {attempt} — correcting errors...", flush=True)
@@ -441,6 +449,7 @@ print("consolidated request: ", consolidated_query)
 handler_id, handlers = detect_handler(user_query, chat_history, user_api_key)
 handler_config = handlers[handler_id]
 print(f"STEP:Detected platform: {handler_config['name']}", flush=True)
+time.sleep(2)
 
 # 4. Load or build the index for this handler
 chunks, chunk_sources, index = load_or_build_index(handler_id, handler_config)
