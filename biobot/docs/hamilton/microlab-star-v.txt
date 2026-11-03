@@ -1,0 +1,287 @@
+Microlab STAR V
+More Workspace
++30%
+Higher Throughput
+Integration Flexibility
+270º
+Left, Right, Behind
+Multi-Use Arm
+REACH FOR MORE
+Fast, Accurate Movement
+Liquid Handling Extends Assay Workflow Potential
+With the Microlab STAR V, wide assay choice and high throughput are well within arm’s reach.
+Login to save favorites
+A liquid handler born from the best
+Microlab STAR V combines the flexibility of our STAR liquid handler with the high throughput performance of our VANTAGE liquid handling robot. The Microlab  STAR V uses exclusive CO-RE II Technology (Compressed O-Ring Expansion Technology) and high-powered MagPip pipetting channels for fast, precise, and efficient performance time after time.
+Beyond automated liquid handling
+The Microlab STAR V offers additional core features to expand device integration. In turn, these aspects help to improve efficiency and consistency in workflow steps from sample preparation to analysis.
+Large deck with plenty of room to add your preferred devices
+Multi-use, agile arm to move samples around the deck and even reach off-deck tools
+VENUS Software
+Saving time and reaching high throughput are within your grasp as everything is controlled through our approachable VENUS Software.
+Common applications
+Genomics
+,
+Nucleic Acid Extraction
+,
+Nucleic Acid Quantification & Normalization
+,
+PCR Set-Up
+,
+NGS Library Prep
+Featured Technologies
+Hamilton Innovation Starts at the Channel
+Pipetting Technology
+MagPip
+Precision liquid handling. Maximum efficiency.
+The tubular linear drive inside our MagPip channels can accelerate at speeds that enable precise and ultra fast pipetting down to 350nL.
+Fluid Motion Technology
+More Workspace. More Performance. More Value.
+Innovative drive system enhances the utilization of deck space, enabling researchers to automate more scientific experiments seamlessly within a single unit, ultimately saving valuable lab space.
+DPS - Dynamic Positioning System
+For Efficient Movements
+DPS enables all channels to pipette simultaneously, even across non-uniform patterns. Unlike fixed channels with equidistant spreading, DPS offers efficient yet flexible liquid handling for cherry picking, non-uniform and variable volume samples, and complex pipetting workflows.
+CO-RE II Tip/Tool Attachment
+The Key to Liquid Handling Workflow Excellence
+The new CO-RE II technology assures more precise tip alignment, minimizing the risk of collisions. Also, tip coupling is faster which boosts productivity. Besides tips, a wide range of Hamilton tools are applicable with CO-RE II.
+Aerosol-Free Tip Ejection
+To Prevent Cross-Contamination
+As part of CO-RE II technology’s functionality, pipette tips are gently ejected from each automated liquid handler pipetting channel. This prevents aerosol generation that may expose users to harmful biohazards or cross-contaminate samples and laboratory surfaces.
+Capacitive Liquid Level Detection
+For Accurate Pipetting
+Channels are equipped with capacitance sensors that detect the liquid level through capacitive Liquid Level Detection (cLLD). Hamilton’s black conductive CO-RE tips facilitate capacitance sensing with the conductivity properties tailored for the capacitive liquids.
+Clot Detection
+To Avoid Errors
+Clot Detection pipetting channels are equipped with a pressure sensor that allows for pressure monitoring during aspiration and can detect blocked tips due to clots.
+Liquid Handling Technology
+MAD - Monitored Air Displacement
+For Unmatched Reliability
+MAD monitors the air displacement in each pipetting channel of a Hamilton automated liquid handler. During liquid aspiration steps, this non-contact technology immediately identifies clots, empty wells, or other aspiration issues. It also delivers a confirmation of successful aspiration in each pipetting channel of a Hamilton automated liquid handler.
+Liquid Handling Technology
+TADM – Total Aspiration & Dispense Monitoring
+For Real-Time Pipetting Accuracy
+During aspirate and dispense steps, TADM monitors real-time pressure changes in each Hamilton liquid handler pipetting channel. Results are compared against expected values to expose anomalies like bubbles and insufficient volumes. Sample transfers are verified with a digital audit trail.
+Liquid Handling Technology
+Anti-Droplet Control (ADC)
+For Drip-Free Pipetting
+Pressure sensors on Hamilton’s pipetting channels continuously detect variations. Any changes are immediately compensated for by dosing drive movements to prevent droplet formation. Essential for high-precision and accuracy when pipetting volatile liquids like ethanol and acetonitrile.
+Liquid Handling Technology
+Dual Liquid Level Detection (LLD)
+For Accurate Aspirations
+Dual LLD uses two sensors on each liquid handling pipetting channel. A capacitance sensor detects aqueous and conductive liquid surfaces while a pressure-based sensor works with non-conductive, viscous, and volatile liquids. Together, they ensure highly accurate and reliable liquid handling performance.
+Liquid Handling Technology
+LFC - Liquid Fractionation Control
+For Detecting Liquid Layers via Pressure Monitoring
+Pressure-based monitoring method to detect liquid interfaces in layered samples like centrifuged blood or liquid-liquid chemical extractions. LFC simultaneously and rapidly identifies, separates, and aliquots up to 16 samples into various labware targets. It includes full sample traceability.
+Accessories
+Autoload
+For Convenient Identification
+Uses a 1D barcode scanner to automatically identify and verify samples, carriers, and consumables such as tips, tubes, micro plates, and reagent troughs as they are placed onto the liquid handling deck. Optional 2D barcode reading is available, and results may be sent to any LIMS for documentation.
+Transport Solutions
+CO-RE Gripper
+For Additional Movements
+Further streamline automated workflows with CO-RE Grippers. These agile grippers transform Hamilton's precision pipette channels into on-deck labware transport solutions on Hamilton automated liquid handlers.
+Transport Solutions
+Plate Gripper
+For Flexible Integration
+Plate Grippers move labware to-and-from any position on the Hamilton automated liquid handling deck. For even greater hands-free efficiency and workflow integration, the Plate Grippers can transport plates to-and-from nearby off-deck devices (access location is platform-specific).
+Software
+Graphical User Interface
+For Easy Operation
+The intuitive graphical user interface (GUI) makes operation as simple as a smartphone app. Get started developing, editing, and running protocols without the need for automation or coding expertise.
+Vast Room to Grow
+With 80 SBS standard deck positions and 270 degree access with the multi-use arm, integrate any Hamilton or third-party devices needed to power your workflows.
+Do More in Less Time
+A robotic arm with compound movements and cutting-edge MagPip pipetting mechanics propel your assay processing speeds into overdrive.
+Covering It All
+The fully enclosed workspace, ample illumination, and sleek at-a-glance status indicators keep you safe and informed.
+1
+Large Deck
+80 SBS deck positions offer 30% higher throughput compared to similar liquid handlers.
+2
+Multi-Use Arm
+One multi-tasking arm to consistently move samples through your automated workflow.
+3
+270 Degree Access
+Openings through both side panels and the rear panel enable easy integration with off-deck devices.
+4
+MagPip
+Exclusive pipetting power with unmatched speed and precision in volumes from 350 nL to 750 µL.
+5
+VENUS Software
+User-friendly yet impactful with remote monitoring, specialized framework, and integration with most lab information management systems (LIMS) and third-party software.
+6
+Status indicator
+Progress light bar with real-time visual work status updates.
+Microlab STAR V Specifications
+Microlab STAR V 1.3
+Microlab STAR V 2.0
+Microlab STAR V 1.3 Specifications
+Print
+System Dimensions
+Height
+96 cm (3 ft, 1.8 in)
+Width
+1.33 m (4 ft, 4.36 in)
+Depth
+98 cm (3 ft, 2.58 in)
+General Specifications
+Weight
+180 kg
+Transport Tools
+CO-RE Gripper
+Optional
+Internal Plate Gripper (IPG)
+Optional
+Platform/Accessories
+Capacity (ANSI/SLAS Positions)
+35
+Device Integration
+270° (Left, Right, and Rear)
+Sample Loading and Tracking Options
+Sample Loading
+Automatic
+Autoload Barcode Scanner (1D)
+Standard
+Autoload Barcode Scanner (2D)
+Optional
+Pipetting Options
+1 mL Channels
+Up To 16
+5 mL Channels
+Up To 8
+Fluid Motion X1 Channels
+Up To 16
+MagPip Channels
+Up To 8
+Multi-Probe Head Option
+96 or 384
+Pipetting Range
+1
+0.35 µL - 5000 µL
+Microlab STAR V 2.0 Specifications
+Print
+System Dimensions
+Height
+96 cm (3 ft, 1.8 in)
+Width
+2.01 m (6 ft, 7.13 in)
+Depth
+98 cm (3 ft, 2.58 in)
+General Specifications
+Weight
+315 kg
+Transport Tools
+CO-RE Gripper
+Optional
+Internal Plate Gripper (IPG)
+Optional
+Platform/Accessories
+Capacity (ANSI/SLAS Positions)
+60
+Device Integration
+270° (Left, Right, and Rear)
+Sample Loading and Tracking Options
+Sample Loading
+Automatic
+Autoload Barcode Scanner (1D)
+Standard
+Autoload Barcode Scanner (2D)
+Optional
+Pipetting Options
+1 mL Channels
+Up To 16
+5 mL Channels
+Up To 8
+Fluid Motion X1 Channels
+Up To 16
+MagPip Channels
+Up To 8
+Multi-Probe Head Option
+96 and/or 384
+Pipetting Range
+1
+0.35 µL - 5000 µL
+1
+Depending on Configuration
+Support your entire workflow with Hamilton's integrated products.
+Sample Storage Integration
+Link your Hamilton automated liquid handling system  to a sample storage system such as our
+Verso Q-Series
+to create a fully automated processing center.
+Sample Storage Solutions
+Extend with Integrated Devices
+From heating to shaking, to cooling and much more. The expandable modules create added value for every workflow in every laboratory, and also maximize walk-away time.
+Integrated Devices
+Microlab STAR V Resources
+All resources
+Materials
+Articles
+Webinars
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Brochure
+Hamilton Automated Solutions  | Brochure
+Discover Hamilton’s complete range of automated lab solutions—innovative technologies, entry-level to advanced platforms, MagPip, consumables, and smart tools designed to empower scientists to achieve more
+Application Note
+Assay Miniaturization with MagPip Low-Volume Liquid Handling
+This application note shows how MagPip technology enables precise qPCR assay miniaturization down to 0.35 µL. Learn how labs reduce reagent use while maintaining accuracy, linearity, and reproducibility.
+Brochure
+MagPip  |  Revolutionizing your Lab  |  Brochure
+Explore the MagPip brochure to discover the advantages of achieving up to 35% faster pipetting, reducing consumable waste by up to 90%, and utilizing low volumes.
+Article
+Implementing Automation in Biobank Sample Processing
+Discover how biobank automation supports pharmaceutical research by improving sample tracking, robotic handling, and processing efficiency. Enhance drug discovery workflows with scalable, high-quality sample storage and retrieval.
+Webinar
+Meet the Hamilton STAR V: The Next Era in Lab Automation
+David Sexton and Taylor Dibble teach you everything you need to know about Hamilton's STAR V
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Brochure
+Hamilton Automated Solutions  | Brochure
+Discover Hamilton’s complete range of automated lab solutions—innovative technologies, entry-level to advanced platforms, MagPip, consumables, and smart tools designed to empower scientists to achieve more
+Application Note
+Assay Miniaturization with MagPip Low-Volume Liquid Handling
+This application note shows how MagPip technology enables precise qPCR assay miniaturization down to 0.35 µL. Learn how labs reduce reagent use while maintaining accuracy, linearity, and reproducibility.
+Brochure
+MagPip  |  Revolutionizing your Lab  |  Brochure
+Explore the MagPip brochure to discover the advantages of achieving up to 35% faster pipetting, reducing consumable waste by up to 90%, and utilizing low volumes.
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Article
+Implementing Automation in Biobank Sample Processing
+Discover how biobank automation supports pharmaceutical research by improving sample tracking, robotic handling, and processing efficiency. Enhance drug discovery workflows with scalable, high-quality sample storage and retrieval.
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Webinar
+Meet the Hamilton STAR V: The Next Era in Lab Automation
+David Sexton and Taylor Dibble teach you everything you need to know about Hamilton's STAR V
+Compare Products
+Services
+Installation & Beyond
+Trust in Hamilton’s Field Service Engineers for high-quality automated liquid handler installation, preventative maintenance, and field repairs.
+Hamilton EMEA Company Training
+Increase your automation knowledge with Hamilton’s in-person and virtual training courses, covering automated liquid handler programming and VENUS software.
+HPEP - Hamilton Pipetting Excellence Program
+Maximize your Hamilton Automated Liquid Handling System’s performance with our three pillars of pipetting excellence: Verify, Check, and Monitor for unmatched precision.
+Integrated Solutions
+Hamilton’s Advanced Product Engineering group delivers custom, high-performance automation systems with rapid deployment and minimal maintenance.
+Field Upgrades
+Hamilton’s Field Service Engineers adapt your Hamilton automated liquid handler to your changing needs so you can achieve new goals.
+Field Service Engineers
+From our Field Service Engineers to our compliance with regulatory standards, you can expect high quality from Hamilton.
+Backed by
+world-class
+service and support.
+For over 75 years, the Hamilton name has been recognized globally for its unwavering commitment to quality. That pledge extends to creating long-term customer partnerships. We're proud to offer in-depth training courses, on-site field support, custom product builds, and so much more.
+Let's Talk
+Connect with a Hamilton expert to discuss solutions for your workflow. We are here to enable your success.
+Request Type:
+Sales Inquiry
+Customize a Solution
+Technical Support
+Application Support
+Software Support
+Order Inquiry
+Find a Distributor
+General Inquiry

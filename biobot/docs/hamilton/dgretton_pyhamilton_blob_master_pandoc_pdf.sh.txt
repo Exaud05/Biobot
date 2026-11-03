@@ -1,0 +1,51 @@
+dgretton
+/
+pyhamilton
+Public
+Notifications
+You must be signed in to change notification settings
+Fork
+40
+Star
+184
+Files
+Expand file tree
+master
+/
+pandoc_pdf.sh
+Copy path
+Blame
+More file actions
+Blame
+More file actions
+Latest commit
+History
+History
+History
+5 lines (4 loc) · 256 Bytes
+master
+/
+pandoc_pdf.sh
+Copy path
+Top
+File metadata and controls
+Code
+Blame
+5 lines (4 loc) · 256 Bytes
+Raw
+Copy raw file
+Download raw file
+Open symbols panel
+Edit and raw actions
+1
+2
+3
+4
+pandoc --from=markdown+abbreviations+tex_math_single_backslash  \
+--pdf-engine=xelatex --variable=mainfont:
+"
+DejaVu Sans
+"
+\
+--toc --toc-depth=4 --output=../pyhamilton-docs/pyhamilton-doc.pdf  \
+build/pdf-intermediate.md

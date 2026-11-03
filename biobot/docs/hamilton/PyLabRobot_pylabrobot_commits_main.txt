@@ -1,0 +1,306 @@
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+PyLabRobot
+/
+pylabrobot
+Public
+Notifications
+You must be signed in to change notification settings
+Fork
+170
+Star
+475
+Branch selector
+main
+User selector
+All users
+All time
+Commit history
+Commits on Jun 30, 2026
+`io.ftdi`: skip logging and capturing empty reads (mirror io.serial) (#1138)
+Show description for ab29972
+BioCam
+and
+claude
+authored
+ab29972
+Copy full SHA for ab29972
+`Container`: forward volume-tracker changes to state updates; format Visualizer volume readouts (#1137)
+Show description for 7a91016
+BioCam
+and
+claude
+authored
+7a91016
+Copy full SHA for 7a91016
+Commits on Jun 28, 2026
+`resources.utils`: accept item_dx/item_dy=None to declare a single-item dimension (#1126)
+Show description for 9a9be84
+BioCam
+and
+claude
+authored
+9a9be84
+Copy full SHA for 9a9be84
+`resources.utils`: document item_dx/item_dy as origin-to-origin spacing
+Show description for 1da5eeb
+BioCam
+and
+claude
+committed
+1da5eeb
+Copy full SHA for 1da5eeb
+Commits on Jun 26, 2026
+`HamiltonTip`: add teaching-needle tool definitions - zero-capacity probes that cannot pipette (#1121)
+Show description for b7cda6c
+BioCam
+and
+claude
+authored
+b7cda6c
+Copy full SHA for b7cda6c
+`STARBackend`: create 96-head `mix96` (#1096)
+Show description for 0fd5dd6
+3
+people
+authored
+0fd5dd6
+Copy full SHA for 0fd5dd6
+fix(liconic): wait for the z-lift before scanning a barcode (#1116)
+Show description for 963360c
+dinukajayalath
+and
+claude
+authored
+963360c
+Copy full SHA for 963360c
+fix(keyence): read full barcode reply and release the read beam (LOFF) (#1114)
+Show description for d0f775c
+dinukajayalath
+and
+claude
+authored
+d0f775c
+Copy full SHA for d0f775c
+docs: add CHANGELOG entries for `Plate.stacking_z_height` and `ResourceStack` nesting (#1120)
+c-reiter
+authored
+d78f68a
+Copy full SHA for d78f68a
+Commits on Jun 25, 2026
+`STARBackend`: add 96-head capacitive LLD Z-probe (#1094)
+Show description for 5723a79
+BioCam
+and
+claude
+authored
+5723a79
+Copy full SHA for 5723a79
+Commits on Jun 24, 2026
+`ResourceStack`: nest stacked plates by `Plate.stacking_z_height` (#1112)
+Show description for 00841b8
+c-reiter
+and
+claude
+authored
+00841b8
+Copy full SHA for 00841b8
+`Plate`: add optional `stacking_z_height` parameter (#1110)
+Show description for d01cad0
+c-reiter
+and
+claude
+authored
+d01cad0
+Copy full SHA for d01cad0
+Commits on Jun 23, 2026
+Add MicroSpin centrifuge docs (#1103)
+c-reiter
+authored
+2184f47
+Copy full SHA for 2184f47
+Commits on Jun 22, 2026
+`Tip`: add `nominal_volume`, the rated working volume distinct from physical capacity (#1102)
+Show description for bee77e7
+BioCam
+and
+claude
+authored
+bee77e7
+Copy full SHA for bee77e7
+`LiquidHandler`: gate aspirate96 tip volume tracking on `does_volume_tracking()` (#1095)
+Show description for 888a832
+BioCam
+and
+claude
+authored
+888a832
+Copy full SHA for 888a832
+Commits on Jun 19, 2026
+`STARBackend`: 96-head Y/Z drive speed & acceleration set/request, scoped to each move (#1088)
+Show description for 8689f0e
+3
+people
+authored
+8689f0e
+Copy full SHA for 8689f0e
+`STARBackend`: add basic 96-head aspirate/dispense (#1089)
+Show description for b444fe0
+3
+people
+authored
+b444fe0
+Copy full SHA for b444fe0
+Commits on Jun 16, 2026
+fix(logging): don't let setup_logger crash on a non-regular log path (#1092)
+Show description for f39b2be
+rickwierenga
+and
+claude
+authored
+f39b2be
+Copy full SHA for f39b2be
+Commits on Jun 11, 2026
+`STARBackend`: tip-aware 96-head Z with stop-disk / tool request+move pair (#1086)
+Show description for cce2883
+BioCam
+and
+claude
+authored
+cce2883
+Copy full SHA for cce2883
+`STARBackend`: add per-drive default speed/acceleration to `Head96Information` (#1087)
+Show description for 916c0f2
+BioCam
+and
+claude
+authored
+916c0f2
+Copy full SHA for 916c0f2
+`Mix`: add optional `surface_following_distance` (#1085)
+Show description for 5c1e1f4
+BioCam
+and
+claude
+authored
+5c1e1f4
+Copy full SHA for 5c1e1f4
+`STARBackend`: consolidate 96-head limits and resolutions into `Head96Information` (#1084)
+Show description for 701b8f8
+BioCam
+and
+claude
+authored
+701b8f8
+Copy full SHA for 701b8f8
+Commits on Jun 10, 2026
+`STARBackend`: direct X-drive `head96_move_x` via EEPROM X-offset (per-axis motion control) (#1081)
+Show description for e8923b2
+BioCam
+and
+claude
+authored
+e8923b2
+Copy full SHA for e8923b2
+Commits on Jun 9, 2026
+Populate STAR X-drives (X0) error trace table (#1080)
+Show description for 8e62392
+BioCam
+and
+claude
+authored
+8e62392
+Copy full SHA for 8e62392
+Populate STAR CoRe 96 head (`H0`) error trace table (#1079)
+Show description for b850ae2
+BioCam
+and
+claude
+authored
+b850ae2
+Copy full SHA for b850ae2
+Populate STAR autoload (I0) error trace table (#1078)
+Show description for 915b697
+BioCam
+and
+claude
+authored
+915b697
+Copy full SHA for 915b697
+Gate all pip-channel queries behind STARBackend.setup(skip_pip=True) (#1077)
+Show description for 49ccc28
+BioCam
+and
+claude
+authored
+49ccc28
+Copy full SHA for 49ccc28
+Commits on Jun 4, 2026
+STARBackend: tolerate short-form VW pip-channel replies (#1068)
+Show description for 825e3c2
+BioCam
+and
+claude
+authored
+825e3c2
+Copy full SHA for 825e3c2
+Commits on May 27, 2026
+STARBackend: make iSWAPInformation immutable (#1066)
+Show description for 9f07a01
+BioCam
+and
+claude
+authored
+9f07a01
+Copy full SHA for 9f07a01
+Commits on May 26, 2026
+visualizer: Centralize overlay refresh so home/focus update scale bar (#1064)
+Show description for 2d9b77f
+BioCam
+and
+claude
+authored
+2d9b77f
+Copy full SHA for 2d9b77f
+Make the visualizer rotation-aware (closes #1056) (#1062)
+Show description for 31bcef2
+BioCam
+and
+claude
+authored
+31bcef2
+Copy full SHA for 31bcef2
+Commits on May 25, 2026
+update project metadata in pyproject.toml (#1060)
+ivoryzh
+authored
+f8f5c36
+Copy full SHA for f8f5c36
+Commits on May 22, 2026
+Expose `STARBackend.channels_request_stop_disk_z_positions()` (bulk read) (#1058)
+Show description for be6becf
+BioCam
+and
+claude
+authored
+be6becf
+Copy full SHA for be6becf
+Expose `STARBackend.channels_request_y_positions()` (bulk read) (#1057)
+Show description for 3f8cdbc
+BioCam
+and
+claude
+authored
+3f8cdbc
+Copy full SHA for 3f8cdbc
+Commits on May 21, 2026
+`STARBackend`: consolidate iSWAP drive parameters into `iSWAPInformation` (#1055)
+Show description for eb08f91
+BioCam
+and
+claude
+authored
+eb08f91
+Copy full SHA for eb08f91

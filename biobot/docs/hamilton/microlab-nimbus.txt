@@ -1,0 +1,268 @@
+Microlab NIMBUS
+Intuitive Programming
+VENUS Software
+Integrated On-board PC
+True Random Access
+4 or 8 X1 Channels
+Up to 20 SBS Deck Positions
+Integrated Display
+Touchscreen Control
+Monitor and Manage Runs
+Outstanding Performance within Budget
+With several configuration options, the compact Microlab NIMBUS automated liquid handler can satisfy multiple workflow needs while keeping you within budget. It’s a must-have for lab automation beginners and professionals alike.
+Login to save favorites
+Scientific Citations
+Powerful Compact Liquid Handler
+The Microlab NIMBUS offers excellent high-throughput pipetting to save time and streamline workflows. With a small footprint, it makes maximum use of minimal lab space for versatility and efficiency.
+Compressed O-Ring Expansion (CO-RE) Advantage
+The Microlab NIMBUS uses highly accurate air displacement pipetting. It also leverages
+CO-RE Technology
+to achieve a tight seal between the pipette channels and tips for extreme accuracy. Optional performance monitoring tools further safeguard sample and results integrity.
+Configurable Base Platforms
+Multiple base platforms suit a variety of needs and budgets.
+NIMBUS4: Up to four independent CO-RE pipette channels work with tubes and plates
+NIMBUS96: High-speed CO-RE 96 Probe Head works with 96- and 384-well plates in individual well, column row, and whole plate formats from 1–1000 µL
+NIMBUS HD (High Density): Up to 8 independent CO-RE pipette channels feature independent Y and Z axes movements
+Precision Software
+VENUS 6 Software provides liquid handling workflow control and easily integrates third-party devices. With an intuitive Method Editor and drag-and-drop programming, users can quickly build methods.
+Common applications
+Analytical Chemistry
+,
+Dilutions and Dispensing
+Featured Technologies
+Hamilton Technology Starts at the Channel.
+Pipetting Technology
+Fluid Motion Technology
+More Workspace. More Performance. More Value.
+Innovative drive system enhances the utilization of deck space, enabling researchers to automate more scientific experiments seamlessly within a single unit, ultimately saving valuable lab space.
+DPS - Dynamic Positioning System
+For Efficient Movements
+DPS enables all channels to pipette simultaneously, even across non-uniform patterns. Unlike fixed channels with equidistant spreading, DPS offers efficient yet flexible liquid handling for cherry picking, non-uniform and variable volume samples, and complex pipetting workflows.
+CO-RE II Tip/Tool Attachment
+The Key to Liquid Handling Workflow Excellence
+The new CO-RE II technology assures more precise tip alignment, minimizing the risk of collisions. Also, tip coupling is faster which boosts productivity. Besides tips, a wide range of Hamilton tools are applicable with CO-RE II.
+Aerosol-Free Tip Ejection
+To Prevent Cross-Contamination
+As part of CO-RE II technology’s functionality, pipette tips are gently ejected from each automated liquid handler pipetting channel. This prevents aerosol generation that may expose users to harmful biohazards or cross-contaminate samples and laboratory surfaces.
+Liquid Handling Technology
+MAD - Monitored Air Displacement
+For Unmatched Reliability
+MAD monitors the air displacement in each pipetting channel of a Hamilton automated liquid handler. During liquid aspiration steps, this non-contact technology immediately identifies clots, empty wells, or other aspiration issues. It also delivers a confirmation of successful aspiration in each pipetting channel of a Hamilton automated liquid handler.
+Liquid Handling Technology
+Anti-Droplet Control (ADC)
+For Drip-Free Pipetting
+Pressure sensors on Hamilton’s pipetting channels continuously detect variations. Any changes are immediately compensated for by dosing drive movements to prevent droplet formation. Essential for high-precision and accuracy when pipetting volatile liquids like ethanol and acetonitrile.
+Liquid Handling Technology
+Dual Liquid Level Detection (LLD)
+For Accurate Aspirations
+Dual LLD uses two sensors on each liquid handling pipetting channel. A capacitance sensor detects aqueous and conductive liquid surfaces while a pressure-based sensor works with non-conductive, viscous, and volatile liquids. Together, they ensure highly accurate and reliable liquid handling performance.
+Transport Solutions
+CO-RE Gripper
+For Additional Movements
+Further streamline automated workflows with CO-RE Grippers. These agile grippers transform Hamilton's precision pipette channels into on-deck labware transport solutions on Hamilton automated liquid handlers.
+Highly Configurable
+The compact deck offers 11, 12, or 20 ANSI/SLAS positions for plates, reagents, consumables, and devices.
+Flexible Platform Options
+Choose between different enclosure options with 4 or 8 independent channels or a 96 Probe Head for a solution that satisfies your needs and budget.
+Protect Sample Integrity
+Use the optional Clean Air Protection (CAP) system with clean HEPA filtration and UV sterility to prevent contamination.
+Extend Workflow Efficiency
+Microlab NIMBUS may be equipped with modules like shakers, temperature control, extraction devices, and stackers from Hamilton and other manufacturers.
+Explore the Microlab NIMBUS
+1
+Advanced Pipetting Technology
+Air-displacement and CO-RE Technology, along with performance monitoring tools, ensure the utmost in pipetting performance and reliability.
+2
+Pipetting Options
+Users may select up to 4 CO-RE Channels, the CO-RE 96 Probe Head, or up to 8 CO-RE Channels.
+3
+Enclosure Options
+Choose between different enclosure options depending on each laboratory’s unique needs and available space.
+4
+VENUS Software
+Simplifies Microlab NIMBUS control, device integration, and method programming. It also integrates with most laboratory information management systems (LIMS).
+5
+Space for Optional Tools and Accessories
+Add a CAP system, labware gripper, or any number of Hamilton and third-party devices to enhance assay flexibility.
+Flexible automation. Intelligent interaction.
+Proven at scale.
+Fluid Motion
+NIMBUS brings Hamilton’s next‑generation pipetting technology and modern operator interaction to the NIMBUS platform, delivering greater deck access, faster liquid handling actions, and a more intuitive way to monitor and manage runs. Built on the proven NIMBUS architecture and powered by VENUS process control software, Fluid Motion NIMBUS combines advanced capability with operational confidence. It supports production‑ready workflows today and provides a clear, scalable path to future expansion across larger Hamilton automation systems.
+Microlab NIMBUS Specifications
+NIMBUS 4
+NIMBUS96
+NIMBUS HD
+NIMBUS 4 Specifications
+Print
+System Dimensions
+Height
+76.9 cm to 1.24 m (2 ft, 6.28 in to 4 ft, 0.82 in)
+Width
+95 cm to 1.66 m (3 ft, 1.4 in to 5 ft, 5.51 in)
+Depth
+51.1 cm to 70.9 cm (1 ft, 8.12 in to 2 ft, 3.91 in)
+General Specifications
+Weight
+99.8 kg
+Platform Type
+Open
+Optional
+Standard Enclosed
+Standard
+Extended Enclosed
+Optional
+Large Extended Enclosed
+Optional
+Transport Tools
+CO-RE Gripper
+Optional
+Platform/Accessories
+Capacity (ANSI/SLAS Positions)
+11
+Device Integration
+Hamilton Heater Shaker, Hamilton Heater Cooler, [MPE]², Vaccum Station
+Sample Loading and Tracking Options
+Sample Loading
+Manual
+Barcode Scanner
+1D
+Pipetting Options
+1 mL Channels
+4
+Pipetting Range
+1
+1 µL - 1000 µL
+NIMBUS96 Specifications
+Print
+System Dimensions
+Height
+76.9 cm to 1.24 m (2 ft, 6.28 in to 4 ft, 0.82 in)
+Width
+95 cm to 1.66 m (3 ft, 1.4 in to 5 ft, 5.35 in)
+Depth
+51.1 cm to 70.9 cm (1 ft, 8.12 in to 2 ft, 3.91 in)
+General Specifications
+Weight
+113.4 kg
+Platform Type
+Open
+Optional
+Standard Enclosed
+Optional
+Extended Enclosed
+Standard
+Large Extended Enclosed
+Optional
+Transport Tools
+CO-RE Gripper
+Optional
+Platform/Accessories
+Capacity (ANSI/SLAS Positions)
+11
+Device Integration
+Hamilton Heater Shaker, Hamilton Heater Cooler, [MPE]², Vaccum Station
+Sample Loading and Tracking Options
+Sample Loading
+Manual
+Barcode Scanner
+1D
+Pipetting Options
+Multi-Probe Head Option
+96
+Pipetting Range
+1
+1 µL - 1000 µL
+NIMBUS HD Specifications
+Print
+System Dimensions
+Height
+76.9 cm to 1.24 m (2 ft, 6.28 in to 4 ft, 0.82 in)
+Width
+95 cm to 1.66 m (3 ft, 1.4 in to 5 ft, 5.35 in)
+Depth
+51.1 cm to 70.9 cm (1 ft, 8.12 in to 2 ft, 3.91 in)
+General Specifications
+Weight
+113.4 kg
+Platform Type
+Standard Enclosed
+Standard
+Transport Tools
+CO-RE Gripper
+Optional
+Platform/Accessories
+Capacity (ANSI/SLAS Positions)
+20
+Device Integration
+Hamilton Heater Shaker, Hamilton Heater Cooler, [MPE]², Vaccum Station
+Sample Loading and Tracking Options
+Sample Loading
+Manual
+Barcode Scanner
+1D
+2D
+Pipetting Options
+1 mL Channels
+Up to 8
+Pipetting Range
+1
+1 µL - 1000 µL
+1
+Depending on Configuration
+Microlab NIMBUS Resources
+All resources
+Materials
+FAQs
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Brochure
+Hamilton Automated Solutions  | Brochure
+Discover Hamilton’s complete range of automated lab solutions—innovative technologies, entry-level to advanced platforms, MagPip, consumables, and smart tools designed to empower scientists to achieve more
+Catalog
+Consumables | Catalog
+Explore Hamilton Consumable Catalog featuring high-quality tips, tubes, plates, and more—engineered for purity, safety, and compatibility with our automation and storage systems.
+E-book
+Entry-Level Automation for Molecular Assays
+Discover how to get started with the automation of your molecular workflows in our eBook
+FAQ
+What PCR steps can be automated?
+Automating repetitive liquid handling steps can help reduce manual variability and improve consistency across PCR reactions.
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Brochure
+Hamilton Automated Solutions  | Brochure
+Discover Hamilton’s complete range of automated lab solutions—innovative technologies, entry-level to advanced platforms, MagPip, consumables, and smart tools designed to empower scientists to achieve more
+Catalog
+Consumables | Catalog
+Explore Hamilton Consumable Catalog featuring high-quality tips, tubes, plates, and more—engineered for purity, safety, and compatibility with our automation and storage systems.
+E-book
+Entry-Level Automation for Molecular Assays
+Discover how to get started with the automation of your molecular workflows in our eBook
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+FAQ
+What PCR steps can be automated?
+Automating repetitive liquid handling steps can help reduce manual variability and improve consistency across PCR reactions.
+Compare Products
+Services
+Hamilton EMEA Company Training
+Increase your automation knowledge with Hamilton’s in-person and virtual training courses, covering automated liquid handler programming and VENUS software.
+Installation & Beyond
+Trust in Hamilton’s Field Service Engineers for high-quality automated liquid handler installation, preventative maintenance, and field repairs.
+Field Service Engineers
+From our Field Service Engineers to our compliance with regulatory standards, you can expect high quality from Hamilton.
+Backed by
+world-class
+service and support.
+For over 75 years, the Hamilton name has been recognized globally for its unwavering commitment to quality. That pledge extends to creating long-term customer partnerships. We're proud to offer in-depth training courses, on-site field support, custom product builds, and so much more.
+Let's Talk
+Connect with a Hamilton expert to discuss solutions for your workflow. We are here to enable your success.
+Request Type:
+Sales Inquiry
+Customize a Solution
+Technical Support
+Application Support
+Software Support
+Order Inquiry
+Find a Distributor
+General Inquiry

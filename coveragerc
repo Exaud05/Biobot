@@ -1,0 +1,44 @@
+[run]
+# Only measure coverage of the application source code
+source = biobot
+
+# Never measure the test files themselves, nor scripts that
+# require a live system (DB, API, user interaction) to execute.
+omit =
+    tests/*
+    */test_*
+    conftest.py
+
+    # Runtime-only: RAG pipeline (needs live OpenAI API + vector store)
+    biobot/main_rag.py
+
+    # Runtime-only: DB bootstrap script (needs running PostgreSQL)
+    biobot/init_db.py
+
+[report]
+# Lines matching these patterns are excluded from the "missing" count
+exclude_lines =
+    # Standard untestable patterns
+    if __name__ == .__main__.
+    pragma: no cover
+
+    # Defensive/abstract code
+    raise NotImplementedError
+    pass
+
+    # Type checking imports
+    if TYPE_CHECKING:
+
+# Don't report files with 100% coverage (less noise)
+skip_covered = False
+
+# Fail the build if total coverage drops below this threshold
+# (uncomment when ready to enforce)
+# fail_under = 90
+
+show_missing = True
+precision = 1
+
+[html]
+directory = htmlcov
+title = BioBot Coverage Report

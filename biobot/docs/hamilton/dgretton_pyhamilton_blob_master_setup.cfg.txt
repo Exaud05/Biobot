@@ -1,0 +1,47 @@
+dgretton
+/
+pyhamilton
+Public
+Notifications
+You must be signed in to change notification settings
+Fork
+40
+Star
+184
+Files
+Expand file tree
+master
+/
+setup.cfg
+Copy path
+Blame
+More file actions
+Blame
+More file actions
+Latest commit
+History
+History
+History
+4 lines (3 loc) · 38 Bytes
+master
+/
+setup.cfg
+Copy path
+Top
+File metadata and controls
+Code
+Blame
+4 lines (3 loc) · 38 Bytes
+Raw
+Copy raw file
+Download raw file
+Open symbols panel
+Edit and raw actions
+1
+2
+3
+[egg_info]
+tag_build
+=
+tag_date
+= 0

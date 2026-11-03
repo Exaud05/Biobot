@@ -1,0 +1,160 @@
+Automated Liquid Handling
+Flexible, reliable liquid handler performance.
+Our Liquid Handling Platforms Deliver
+Robust Performance and Efficiency
+Precise, accurate, and flexible liquid handling technology is the foundation for robust data. This is where Hamilton’s market-leading liquid handling platforms stand apart from the rest.
+Our range of automated liquid handling platforms features pipetting optimizations like
+CO-RE II technology
+and other monitoring tools to boost your assay performance. Our dedication to continuous improvement and technology is one of many reasons why we continue to lead the market in automated liquid handling. And, our full line of
+consumables
+and
+integrated devices
+turns your liquid handling robot into a multi-tasking automation solution.
+What you can expect
+Full Process Control
+Lab automation technologies offer accuracy, precision, and consistency across assays and users.
+Get Back Your Resources
+Walk-away operation lets you get more done at once.
+Optimization in Scaling
+With configurable pipetting platform decks, you can easily scale to meet changing needs and fluctuating demands.
+Explore all Automated Liquid Handling
+Choose an outcome below to see personalized product recommendations.
+View All (5)
+Customizable Applications (4)
+Configurable Workstations (4)
+High-Throughput Dilution (5)
+Genomics (1)
+Clinical Sample Solutions (1)
+Microlab Prep
+The Hamilton Microlab Prep is an affordable liquid handler perfect for automating workflows. This entry-level liquid handler supports automated PCR setup and serial dilution.
+Compare Automated Liquid Handling Platforms
+Microlab NIMBUS
+Hamilton Microlab NIMBUS is a compact liquid handler that uses air displacement pipetting to achieve superior measurement accuracy. With Microlab NIMBUS, experience fast, easy to use, and superior quality pipetting in a compact system at an affordable price.
+Compare Automated Liquid Handling Platforms
+Microlab STAR
+The Hamilton Microlab STAR is a reliable and versatile automated liquid handling platform. With advanced features like multi-probe heads, pipetting technologies, and VENUS software, this premier liquid handling system fits your laboratory needs. Revolutionize your workflows with the STAR today!
+Compare Automated Liquid Handling Platforms
+Microlab STAR V
+Hamilton STAR V, a cutting-edge liquid handling robot, unites Microlab STAR flexibility with Microlab VANTAGE high-performance capabilities to boost efficiency. The Microlab STAR V offers speed, precision, and technology for automated liquid handling. Upgrade your lab—explore the Microlab STAR V!
+Compare Automated Liquid Handling Platforms
+Microlab VANTAGE
+Hamilton VANTAGE 2.0 is a cutting-edge liquid handling system with automated precision. Optimize workflows with the VANTAGE robot, all while boosting performance, safeguarding samples, and maximizing walk-away time. Discover the Hamilton VANTAGE liquid handler for your current & future needs.
+Compare Automated Liquid Handling Platforms
+Automated Liquid Handling Resources
+All resources
+Materials
+Articles
+FAQs
+Webinars
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Brochure
+Hamilton Automated Solutions  | Brochure
+Discover Hamilton’s complete range of automated lab solutions—innovative technologies, entry-level to advanced platforms, MagPip, consumables, and smart tools designed to empower scientists to achieve more
+Infographic
+Testing for Drugs of Abuse
+Explore this infographic on testing methods for drugs of abuse.
+Application Note
+Automated Nucleic Acid Extraction for Pathogen Detection Using ROBOSCREEN Rapid INSTANT Kit
+Molecular testing for viral pathogens is now standard in research and diagnostics. Success depends on high-quality sample material, making the initial extraction of viral RNA and DNA critical for achieving optimal sensitivity and specificity in test results.
+Article
+The Intersection of Biobanking and Genomic Research
+Discover how genomic biobanking powers genome-wide studies and bioinformatics research. Explore the role of DNA sequences, sample automation, and data integration in advancing diagnostics and personalized medicine.
+Article
+Biobanks and the Advancement of Cancer Research
+Explore how biobank research and oncology biobanking support cancer research through high-quality tumor tissue samples, cancer biomarkers, and genetic analysis, advancing personalized medicine and guiding treatment decisions in modern oncology.
+Article
+Best Practices for Biospecimen Collection and Preservation
+Expert strategies for biospecimen collection, sample preservation, and maintaining specimen integrity. Learn how proper storage protocols protect research outcomes and support reliable test results over the long term.
+FAQ
+BIOSPOT DX Frequently Asked Questions
+BIOSPOT DX Frequently Asked Questions
+FAQ
+How difficult is it to set up and run a benchtop liquid handling system day to day?
+Once protocols are set up, daily use of the Microlab Prep typically involves loading samples and consumables with minimal manual intervention.
+FAQ
+What are the limitations of a benchtop automated liquid handler?
+Benchtop automation is best suited for routine workflows with lower throughput than high-throughput environments.
+Webinar
+Automating NGS Workflows for Precision Medicine-Oncology
+Learn about CeGaT's experience during the automation of their NGS workflows for studies in Precision Medicine - Oncology
+Webinar
+Automated Blood Fractionation: Imaging and Sensor-Based Solutions
+Explore Hamilton’s imaging- and sensor-based tools for automated blood fractionation. Learn how easyBlood and LFC enable precise plasma, buffy coat, and RBC separation with full traceability.
+Webinar
+Automated hiPSC Workflow on a Hamilton STAR for 3D Live Cell Microscopy
+Join Ben Gregor and Michael Mouradian as they discuss how to develop a fully automated cell culture workflow for both differentiated and non-differentiated hiPSCs.
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Brochure
+Hamilton Automated Solutions  | Brochure
+Discover Hamilton’s complete range of automated lab solutions—innovative technologies, entry-level to advanced platforms, MagPip, consumables, and smart tools designed to empower scientists to achieve more
+Infographic
+Testing for Drugs of Abuse
+Explore this infographic on testing methods for drugs of abuse.
+Application Note
+Automated Nucleic Acid Extraction for Pathogen Detection Using ROBOSCREEN Rapid INSTANT Kit
+Molecular testing for viral pathogens is now standard in research and diagnostics. Success depends on high-quality sample material, making the initial extraction of viral RNA and DNA critical for achieving optimal sensitivity and specificity in test results.
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Article
+The Intersection of Biobanking and Genomic Research
+Discover how genomic biobanking powers genome-wide studies and bioinformatics research. Explore the role of DNA sequences, sample automation, and data integration in advancing diagnostics and personalized medicine.
+Article
+Biobanks and the Advancement of Cancer Research
+Explore how biobank research and oncology biobanking support cancer research through high-quality tumor tissue samples, cancer biomarkers, and genetic analysis, advancing personalized medicine and guiding treatment decisions in modern oncology.
+Article
+Best Practices for Biospecimen Collection and Preservation
+Expert strategies for biospecimen collection, sample preservation, and maintaining specimen integrity. Learn how proper storage protocols protect research outcomes and support reliable test results over the long term.
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+FAQ
+BIOSPOT DX Frequently Asked Questions
+BIOSPOT DX Frequently Asked Questions
+FAQ
+How difficult is it to set up and run a benchtop liquid handling system day to day?
+Once protocols are set up, daily use of the Microlab Prep typically involves loading samples and consumables with minimal manual intervention.
+FAQ
+What are the limitations of a benchtop automated liquid handler?
+Benchtop automation is best suited for routine workflows with lower throughput than high-throughput environments.
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Webinar
+Automating NGS Workflows for Precision Medicine-Oncology
+Learn about CeGaT's experience during the automation of their NGS workflows for studies in Precision Medicine - Oncology
+Webinar
+Automated Blood Fractionation: Imaging and Sensor-Based Solutions
+Explore Hamilton’s imaging- and sensor-based tools for automated blood fractionation. Learn how easyBlood and LFC enable precise plasma, buffy coat, and RBC separation with full traceability.
+Webinar
+Automated hiPSC Workflow on a Hamilton STAR for 3D Live Cell Microscopy
+Join Ben Gregor and Michael Mouradian as they discuss how to develop a fully automated cell culture workflow for both differentiated and non-differentiated hiPSCs.
+Services
+Hamilton EMEA Company Training
+Increase your automation knowledge with Hamilton’s in-person and virtual training courses, covering automated liquid handler programming and VENUS software.
+Installation & Beyond
+Trust in Hamilton’s Field Service Engineers for high-quality automated liquid handler installation, preventative maintenance, and field repairs.
+Field Upgrades
+Hamilton’s Field Service Engineers adapt your Hamilton automated liquid handler to your changing needs so you can achieve new goals.
+Field Service Engineers
+From our Field Service Engineers to our compliance with regulatory standards, you can expect high quality from Hamilton.
+Integrated Solutions
+Hamilton’s Advanced Product Engineering group delivers custom, high-performance automation systems with rapid deployment and minimal maintenance.
+Application and Technical Support
+Hamilton's Technical Support team is here to provide product trouble-shooting, repair, application support, virtual start-up support, and more.
+Learn About Hamilton Service
+Our service teams are fully trained and available to support your automation needs.
+Backed by
+world-class
+service and support.
+For over 75 years, the Hamilton name has been recognized globally for its unwavering commitment to quality. That pledge extends to creating long-term customer partnerships. We're proud to offer in-depth training courses, on-site field support, custom product builds, and so much more.
+Let's Talk
+Connect with a Hamilton expert to discuss solutions for your workflow. We are here to enable your success.
+Request Type:
+Sales Inquiry
+Customize a Solution
+Technical Support
+Application Support
+Software Support
+Order Inquiry
+Find a Distributor
+General Inquiry

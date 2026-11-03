@@ -1,0 +1,432 @@
+#
+biotech
+Star
+Here are
+    192 public repositories
+    matching this topic...
+Language:
+All
+Filter by language
+All
+192
+Python
+51
+TypeScript
+16
+Jupyter Notebook
+14
+JavaScript
+13
+HTML
+11
+C#
+7
+C++
+5
+CSS
+2
+Shell
+2
+Gnuplot
+1
+Sort:
+Most stars
+Sort options
+Most stars
+Fewest stars
+Most forks
+Fewest forks
+Recently updated
+Least recently updated
+mims-harvard
+/
+TDC
+Star
+1.3k
+Therapeutics Commons (TDC): Multimodal Foundation for Therapeutic Science
+machine-learning
+bioinformatics
+medicine
+deep-learning
+chemistry
+cheminformatics
+biology
+artificial-intelligence
+benchmarks
+drug-discovery
+datasets
+precision-medicine
+biotech
+biomedicine
+therapeutics
+Updated
+Jul 13, 2025
+Jupyter Notebook
+PyLabRobot
+/
+pylabrobot
+Star
+475
+interactive & hardware agnostic SDK for lab automation
+lab-automation
+biotech
+Updated
+Jul 1, 2026
+Python
+virtualramblas
+/
+awesome-deep-learning-4-life-sciences
+Star
+160
+A collection of resources for Deep Learning in Python for Life Sciences (with focus on biotech and pharma).
+python
+cheminformatics
+proteins
+drug-discovery
+drug-repurposing
+deeplearning
+molecules
+biotech
+pharmaceuticals
+Updated
+Sep 23, 2025
+Pioreactor
+/
+pioreactor
+Star
+143
+Hardware and software for accessible, extensible, and scalable bioreactors. Built on Raspberry Pi.
+science
+mqtt
+raspberry-pi
+hardware
+biology
+raspberrypi
+evolution
+educators
+bacteria
+algae
+fermentation
+yeast
+biotech
+bioreactor
+Updated
+Jun 30, 2026
+Python
+chaibio
+/
+chaipcr
+Star
+99
+The software behind Chai's open-source Real-Time PCR instrument
+bioinformatics
+pcr
+biotechnology
+biotech
+Updated
+Jan 28, 2025
+C++
+AutoFlowResearch
+/
+SmartPeak
+Star
+57
+Fast and Accurate CE-, GC- and LC-MS(/MS) Data Processing
+bioinformatics
+mass-spectrometry
+lc-ms
+ms-data
+analyses
+biotechnology
+gc-ms
+biotech
+lc-msms
+Updated
+Feb 22, 2023
+C++
+dlopezyse
+/
+AI-for-Bio
+Star
+50
+A free and collaborative space for Machine Learning 🤖 applied to Biology 🧬
+python
+education
+data-science
+machine-learning
+bioinformatics
+course
+biology
+notebooks
+biotechnology
+biotech
+large-language-models
+llms
+Updated
+Aug 14, 2024
+Jupyter Notebook
+chupvl
+/
+awesome-ls-ventures
+Star
+39
+Awesome list of the data and AI/ML related projects with direct Life Science Companies participation
+ai
+ml
+drug-discovery
+drug-design
+pharma
+life-sciences
+biotech
+drug-development
+Updated
+Sep 13, 2024
+MilosRasic98
+/
+OpenHRStrap
+Star
+27
+OpenHRStrap is an open-source DIY chest-strap heart-rate tracker built around the ESP32. It measures real biosignals through electrodes, filters the signal, and applies the Pan–Tompkins algorithm to detect R-peaks and compute heart rate in real time.
+python
+arduino
+esp32
+ecg
+running
+arduino-library
+ecg-signal
+fitness-tracker
+biotech
+ecg-signal-python
+ecg-qrs-detection
+ecg-filtering
+ecg-analyzer
+esp32-arduino
+ecg-data
+ecg-classification
+running-tracker
+ecg-signals
+Updated
+Nov 30, 2025
+Jupyter Notebook
+arogozhnikov
+/
+demuxalot
+Star
+26
+Reliable, scalable, efficient demultiplexing for single-cell RNA sequencing
+scrnaseq
+demultiplexing
+biotech
+single-cell-analysis
+Updated
+Jul 20, 2025
+Python
+dvklopfenstein
+/
+ReactomePy
+Sponsor
+Star
+26
+Explore biomolecular pathways in Reactome from the command-line or a Python script
+bioinformatics
+bioinformatics-pipeline
+pathway-analysis
+reactome
+molecular-biology
+bioinformatics-analysis
+protein-protein-interaction
+bioinformatics-scripts
+biotechnology
+biological-networks
+biotech
+pathway-models
+bioinformatics-tool
+reactome-pathway
+pathway-enrichment-analysis
+Updated
+Oct 12, 2024
+Python
+robertosolari
+/
+BioTech-Resources
+Star
+19
+Resources for learning Biotechnology, Biology, Synthetic Biology, Genomic and Bioinformatic
+bioinformatics
+genetics
+biology
+synthetic-biology
+biotechnology
+synbio
+biotech
+Updated
+Mar 26, 2024
+BioCoinLab
+/
+BioCoin
+Star
+17
+A decentralized platform on Solana enabling individuals to derive value from biological data through AI-driven analysis and complete data sovereignty. First ecosystem where data providers maintain control while contributing to scientific advancement with fair value distribution.
+biology
+blockchain
+healthcare
+microbiome
+web3
+data-sovereignty
+biotech
+data-marketplace
+solana
+defi
+ai-valuation
+Updated
+Mar 24, 2025
+JavaScript
+noduslabs
+/
+eightos
+Star
+16
+Bodymind Operating System
+music
+video
+multimedia
+best-practices
+sound
+body
+artificial-intelligence
+operating-system
+lifestyle
+movement
+lifehack
+biotech
+life-experience
+eightos
+8os
+body-practice
+physical-movement
+Updated
+Dec 10, 2019
+AxelFougues
+/
+Lodestone-biomagnet-tools
+Star
+13
+Practical biomagnet stimulators for science, development and entertainment! Open source!
+haptics
+cyborg
+biomedical
+biotechnology
+haptic
+biotech
+implant
+haptic-feedback
+implants
+cyborgs
+biomagnet
+Updated
+Feb 18, 2025
+paulu-aws
+/
+biotechblueprint
+Star
+12
+AWS Biotech Blueprint Multi-Account
+aws
+research
+blueprint
+sso
+cdk
+biotech
+control-tower
+landingzone
+transit-gateway
+vpn-endpoint
+transit-account
+audit-account
+Updated
+Jul 22, 2020
+TypeScript
+Pioneer-Research-Labs
+/
+ngs_library_prep
+Star
+12
+Code for running Illumina Library Prep on Hamilton STARlet with PyLabRobot, originally built for in-house use at Pioneer Labs (Emeryville, CA USA)
+open-source
+lab-automation
+biotech
+Updated
+Apr 2, 2026
+Jupyter Notebook
+gitnin-19
+/
+OpenHRStrap
+Star
+8
+❤️ Track your heart rate in real time with OpenHRStrap, an open-source chest-strap monitor powered by ESP32 and compatible with apps like Strava.
+python
+arduino
+esp32
+ecg
+running
+arduino-library
+ecg-signal
+fitness-tracker
+biotech
+ecg-signal-python
+ecg-qrs-detection
+ecg-filtering
+ecg-analyzer
+esp32-arduino
+ecg-data
+ecg-classification
+running-tracker
+ecg-signals
+Updated
+Jul 1, 2026
+Jupyter Notebook
+Saurabhtbj1201
+/
+MindSpace-Digital-Mental-Health-Support-Platform
+Sponsor
+Star
+7
+The platform combines cutting-edge technology including AI, IoT, and data analytics to provide personalized mental health support, resources, and monitoring tools to help students manage their mental wellbeing effectively.
+stress-testing
+mental-health
+fullstack-development
+biotech
+mood-tracker
+sih
+mind-health
+sih2025
+Updated
+Jun 6, 2026
+JavaScript
+sebastienlange
+/
+dermatologist-ai
+Star
+6
+A bit late to win: how I outperformed the first score of the challenge on Skin Lesion Analysis Towards Melanoma Detection with a combination of multiple trained Convolutional Neural Networks.
+python
+deep-learning
+jupyter-notebook
+cnn
+pytorch
+medical-imaging
+biotech
+Updated
+May 6, 2019
+Jupyter Notebook
+Load more…
+Improve this page
+Add a description, image, and links to the
+biotech
+topic page so that developers can more easily learn about it.
+Curate this topic
+Add this topic to your repo
+To associate your repository with the
+biotech
+topic, visit your repo's landing page and select "manage topics."
+Learn more

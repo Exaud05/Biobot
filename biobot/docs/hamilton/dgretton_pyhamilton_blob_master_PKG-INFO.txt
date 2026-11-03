@@ -1,0 +1,60 @@
+dgretton
+/
+pyhamilton
+Public
+Notifications
+You must be signed in to change notification settings
+Fork
+40
+Star
+184
+Files
+Expand file tree
+master
+/
+PKG-INFO
+Copy path
+Blame
+More file actions
+Blame
+More file actions
+Latest commit
+History
+History
+History
+11 lines (10 loc) · 291 Bytes
+master
+/
+PKG-INFO
+Copy path
+Top
+File metadata and controls
+Code
+Blame
+11 lines (10 loc) · 291 Bytes
+Raw
+Copy raw file
+Download raw file
+Open symbols panel
+Edit and raw actions
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+Metadata-Version: 2.1
+Name: pyhamilton
+Version: 1.48
+Summary: Python for Hamilton liquid handling robots
+Home-page: https://github.com/dgretton/pyhamilton.git
+Author: Dana Gretton
+Author-email: dgretton@mit.edu
+License: MIT
+License-File: LICENSE
+Forthcoming due to markdown incompatibility

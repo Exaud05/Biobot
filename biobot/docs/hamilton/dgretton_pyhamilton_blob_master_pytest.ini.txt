@@ -1,0 +1,47 @@
+dgretton
+/
+pyhamilton
+Public
+Notifications
+You must be signed in to change notification settings
+Fork
+40
+Star
+184
+Files
+Expand file tree
+master
+/
+pytest.ini
+Copy path
+Blame
+More file actions
+Blame
+More file actions
+Latest commit
+History
+History
+History
+4 lines (3 loc) · 54 Bytes
+master
+/
+pytest.ini
+Copy path
+Top
+File metadata and controls
+Code
+Blame
+4 lines (3 loc) · 54 Bytes
+Raw
+Copy raw file
+Download raw file
+Open symbols panel
+Edit and raw actions
+1
+2
+3
+[pytest]
+testpaths
+= tests
+python_files
+= *_tests.py

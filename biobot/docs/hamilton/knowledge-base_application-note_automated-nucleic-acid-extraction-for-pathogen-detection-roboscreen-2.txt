@@ -1,0 +1,16 @@
+Automated Nucleic Acid Extraction for Pathogen Detection Using ROBOSCREEN Rapid INSTANT Kit
+PDF 2.429 MB (English, USA)
+Molecular testing of clinical samples for viral pathogens has already long become standard in both research and diagnostic laboratories. Every molecular biological test relies on high-quality sample material to achieve the best possible sensitivity and specificity. Therefore, the first step of sample analysis – the extraction of viral RNA and DNA – is of the utmost importance for the final result. Laboratories with high-sample numbers require automated extraction systems that enable high-throughput analysis with a minimum of manual interventions, reducing the risk of errors and ensuring high repeatability. The diversity of clinical sample sources poses additional challenges.
+The Rapid INSTANT Virus RNA/DNA Kit – FX
+*
+from ROBOSCREEN allows automated nucleic acid extraction. The kit uses magnetic particle technology for efficient extraction ensuring high yields of ultra-pure nucleic acids in a minimal processing time. The kit can be applied to diverse sample types such as blood, swabs, stool, and others.
+Improved extraction quality
+Extraction with the Rapid INSTANT Virus RNA/DNA Kit - FX* on STAR V allows better primary extract quality and thus higher sensitivity in the qPCR.
+Faster
+96 samples can be extracted in one hour on the STAR V.
+Cost-effective
+The extraction workflow on STAR V allows to reduce the tip and plate consumption.
+*
+Not intended for clinical use on Hamilton STAR V
+Download the complete Appliaction Note to read on.
+Download

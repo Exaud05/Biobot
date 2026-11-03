@@ -1,0 +1,47 @@
+Best Practices for Biospecimen Collection and Preservation
+Expert strategies for biospecimen collection, sample preservation, and maintaining specimen integrity.
+In every laboratory, biospecimen collection is foundational. The quality of your research, from early diagnostics to long-term disease modeling, depends on how each sample is collected, stored, and preserved. Whether you're working with blood, serum, plasma, or tissue samples, every decision influences the integrity of your analytical results.
+Hamilton understands that biospecimen preservation is not just about storage, it’s about enabling reliable science at every stage. From the first moment of collection to long-term cold storage, small choices can majorly impact specimen integrity and research reproducibility.
+The success of any study starts with how well a sample is collected. Inconsistent methods, unstandardized timing, or inadequate handling can all introduce unwanted variables. Human biospecimens, especially, are vulnerable to rapid changes post-collection. Temperature, delay, and even the type of collection container can affect sample composition.
+A reliable workflow uses validated protocols, skilled operators, and automated solutions to remove room for error. Instruments like the
+Microlab STAR
+or
+Microlab Prep
+bring precision and repeatability to the collection process. Each sample is consistently labeled, processed, and routed to the correct next step, whether that is immediate analysis or preservation.
+Protecting Biological Samples for Reliable Research
+Once collected, samples begin to change. Enzymes remain active, cells degrade, and molecules may break down unless swift preservation measures are in place. That’s why laboratories need sample preservation techniques tailored to both the specimen type and its intended use.
+Blood derived specimens, such as serum and plasma, are stabilized with anticoagulants and cooled immediately. Tissue may be flash frozen in liquid nitrogen or preserved in formalin. Typical storage: biological fluids, purified RNA, proteins, and bacteria or yeast at -80°C; compounds and purified DNA at -20°C; viable mammalian cells and some tissues in vapor phase or liquid nitrogen at -150°C or colder. Cold chain and chemical stabilization help prevent degradation.
+Temperature control matters as much as chemistry. Hamilton BiOS and
+SAM HD Pro
+offer -80°C automated storage, protecting samples and integrating seamlessly into existing workflows. BiOS excels at large-scale, long-term repositories, for example, longitudinal disease studies. SAM HD Pro suits research labs with a smaller footprint and easy integration for shorter-term storage. The aim is not just cold storage, but sustained sample viability over time.
+Maintaining Specimen Integrity Throughout the Workflow
+When samples are compromised, downstream data becomes suspect. Minor issues such as repeated freeze-thaw cycles, container leaching, or storage temperature spikes can alter molecular signatures. Ensuring integrity means continuous monitoring with complete logs plus designs that prevent excursions.
+Hamilton automation reduces door openings, utilizes I/O buffer areas to keep incoming warm samples separate, and enables targeted cherry-pick retrieval at setpoints ranging from -20°C to -80°C.
+Automated inventory supports retrieval without disturbing adjacent inventory, raising throughput and lowering contamination risk and human error. Each sample’s journey is tracked from collection to use for transparency and reproducibility.
+How Storage Protocols Protect Biospecimens Over Time
+Storage protocols are more than documentation—they are guardrails that protect research investments. Researchers must consider how storage practices affect specimen quality as sample libraries grow.
+Best-in-class storage protocols specify the conditions under which each sample type should be stored. For example, serum and plasma may be held at -80°C, while tissue samples used in histological studies might remain at ambient conditions in formalin. Regardless of format, protocol adherence is critical. So is physical infrastructure.
+Hamilton’s cold storage systems, including
+BiOS
+and
+Verso Q-Series
+, provide consistent temperature environments with built-in monitoring, barcoded inventory control, and LIMS integration. These platforms make it easier to enforce storage protocols, simplify audit trails, and ensure that specimen integrity is preserved for the long haul.
+While much of biospecimen handling focuses on physical materials, digital storage solutions are equally important. As specimens are annotated with genomic, phenotypic, or environmental data, the volume of associated digital content grows exponentially.
+Behind the scenes, most labs rely on
+storage network protocols
+like network file system (NFS) or server message block (SMB) to organize and access this metadata. Advanced systems may utilize distributed file systems or NVMe message-based commands for speed and redundancy, particularly in high-throughput or multi-site operations.
+Modern biobanks often host databases linked to TCP/IP-controlled automation devices, allowing shared storage environments to sync metadata with real-time sample movement. Hamilton’s integrated software platforms help labs unify physical and digital records, streamlining everything from retrieval logs to test result histories.
+Improving Consistency in Sample Collection
+Even well-equipped labs can fall into avoidable traps. One common error is inconsistent handling between technicians or shifts. When sample collection varies from person to person, data comparability suffers. Another frequent issue is inadequate documentation—when a sample lacks timestamped metadata or source details, its utility drops significantly.
+Automating parts of the workflow reduces these risks. Using barcode-driven collection tubes and systems that enforce standardized steps—from aliquoting to freezing—helps maintain sample uniformity. Systems such as Hamilton’s
+INSTINCT S
+and
+VENUS
+Software can even guide technicians step-by-step through workflows, reducing the chances of skipped or improvised steps.
+As specimen libraries scale, many labs outgrow their original storage solutions. Refrigerators, once sufficient for short-term projects, become cluttered and difficult to inventory. Manual logs fall behind as projects expand and evolve.
+Hamilton’s approach to long term preservation centers on flexibility. Vertical storage modules, automated retrieval, and shared platforms let labs scale without losing organization. Verso, Q-series, and SAM HD Pro maintain a detailed SQL audit trail of every sample status and location change, plus software setting updates with user and reason across the system’s lifetime. Whether building a local repository or joining a national network, Verso scales with you so you spend less time on inventory and more on research.
+When biospecimen collection and preservation are handled with care, everything downstream improves. Test results become more reliable. Data becomes easier to reproduce. And researchers can pursue discovery with confidence, knowing their samples are stable and accessible.
+By combining thoughtful storage protocols with automation and digital infrastructure, today’s laboratories are better equipped to handle the complexity of long-term research. Hamilton is proud to support this progress by providing the tools and the partnerships that make biospecimen integrity achievable at every scale.
+Want to see how modern storage can elevate your research?
+Talk to Our Experts
+about building an end-to-end sample preservation workflow tailored to your lab’s needs.

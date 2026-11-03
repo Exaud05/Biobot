@@ -1,0 +1,215 @@
+dgretton
+/
+pyhamilton
+Public
+Notifications
+You must be signed in to change notification settings
+Fork
+40
+Star
+184
+Branch selector
+master
+User selector
+All users
+All time
+Commit history
+Commits on Nov 27, 2025
+fixed legacy move_by_seq for backwards compatibility
+stefangolas
+committed
+65938d0
+Copy full SHA for 65938d0
+Commits on Oct 17, 2025
+Update README.md
+stefangolas
+authored
+a6f4ab1
+Copy full SHA for a6f4ab1
+Clarify Microsoft Access engine installation requirement
+Show description for 0533ffd
+stefangolas
+authored
+0533ffd
+Copy full SHA for 0533ffd
+Update README.md
+stefangolas
+authored
+917d243
+Copy full SHA for 917d243
+Commits on Oct 16, 2025
+Update ODBC driver download link in README
+stefangolas
+authored
+2caecae
+Copy full SHA for 2caecae
+deleted washer (no one uses this)
+stefangolas
+committed
+1192b3c
+Copy full SHA for 1192b3c
+Update README.md
+stefangolas
+authored
+82136bb
+Copy full SHA for 82136bb
+Update README.md
+stefangolas
+authored
+3f52463
+Copy full SHA for 3f52463
+Commits on Oct 15, 2025
+Update installation instructions in README.md
+stefangolas
+authored
+90ea444
+Copy full SHA for 90ea444
+Update README.md
+stefangolas
+authored
+71c8a4c
+Copy full SHA for 71c8a4c
+Update README.md
+stefangolas
+authored
+1f4066a
+Copy full SHA for 1f4066a
+Update Python installation instructions with link
+stefangolas
+authored
+928c340
+Copy full SHA for 928c340
+Update README.md
+stefangolas
+authored
+d0fe339
+Copy full SHA for d0fe339
+updated MPE driver
+stefangolas
+committed
+d37c259
+Copy full SHA for d37c259
+Commits on Oct 14, 2025
+Added custom plate labels for loading vis ie sample plate
+stefangolas
+committed
+e92bc78
+Copy full SHA for e92bc78
+fixed preaspirate volume handling
+stefangolas
+committed
+31fedb9
+Copy full SHA for 31fedb9
+Merge branch 'ngs'
+stefangolas
+committed
+c24a4d9
+Copy full SHA for c24a4d9
+check positions in layfile when assigning resource
+stefangolas
+committed
+79718b0
+Copy full SHA for 79718b0
+Commits on Oct 1, 2025
+Merge pull request #34 from dgretton/ngs
+Show description for 6b0d3b2
+stefangolas
+authored
+6b0d3b2
+Copy full SHA for 6b0d3b2
+Commits on Sep 30, 2025
+fixed pre and post on multidispense
+stefangolas
+committed
+a61fadf
+Copy full SHA for a61fadf
+Fix contact email and forum URL in README
+Show description for 16befdd
+stefangolas
+authored
+16befdd
+Copy full SHA for 16befdd
+removed old dependencies
+stefangolas
+committed
+1c4b222
+Copy full SHA for 1c4b222
+Changed readme
+stefangolas
+committed
+2b0c8bc
+Copy full SHA for 2b0c8bc
+Update README.md
+stefangolas
+authored
+8d76230
+Copy full SHA for 8d76230
+ignored build files
+stefangolas
+committed
+d2dce21
+Copy full SHA for d2dce21
+updated deck annotation tool
+stefangolas
+committed
+80de245
+Copy full SHA for 80de245
+Commits on Sep 26, 2025
+Refactored loading dialogue to be local to protocol directory
+stefangolas
+committed
+9ca187b
+Copy full SHA for 9ca187b
+updated loadingvis to be more flexible
+stefangolas
+committed
+7b0004f
+Copy full SHA for 7b0004f
+Commits on Sep 18, 2025
+added types to stacked resources
+stefangolas
+committed
+b67ab4e
+Copy full SHA for b67ab4e
+Fixed bugs
+stefangolas
+committed
+319abde
+Copy full SHA for 319abde
+Commits on Sep 17, 2025
+imported changes from ngs repo
+stefangolas
+committed
+74ca011
+Copy full SHA for 74ca011
+Commits on Aug 19, 2025
+fixed TEC STOP
+Stefan Golas
+authored and
+Stefan Golas
+committed
+04d9fdb
+Copy full SHA for 04d9fdb
+Commits on Aug 12, 2025
+updated transport
+Stefan Golas
+authored and
+Stefan Golas
+committed
+e03ed6d
+Copy full SHA for e03ed6d
+Commits on Aug 5, 2025
+Merged persistent server
+Stefan Golas
+authored and
+Stefan Golas
+committed
+f5312fb
+Copy full SHA for f5312fb
+hamilton interface methods
+Stefan Golas
+authored and
+Stefan Golas
+committed
+27de9f6
+Copy full SHA for 27de9f6

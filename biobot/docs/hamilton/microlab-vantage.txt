@@ -1,0 +1,273 @@
+Microlab VANTAGE
+Logistics Cabinet
+High-Capacity Storage
+Track Gripper
+Wide Assay Flexibility
+360 Degree Integration
+Increased Walkaway Time
+High Accuracy
+CO-RE II Technology
+High Precision
+The High Throughput Powerhouse
+With a modular architecture and spacious storage space for consumables and devices, the Microlab VANTAGE makes short work of long, intensive processes like high-throughput NGS library prep.
+Login to save favorites
+Scientific Citations
+The Ultimate Automated Liquid Handler
+Depend on the Microlab VANTAGE when sample throughput and robust performance are at the top of your priority list. Two deck sizes, 1.3 m and 2.0 m, accommodate any assay type.
+Precision Pipetting Matters
+When it comes to highly sensitive workflows like next gen sequencing, compound screening, and clinical diagnostics, consistency and repeatability are critical, even during times of surging demand. Compressed O-Ring Expansion II (CO-RE II) Technology in the Microlab VANTAGE and air displacement pipetting ensure robust and repeatable liquid handling.
+VENUS software controls the VANTAGE liquid handling system, integrates peripheral devices, and offers drag-and-drop method programming.
+Abundant Storage and Integration Space
+The Hamilton VANTAGE liquid handler is modular, so you can select what you need and upgrade as your needs evolve.
+Customize the Pipettor with multiple arms, channels, and transport options. Add a Logistics Cabinet for below-deck storage, waste, and device integration, and a Track Gripper to transport between the Cabinet and deck. The Rear Integration Cabinet offers even more storage and device integration space.
+Common applications
+Genomics
+,
+Nucleic Acid Extraction
+,
+Nucleic Acid Quantification & Normalization
+,
+PCR Set-Up
+,
+NGS Library Prep
+Featured Technologies
+Hamilton Technology Starts at the Channel
+Pipetting Technology
+MagPip
+Precision liquid handling. Maximum efficiency.
+The tubular linear drive inside our MagPip channels can accelerate at speeds that enable precise and ultra fast pipetting down to 350nL.
+Fluid Motion Technology
+More Workspace. More Performance. More Value.
+Innovative drive system enhances the utilization of deck space, enabling researchers to automate more scientific experiments seamlessly within a single unit, ultimately saving valuable lab space.
+DPS - Dynamic Positioning System
+For Efficient Movements
+DPS enables all channels to pipette simultaneously, even across non-uniform patterns. Unlike fixed channels with equidistant spreading, DPS offers efficient yet flexible liquid handling for cherry picking, non-uniform and variable volume samples, and complex pipetting workflows.
+CO-RE II Tip/Tool Attachment
+The Key to Liquid Handling Workflow Excellence
+The new CO-RE II technology assures more precise tip alignment, minimizing the risk of collisions. Also, tip coupling is faster which boosts productivity. Besides tips, a wide range of Hamilton tools are applicable with CO-RE II.
+Aerosol-Free Tip Ejection
+To Prevent Cross-Contamination
+As part of CO-RE II technology’s functionality, pipette tips are gently ejected from each automated liquid handler pipetting channel. This prevents aerosol generation that may expose users to harmful biohazards or cross-contaminate samples and laboratory surfaces.
+Capacitive Liquid Level Detection
+For Accurate Pipetting
+Channels are equipped with capacitance sensors that detect the liquid level through capacitive Liquid Level Detection (cLLD). Hamilton’s black conductive CO-RE tips facilitate capacitance sensing with the conductivity properties tailored for the capacitive liquids.
+Clot Detection
+To Avoid Errors
+Clot Detection pipetting channels are equipped with a pressure sensor that allows for pressure monitoring during aspiration and can detect blocked tips due to clots.
+Liquid Handling Technology
+MAD - Monitored Air Displacement
+For Unmatched Reliability
+MAD monitors the air displacement in each pipetting channel of a Hamilton automated liquid handler. During liquid aspiration steps, this non-contact technology immediately identifies clots, empty wells, or other aspiration issues. It also delivers a confirmation of successful aspiration in each pipetting channel of a Hamilton automated liquid handler.
+Liquid Handling Technology
+TADM – Total Aspiration & Dispense Monitoring
+For Real-Time Pipetting Accuracy
+During aspirate and dispense steps, TADM monitors real-time pressure changes in each Hamilton liquid handler pipetting channel. Results are compared against expected values to expose anomalies like bubbles and insufficient volumes. Sample transfers are verified with a digital audit trail.
+Liquid Handling Technology
+Anti-Droplet Control (ADC)
+For Drip-Free Pipetting
+Pressure sensors on Hamilton’s pipetting channels continuously detect variations. Any changes are immediately compensated for by dosing drive movements to prevent droplet formation. Essential for high-precision and accuracy when pipetting volatile liquids like ethanol and acetonitrile.
+Liquid Handling Technology
+Dual Liquid Level Detection (LLD)
+For Accurate Aspirations
+Dual LLD uses two sensors on each liquid handling pipetting channel. A capacitance sensor detects aqueous and conductive liquid surfaces while a pressure-based sensor works with non-conductive, viscous, and volatile liquids. Together, they ensure highly accurate and reliable liquid handling performance.
+Liquid Handling Technology
+LFC - Liquid Fractionation Control
+For Detecting Liquid Layers via Pressure Monitoring
+Pressure-based monitoring method to detect liquid interfaces in layered samples like centrifuged blood or liquid-liquid chemical extractions. LFC simultaneously and rapidly identifies, separates, and aliquots up to 16 samples into various labware targets. It includes full sample traceability.
+Accessories
+Autoload
+For Convenient Identification
+Uses a 1D barcode scanner to automatically identify and verify samples, carriers, and consumables such as tips, tubes, micro plates, and reagent troughs as they are placed onto the liquid handling deck. Optional 2D barcode reading is available, and results may be sent to any LIMS for documentation.
+Transport Solutions
+CO-RE Gripper
+For Additional Movements
+Further streamline automated workflows with CO-RE Grippers. These agile grippers transform Hamilton's precision pipette channels into on-deck labware transport solutions on Hamilton automated liquid handlers.
+Transport Solutions
+Plate Gripper
+For Flexible Integration
+Plate Grippers move labware to-and-from any position on the Hamilton automated liquid handling deck. For even greater hands-free efficiency and workflow integration, the Plate Grippers can transport plates to-and-from nearby off-deck devices (access location is platform-specific).
+Software
+Graphical User Interface
+For Easy Operation
+The intuitive graphical user interface (GUI) makes operation as simple as a smartphone app. Get started developing, editing, and running protocols without the need for automation or coding expertise.
+Safe and Informed
+A fully enclosed workspace with ample illumination keeps users safe from harm, while sleek visuals indicate workflow status.
+Keep Pace with Dynamic Needs
+With a modular architecture and virtually endless integration options, Microlab VANTAGE can evolve along with your needs.
+Maximize Walkaway Time
+Vast on-deck and under-deck storage means less time spent reloading consumables, so you can focus on higher-value tasks.
+Explore the Microlab VANTAGE
+1
+Pipetting Channels and Heads
+Opt for 1 mL, 5 mL, or MagPip Channels (16, 8, 8 respectively) or select the CO-RE 96 Probe Head or the 384 Multi-Probe Head.
+2
+Large Deck Space
+The 1.3 m deck offers 54 tracks and 35 ANSI/SLAS positions. The 2.0 m deck provides 80 tracks and 60 ANSI/SLAS positions.
+3
+Logistics Cabinet
+Under-deck storage for consumables, including nested tip racks (NTR) in an Entry/Exit Magazine to reduce reloading frequency. Also holds devices and waste.
+4
+Optional Track Gripper
+Enables hands-free transportation between the VANTAGE deck and the Logistics Cabinet as well as third-party hardware.
+5
+Optional Rear Integration Cabinet
+Provides additional, extensive storage and device integration space.
+6
+Peripheral Integrations
+Add any number of additional tools and devices like our Internal Plate Gripper (IPG), CO-RE Grippers, Hamilton Heater Shaker, barcode scanners, and more.
+Microlab VANTAGE Specifications
+Microlab VANTAGE 1.3
+Microlab VANTAGE 2.0
+Microlab VANTAGE 1.3 Specifications
+Print
+System Dimensions
+Height
+1.82 m (5 ft, 11.65 in)
+Width
+1.33 m (4 ft, 4.36 in)
+Depth
+98 cm (3 ft, 2.58 in)
+General Specifications
+Weight
+273 kg
+Transport Tools
+CO-RE Gripper
+Optional
+Internal Plate Gripper (IPG)
+Optional
+Trackgripper
+Optional
+Platform/Accessories
+Capacity (ANSI/SLAS Positions)
+35
+Device Integration
+360° (Left, Right, Rear, and Below)
+Sample Loading and Tracking Options
+Sample Loading
+Automatic
+Autoload Barcode Scanner (1D)
+Standard
+Autoload Barcode Scanner (2D)
+Optional
+Pipetting Options
+1 mL Channels
+Up To 16
+5 mL Channels
+Up To 8
+Fluid Motion X1 Channels
+Up To 16
+MagPip Channels
+Up To 8
+Multi-Probe Head Option
+96 or 384
+Pipetting Range
+1
+0.35 µL - 5000 µL
+Microlab VANTAGE 2.0 Specifications
+Print
+System Dimensions
+Height
+1.82 m (5 ft, 11.65 in)
+Width
+2.01 m (6 ft, 7.13 in)
+Depth
+98 cm (3 ft, 2.58 in)
+General Specifications
+Weight
+451 kg
+Transport Tools
+CO-RE Gripper
+Optional
+Internal Plate Gripper (IPG)
+Optional
+Trackgripper
+Optional
+Platform/Accessories
+Capacity (ANSI/SLAS Positions)
+60+
+Device Integration
+360° (Left, Right, Rear, and Below)
+Sample Loading and Tracking Options
+Sample Loading
+Automatic
+Autoload Barcode Scanner (1D)
+Standard
+Autoload Barcode Scanner (2D)
+Optional
+Pipetting Options
+1 mL Channels
+Up To 16
+5 mL Channels
+Up To 8
+Fluid Motion X1 Channels
+Up To 16
+MagPip Channels
+Up To 8
+Multi-Probe Head Option
+96 and/or 384
+Pipetting Range
+1
+0.35 µL - 5000 µL
+1
+Depending on Configuration
+Support your entire workflow with Hamilton's integrated products.
+Extend with Integrated Devices
+From heating to shaking, to cooling and much more. The expandable modules create added value for every workflow in every laboratory, and also maximize walk-away time.
+Integrated Devices
+Sample Storage Integration
+Link your Hamilton automated liquid handling system  to a sample storage system such as our
+Verso Q-Series
+to create a fully automated processing center.
+Sample Storage Solutions
+Microlab VANTAGE Resources
+All resources
+Materials
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Application Note
+Automation of HTP PCR prep for high-resolution HLA typing by NGS using MagPip on the Hamilton VANTAGE
+Automate high-resolution HLA typing with precision and speed. This application note details how MagPip on the Hamilton® VANTAGE optimizes PCR setup for multiplex NGS workflows, minimizing error rates and hands-on time.
+Application Note
+Automated HTP Microhistology for Coplanar Hydrogel Embedding of 3D Cell Models
+In this Application Note, the MagPip is combined with the HistoBrick, providing a fully automated workflow for high-throughput histology of 3D cell samples.
+White Paper
+White Paper | IT Security and Data Privacy for HamiltonOne
+This white paper outlines how HamiltonOne secures data across the IoT laboratory ecosystem. Learn how the platform combines Azure-based infrastructure, encrypted data flow, and role-based access control to protect regulated workflows.
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Application Note
+Automation of HTP PCR prep for high-resolution HLA typing by NGS using MagPip on the Hamilton VANTAGE
+Automate high-resolution HLA typing with precision and speed. This application note details how MagPip on the Hamilton® VANTAGE optimizes PCR setup for multiplex NGS workflows, minimizing error rates and hands-on time.
+Application Note
+Automated HTP Microhistology for Coplanar Hydrogel Embedding of 3D Cell Models
+In this Application Note, the MagPip is combined with the HistoBrick, providing a fully automated workflow for high-throughput histology of 3D cell samples.
+White Paper
+White Paper | IT Security and Data Privacy for HamiltonOne
+This white paper outlines how HamiltonOne secures data across the IoT laboratory ecosystem. Learn how the platform combines Azure-based infrastructure, encrypted data flow, and role-based access control to protect regulated workflows.
+Compare Products
+Services
+Installation & Beyond
+Trust in Hamilton’s Field Service Engineers for high-quality automated liquid handler installation, preventative maintenance, and field repairs.
+Integrated Solutions
+Hamilton’s Advanced Product Engineering group delivers custom, high-performance automation systems with rapid deployment and minimal maintenance.
+HPEP - Hamilton Pipetting Excellence Program
+Maximize your Hamilton Automated Liquid Handling System’s performance with our three pillars of pipetting excellence: Verify, Check, and Monitor for unmatched precision.
+Hamilton EMEA Company Training
+Increase your automation knowledge with Hamilton’s in-person and virtual training courses, covering automated liquid handler programming and VENUS software.
+Field Upgrades
+Hamilton’s Field Service Engineers adapt your Hamilton automated liquid handler to your changing needs so you can achieve new goals.
+Backed by
+world-class
+service and support.
+For over 75 years, the Hamilton name has been recognized globally for its unwavering commitment to quality. That pledge extends to creating long-term customer partnerships. We're proud to offer in-depth training courses, on-site field support, custom product builds, and so much more.
+Let's Talk
+Connect with a Hamilton expert to discuss solutions for your workflow. We are here to enable your success.
+Request Type:
+Sales Inquiry
+Customize a Solution
+Technical Support
+Application Support
+Software Support
+Order Inquiry
+Find a Distributor
+General Inquiry

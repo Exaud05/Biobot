@@ -1,0 +1,259 @@
+The key to liquid handling
+workflow excellence
+The Key to Liquid Handling Workflow Excellence
+Continuing the Legacy of Liquid Handling Leadership
+For over seven decades, Hamilton has set the standard in high-precision liquid handling. Our
+automated liquid handling systems
+are used across the world in a wide variety of distinct applications ranging from highly nuanced NGS library prep workflows to high-throughput compound screens, rugged industrial chemical testing, ground-breaking biofuels research, and more.
+Our latest CO-RE II technology embodies our commitment to empowering the latest scientific breakthroughs, easing workflows, and positively impacting the world.
+What is CO-RE II Technology?
+The second generation of our exclusive Compressed O-Ring Expansion (CO-RE II) technology starts with a special O-ring on the coupling of each pipetting channel in our automated liquid handlers. This O-ring precisely corresponds with a small circular groove on the interior of our CO-RE II pipette tips and CO-RE tools.
+The O-ring is compressed when a tip or tool is attached to a pipette channel to create an air-tight seal without the use of mechanical force.
+Compared to our previous generation technology, CO-RE II offers these benefits:
+Extended tip sealing life of O-rings, up to 15x the average life span
+Lifetime stop disk design
+Enhanced hardware chemical resistance
+Improved tip alignment and retention
+Extended service interval requirements
+Equivalent fluidic performance on existing methods with no change in TADM or liquid class
+Reduced service needs
+CO-RE II Technology Amplifies Pipetting Performance
+The secure lock-and-key fit between each pipette channel and pipette tip means that your automated liquid handling workflows are extremely accurate, repeatable, and reproducible.
+Non-mechanical mechanism prevents equipment wear and reduces maintenance frequency
+Leak-free seal for the utmost in liquid handling performance
+Force-free attachment to securely retain tips without deformation risk
+Gentle tip ejection to prevent aerosol formation
+Precise tip alignment to prevent errors and contamination
+Sensitive z-step loss monitoring to protect against unplanned maintenance
+Supports Liquid Handling Performance Verification Technologies
+The tight seal created by CO-RE II technology benefits our performance monitoring technologies. With these, you can gain even more confidence in your Hamilton automated liquid handler.
+Total Aspiration and Dispense Monitoring (TADM) – real-time pressure monitoring of each pipetting channel.
+Monitored Air Displacement (MAD) – detects potential aspiration issues and confirms successful aspiration.
+Liquid Level Detection (LLD) – uses pressure and capacitance sensors on each channel to detect foam and optimize pipetting relative to the specific liquid class.
+CO-RE II Technology as an On-Deck Transportation Tool
+The automated liquid handler automatically recognizes optional CO-RE tools like transfer paddles that precisely and securely transport microplates, PCR plates, and other consumable labware around the deck.
+Enhance walkaway convenience
+Increase consistent handling
+Eliminate labware positioning errors
+Microlab Prep
+The Hamilton Microlab Prep is an affordable liquid handler perfect for automating workflows. This entry-level liquid handler supports automated PCR setup and serial dilution.
+Compare Automated Liquid Handling Platforms
+Microlab VANTAGE
+Hamilton VANTAGE 2.0 is a cutting-edge liquid handling system with automated precision. Optimize workflows with the VANTAGE robot, all while boosting performance, safeguarding samples, and maximizing walk-away time. Discover the Hamilton VANTAGE liquid handler for your current & future needs.
+Compare Automated Liquid Handling Platforms
+Microlab STAR V
+Hamilton STAR V, a cutting-edge liquid handling robot, unites Microlab STAR flexibility with Microlab VANTAGE high-performance capabilities to boost efficiency. The Microlab STAR V offers speed, precision, and technology for automated liquid handling. Upgrade your lab—explore the Microlab STAR V!
+Compare Automated Liquid Handling Platforms
+Microlab STAR
+The Hamilton Microlab STAR is a reliable and versatile automated liquid handling platform. With advanced features like multi-probe heads, pipetting technologies, and VENUS software, this premier liquid handling system fits your laboratory needs. Revolutionize your workflows with the STAR today!
+Compare Automated Liquid Handling Platforms
+Microlab NIMBUS
+Hamilton Microlab NIMBUS is a compact liquid handler that uses air displacement pipetting to achieve superior measurement accuracy. With Microlab NIMBUS, experience fast, easy to use, and superior quality pipetting in a compact system at an affordable price.
+Compare Automated Liquid Handling Platforms
+Discover More Hamilton Technologies
+Cell Processing
+Separation Structure
+Gentle Cell Dissociation for Homogeneous Seeding
+The separation structure is integrated within the transfer tube between two Swivel Units. During cell transfer, mechanical forces gently dissociate cell aggregates into single cells without compromising cell viability.
+This process generates a homogeneous cell suspension, enabling consistent cell distribution during seeding of new target flasks.
+Cell Processing
+Swivel Unit
+Scientist-Inspired Motion
+The Swivel Unit securely clamps T-Flasks and Triple Flasks, establishing a stable and closed handling interface during automated processing. The motion system is designed to replicate familiar manual handling patterns used by cell biologists.
+Gentle liquid addition protects adherent cell layers during media exchange, while controlled, scientist-inspired mixing and swivel movements support efficient cell detachment during passaging. This combination enables reliable and reproducible flask handling across routine cell culture workflows.
+Liquid Handling Technology
+MagPearl Closure System
+Sterility through Magnetic Coupling
+The MagPearl closure technology enables sterile fluid transfer along the entire fluid path, from tubing connections to the T-Flask interface, through magnetically actuated valves. By eliminating open fluid paths and minimizing mechanical contact points, the system maintains a closed liquid handling environment during routine cell culture operations. This design enables sterile processing and reliable liquid transfer without the need for laminar airflow.
+Software
+Graphical User Interface
+For Easy Operation
+The intuitive graphical user interface (GUI) makes operation as simple as a smartphone app. Get started developing, editing, and running protocols without the need for automation or coding expertise.
+Ultra-Low Volume
+VALVEJET
+Solution for micro dispensing technology
+This flexible system enables accurate sub-microliter to microliter dispensing for a wide range of liquid types and volumes, ideal for reagents, buffers, or assay components on virtually any substrate.
+Machine Vision
+Labware Detection and Verification
+For Fast Protocol Development
+A camera mounted on top of the workstation detects and identifies labware placed on the deck. This visual recognition simplifies the process of programming new protocols by eliminating the need to scroll through long lists of options. It also ensures accurate verification of labware during protocol execution, helping to prevent loading errors.
+Pipetting Technology
+Clot Detection
+To Avoid Errors
+Clot Detection pipetting channels are equipped with a pressure sensor that allows for pressure monitoring during aspiration and can detect blocked tips due to clots.
+Pipetting Technology
+Capacitive Liquid Level Detection
+For Accurate Pipetting
+Channels are equipped with capacitance sensors that detect the liquid level through capacitive Liquid Level Detection (cLLD). Hamilton’s black conductive CO-RE tips facilitate capacitance sensing with the conductivity properties tailored for the capacitive liquids.
+Storage Technologies
+Parallel Processing
+For the highest throughput
+BiOS automation modules are designed to move simultaneously, in parallel, to complete jobs faster. Additional modules, such as a second picker, reduce job processing time and act as a built-in "spare" to minimize downtime.
+Ultra-Low Volume
+SIJET
+SIJET® non-contact picoliter dispensing
+Hamilton’s SI
+JET
+enables ultra-precise, non-contact picoliter dispensing. Its silicon-glass element ensures accuracy and contamination-free use across pharma, life science, and industrial needs.
+Compliance with International Requirements
+Retractex C sensor housings meet rigorous quality standards set by international bodies such as ATEX, IECEx, UKEx, and EAC Ex.
+Exceptional Durability and Chemical Resistance
+Select stainless steel or plastic housings, along with your choice of sealing materials, to withstand high-pressure applications or tough chemicals.
+Long-term Performance
+Retractex C is well-suited for daily use in chemical environments thanks to minimal seal wear from its short 36 mm stroke and in-place cleaning.
+Enhanced Operator Safety
+Enhanced Operator Safety
+Integrated safety features, including “no sensor – no insertion” and a leakage-check window, protect operators and equipment.
+Remarkable Cleaning Efficiency
+Remarkable Cleaning Efficiency
+The patented HyCIP system uses the Ingold socket as a cleaning chamber, delivering exceptional in-place cleaning and sterilization.
+Lasting and Reliable Operation
+Lasting and Reliable Operation
+With low seal wear, complete cleanability, and high durability, Retractex B is well-suited for demanding industrial environments.
+Ultra-Low Volume
+SMARTDROP®
+For automated volume calibration
+Free yourself from liquid classes.
+SMART
+DROP
+® expertly calibrates each channel for consistent, automated volume adjustments, handling various liquid properties, including different viscosities.
+Ultra-Low Volume
+PIPEJET®
+PIPEJET® non-contact nanoliter dispensing technology
+This innovative system ensures precise, non-contact dispensing of liquid samples onto any substrate including microtiter plates, achieving unparalleled accuracy and efficiency.
+Supports any Process Workflow
+Supports any Process Workflow
+With easy, rapid installation, customizable settings, and automated electro-pneumatic control, RetractoControl 2 supports chemistry, pharmaceuticals, and more.
+Extends Sensor Efficiency
+Extends Sensor Efficiency
+By automating routine cleaning cycles and retracting the sensor when not needed, the sensor’s overall lifetime may be enhanced in your process.
+Saves Time
+Saves Time
+RetractoControl 2 takes over sensor retraction and cleaning so that users can focus efforts on high-value activities and the process can continue uninterrupted.
+Storage Technologies
+Remote Operation
+For exceptional convenience
+Our web-based INSTINCT S automated sample management software UI allows users to interface with the storage system from mobile devices such as phones and tablets.
+Storage Technologies
+Automated Discard
+For high-throughput disposal
+Verso Dx's automated tube discard simplifies bulk removal of expired samples, allowing system operators to dispose of up to 10,000 tubes per hour.
+Storage Technologies
+Redundant Refrigeration
+For preventing disruptions
+Fully redundant refrigeration modules on
+Verso Q50
+and
+Verso Q75
+provide increased system uptime. These modules maintain continuous operation in the event of primary component failure, reducing downtime and potential sample loss.
+Storage Technologies
+Redundant Refrigeration
+For preventing disruptions
+Fully redundant refrigeration modules provide increased system uptime. These modules maintain continuous operation in the event of primary component failure, reducing downtime and potential sample loss. Helps protect long-term storage by maintaining stable storage conditions during component failures.
+Storage Technologies
+AMR Integration
+For maximized efficiency
+Enhance your lab's workflow by integrating the automated sample storage system with an Autonomous Mobile Robot (AMR). When integrated, these specialized robots offer location independence, high flexibility, and increased output. Enables higher-throughput storage and retrieval and supports integrated sample management solutions across rooms or floors.
+Storage Technologies
+Whisper-Quiet Operation
+For optimal focus
+The SAM HD Pro system operates at under 44 decibels. This low-volume operation helps create a workspace that is conducive to concentration and productivity.
+Storage Technologies
+Universal Variable Drive
+For superlative performance
+Thanks to the ultra-low temperature freezer's Universal Variable Drive technology, the system adjusts its speed dynamically to ensure optimal cooling while also enhancing energy efficiency.
+Storage Technologies
+Touchscreen Monitor
+For direct interaction
+An intuitive touchscreen monitor simplifies interactions, allows for precise control, and enhances the overall user experience. A user-friendly interface for at-a-glance status, job control, and exception handling.
+Storage Technologies
+Customizable Picker Module
+For special applications
+Verso's dynamic versatility allows labs with uncommon workflows to customize their sample management storage system. The system's picker can be modified to accommodate newborn screening cards, DNA collection cards, or even horizontal picking. The system is ideal for specialized sample collections where non-standard formats still need automated sample handling and traceable workflows.
+Storage Technologies
+High-Speed Sample Identification
+For faster processing
+The system is equipped with a High-Speed Sample Identification module to provide rapid and accurate sample barcode detection, giving labs the ability to further optimize their workflow.
+Storage Technologies
+-20°C Barcode Reading
+For peak sample integrity
+To ensure the highest possible sample safety, barcodes are scanned at -20°C within the system to minimize temperature fluctuations and prevent degradation. This helps maintain sample integrity and preserves high-quality data by reducing thaw cycles and temperature swings.
+Storage Technologies
+Tube Side Barcode Reader
+For enhanced traceability
+An optional Tube Side Barcode Scanning Module is available to identify 1D and 2D barcodes on the sides of tubes and associate that barcode information with their location in the parent rack. Improves sample tracking and supports compound library governance by associating tube identity with rack and location history.
+Smart Detection
+Smart Accessories Detection
+Each smart valve and syringe stores key parameters—such as flow rates, volume, pressure limits, and serial data—directly on its EEPROM memory. Once connected, the PSD SmartSense pump instantly reads this data for automatic setup, enabling faster configuration, reduced manual input, and an overall improved user experience.
+Smart Detection
+Real-time Pressure Monitoring
+The pressure sensor of PSD SmartSense delivers accurate fluid pressure readings from 1 to 6 bar (absolute) to ensure process stability and prevent overpressure. This integrated sensor enables real-time pressure tracking for critical applications and helps maintain performance consistency.
+Smart Detection
+Real-time Bubble Detection
+Utilizing high-speed optical sensors, the PSD SmartSense pump  detects air gaps as small as 0.8 mm with a response time of just 20 µs. Real-time bubble detection prevents flow interruptions and supports smooth operation in precision liquid handling workflows—critical for maintaining sample integrity.
+Transport Solutions
+Plate Gripper
+For Flexible Integration
+Plate Grippers move labware to-and-from any position on the Hamilton automated liquid handling deck. For even greater hands-free efficiency and workflow integration, the Plate Grippers can transport plates to-and-from nearby off-deck devices (access location is platform-specific).
+Liquid Handling Technology
+MAD - Monitored Air Displacement
+For Unmatched Reliability
+MAD monitors the air displacement in each pipetting channel of a Hamilton automated liquid handler. During liquid aspiration steps, this non-contact technology immediately identifies clots, empty wells, or other aspiration issues. It also delivers a confirmation of successful aspiration in each pipetting channel of a Hamilton automated liquid handler.
+Liquid Handling Technology
+LFC - Liquid Fractionation Control
+For Detecting Liquid Layers via Pressure Monitoring
+Pressure-based monitoring method to detect liquid interfaces in layered samples like centrifuged blood or liquid-liquid chemical extractions. LFC simultaneously and rapidly identifies, separates, and aliquots up to 16 samples into various labware targets. It includes full sample traceability.
+Software
+Automated Sample Storage Software
+Hamilton’s INSTINCT S sample management software powers our automated sample management platforms. This lab sample management software lets users easily run daily operations with minimal training. In addition, the InVision Data Analytics package provides robust, user-friendly reports as an optional add-on to BiOS warranties and service contracts.
+Software
+PSD SmartSense Graphical User Interface
+Intuitive control and monitoring for precision syringe pump operations.
+The PSD SmartSense graphical user interface delivers intuitive control and real-time monitoring for PSD pumps. Designed for ease of use, it enables fast setup, precise parameter adjustments, and seamless operation—enhancing flexibility and performance across liquid handling workflows.
+Liquid Handling Technology
+Dual Liquid Level Detection (LLD)
+For Accurate Aspirations
+Dual LLD uses two sensors on each liquid handling pipetting channel. A capacitance sensor detects aqueous and conductive liquid surfaces while a pressure-based sensor works with non-conductive, viscous, and volatile liquids. Together, they ensure highly accurate and reliable liquid handling performance.
+Pipetting Technology
+DPS - Dynamic Positioning System
+For Efficient Movements
+DPS enables all channels to pipette simultaneously, even across non-uniform patterns. Unlike fixed channels with equidistant spreading, DPS offers efficient yet flexible liquid handling for cherry picking, non-uniform and variable volume samples, and complex pipetting workflows.
+Transport Solutions
+CO-RE Gripper
+For Additional Movements
+Further streamline automated workflows with CO-RE Grippers. These agile grippers transform Hamilton's precision pipette channels into on-deck labware transport solutions on Hamilton automated liquid handlers.
+Accessories
+Autoload
+For Convenient Identification
+Uses a 1D barcode scanner to automatically identify and verify samples, carriers, and consumables such as tips, tubes, micro plates, and reagent troughs as they are placed onto the liquid handling deck. Optional 2D barcode reading is available, and results may be sent to any LIMS for documentation.
+Pipetting Technology
+Aerosol-Free Tip Ejection
+To Prevent Cross-Contamination
+As part of CO-RE II technology’s functionality, pipette tips are gently ejected from each automated liquid handler pipetting channel. This prevents aerosol generation that may expose users to harmful biohazards or cross-contaminate samples and laboratory surfaces.
+Pipetting Technology
+Aerosol-Free Tip Ejection
+To Prevent Cross-Contamination
+As part of CO-RE II technology’s functionality, pipette tips are gently ejected from each automated liquid handler pipetting channel. This prevents aerosol generation that may expose users to harmful biohazards or cross-contaminate samples and laboratory surfaces.
+Liquid Handling Technology
+Anti-Droplet Control (ADC)
+For Drip-Free Pipetting
+Pressure sensors on Hamilton’s pipetting channels continuously detect variations. Any changes are immediately compensated for by dosing drive movements to prevent droplet formation. Essential for high-precision and accuracy when pipetting volatile liquids like ethanol and acetonitrile.
+Liquid Handling Technology
+TADM – Total Aspiration & Dispense Monitoring
+For Real-Time Pipetting Accuracy
+During aspirate and dispense steps, TADM monitors real-time pressure changes in each Hamilton liquid handler pipetting channel. Results are compared against expected values to expose anomalies like bubbles and insufficient volumes. Sample transfers are verified with a digital audit trail.
+Storage Technologies
+-80°C Universal Picker
+For ultimate flexibility
+BiOS systems feature at least one -80°C Tube Picker for all sample picking and defragmentation. This picker is compatible with a wide range of labware types and multiple labware types per system, without any need for mechanical modification. Most importantly, picking occurs within a dedicated -80°C chest freezer to maintain sample temperature during picking.
+Pipetting Technology
+MagPip
+Precision liquid handling. Maximum efficiency.
+The tubular linear drive inside our MagPip channels can accelerate at speeds that enable precise and ultra fast pipetting down to 350nL.
+Pipetting Technology
+Fluid Motion Technology
+More Workspace. More Performance. More Value.
+Innovative drive system enhances the utilization of deck space, enabling researchers to automate more scientific experiments seamlessly within a single unit, ultimately saving valuable lab space.
+MagPore Technology
+Hamilton's Patented Magnetic Bead Technology
+Simply transfer your magnetic bead/nucleic acid (NA) suspension into the Microlab PuriFY Strips and start your run. The Microlab PuriFY will manage the entire nucleic acid clean up process using our patented MagPore technology.

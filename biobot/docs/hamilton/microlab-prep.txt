@@ -1,0 +1,237 @@
+Microlab Prep
+Trusted
+Precision
+CO-RE II Technology
+Powerful
+Compact
+Automation
+Simple
+Intuitive
+Software
+Simple Automation
+, So You Can Focus on Innovation
+Automate your lab with the Hamilton Microlab Prep—compact, precise, and efficient.
+Upgrade from manual pipetting with trusted Hamilton quality.
+Login to save favorites
+Play
+Pause
+Mute
+Unmute
+/
+Enter Fullscreen
+Exit Fullscreen
+Use case
+How It's Used
+Transition from manual pipetting to automation with the benchtop Microlab Prep. Hamilton's 70+ years of expertise delivers laboratory-grade precision in a compact, affordable liquid handler designed to fit your lab space and budget. See how it's being used by bench scientists around the world.
+Scientific Citations
+Hamilton Microlab Prep
+Your Lab’s Ideal Benchtop Automated Liquid Handler
+Take your first step into automation with time-tested Hamilton quality packed into an affordable liquid handler. Since our founding more than 70 years ago, Hamilton has been dedicated to developing the highest quality automated liquid handling platforms to support scientific research across the globe.
+The Hamilton Microlab Prep packs our signature quality and efficiency into a small liquid handler workstation that easily fits on a lab bench or in many biological safety cabinets. The Microlab Prep is the solution to make your workflows faster, more precise, and more convenient than ever. Get ready to revolutionize the work in your lab by replacing manual pipetting with the efficiency and accuracy of the Microlab Prep.
+Common applications
+Genomics
+,
+Nucleic Acid Extraction
+,
+PCR Set-Up
+,
+Protein Sciences
+,
+Protein Purification
+Pipetting Technology
+CO-RE II Tip/Tool Attachment
+The Key to Liquid Handling Workflow Excellence
+The new CO-RE II technology assures more precise tip alignment, minimizing the risk of collisions. Also, tip coupling is faster which boosts productivity. Besides tips, a wide range of Hamilton tools are applicable with CO-RE II.
+Transport Solutions
+CO-RE Gripper
+For Additional Movements
+Further streamline automated workflows with CO-RE Grippers. These agile grippers transform Hamilton's precision pipette channels into on-deck labware transport solutions on Hamilton automated liquid handlers.
+Software
+Graphical User Interface
+For Easy Operation
+The intuitive graphical user interface (GUI) makes operation as simple as a smartphone app. Get started developing, editing, and running protocols without the need for automation or coding expertise.
+Machine Vision
+Labware Detection and Verification
+For Fast Protocol Development
+A camera mounted on top of the workstation detects and identifies labware placed on the deck. This visual recognition simplifies the process of programming new protocols by eliminating the need to scroll through long lists of options. It also ensures accurate verification of labware during protocol execution, helping to prevent loading errors.
+Unlock the
+Benefits
+of Microlab Prep
+Precision Pipetting Technology
+Achieve accurate, consistent results with Hamilton’s trusted CO-RE II  pipetting technology.
+Simple but Powerful Software
+Easily create and run protocols with intuitive, powerful software powered by a graphical interface.
+Compact Benchtop Design
+Save space with a compact design, perfect for small labs and biosafety cabinets.
+Reduced Repetitive Tasks
+Reduce hands-on time and minimize errors by automating tedious, routine pipetting.
+Learn More About the Microlab Prep Software
+Take a Tour
+Explore Accessories & Consumables
+A fantastic tool for automating areas of assays with high potential for analyst error.
+The Microlab Prep is a fantastic tool for automating areas of assays with high potential for analyst error. Not only will the machine run portions of assays with 100% accuracy, it will allow analysts to work on other lab functions while the Microlab is operating, boosting our lab efficiency. The software makes programming assays simple.
+Brett Johnson, Research Assistant
+Charles River Laboratories
+Webinars
+On-Demand
+Automated Liquid Handling for Bench Scientists: Meet the Microlab Prep
+Automated Liquid Handling, Laboratory Solutions
+Join our webinar to explore the Microlab Prep automated liquid handling system.
+1 hour
+On-Demand
+Mastering the Microlab Prep: A Comprehensive Guide to the Microlab Prep Software
+Automated Liquid Handling, Laboratory Solutions
+Join us for an expert-led webinar on the Microlab Prep software, where you'll learn how to automate your lab workflows without coding.
+1 hour
+On-Demand
+The Hidden Costs of NOT Automating: What Labs are Missing Out On
+Automated Liquid Handling
+Automation is becoming more and more essential in today’s fast-paced laboratory environment. But some labs are still hesitant to make the initial investment. In this webinar, learn how automation is accessible to even the most budget-conscious laboratory.
+45 minutes
+Microlab Prep Webinars
+Register for a webinar to learn more about the Hamilton Microlab Prep.
+Browse All Webinars
+Microlab Prep Specifications
+Microlab Prep
+Microlab Prep Specifications
+Print
+System Dimensions
+Height
+60.4 cm to 71.63 cm (1 ft, 11.78 in to 2 ft, 4.2 in)
+Width
+53.1 cm to 57.2 cm (1 ft, 8.91 in to 1 ft, 10.52 in)
+Depth
+61.7 cm to 66.55 cm (2 ft, 0.29 in to 2 ft, 2.2 in)
+General Specifications
+Weight
+41.6 kg
+Transport Tools
+CO-RE Gripper
+Standard
+Platform/Accessories
+Capacity (ANSI/SLAS Positions)
+8
+Device Integration
+Hamilton Heater Shaker, Hamilton Heater Cooler
+Sample Loading and Tracking Options
+Sample Loading
+Manual
+Barcode Scanner
+Manual
+Pipetting Options
+1 mL Channels
+Up to 2
+5 mL Channels
+n/a
+Fluid Motion X1 Channels
+n/a
+MagPip Channels
+n/a
+Multi-Probe Head Option
+8
+Pipetting Range
+1
+1 µL - 1000 µL
+Operating Temperature Range
+15 ºC to 35 ºC
+1
+Depending on Configuration
+Microlab Prep Resources
+All resources
+Materials
+Articles
+FAQs
+Webinars
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Brochure
+Download the Hamilton Microlab Prep Brochure
+The Microlab Prep packs Hamilton’s signature quality and efficiency into a compact workstation that can fit any lab. Download brochure to learn more.
+Software Download
+Download the Latest Microlab Prep Software
+The Microlab Prep software receives regular updates with bug fixes, new labware, and new features. To make sure you get the best results possible from your Prep, you should always update the software to the latest revision. This article describes how to download and install new versions of the Prep software.
+Software Download
+Microlab Prep Demo Protocols
+Demo protocols for some of the most popular methods for the Microlab Prep to help you get started automating your workflows faster than ever.
+Article
+Best Practices for Biospecimen Collection and Preservation
+Expert strategies for biospecimen collection, sample preservation, and maintaining specimen integrity. Learn how proper storage protocols protect research outcomes and support reliable test results over the long term.
+Article
+The Critical Role of PCR in Vaccine Research: An Interview
+Hamilton sits down with Dr. Brian Young, a senior scientist contracted with the Centers for Disease Control and Prevention (CDC).
+Article
+Modernizing Genomics Research with Automated Liquid Handling: A Case Study from the University of Delaware
+A compelling case study on how introducing automation to the lab can transform research efficiency and innovation.
+FAQ
+Does benchtop automation make sense for smaller labs?
+Benchtop automation is designed for labs with limited space, budget, or throughput needs.
+FAQ
+How do I replace legacy CO-RE stop discs and o-rings on the Microlab Prep?
+When one of the 2 Independent Channels or the 8-Probe Head reaches 20,000 tip eject cycles, the Microlab Prep will recommend replacing its stop disc(s) and o-ring(s). This article describes how to perform this maintenance routine.
+Webinar
+From Manual Pipetting to Fully Integrated Automated Systems
+Learn about the evolution of pipetting; from manual pipettes to fully integrated automated systems.
+Webinar
+Beyond the UI: Empowering Chemistry Through API-Driven Automation
+Learn how Hamilton’s Microlab Prep liquid handler and its newly released API serve as the key enabler for bridging experimental intent and automated liquid-handling execution.
+Webinar
+Unleash the Full Power of Your Liquid Handler with Hamilton APIs
+Join Hamilton’s automation experts for a deep dive into how Hamilton APIs unlock powerful new capabilities across our automated liquid handler platforms.
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Brochure
+Download the Hamilton Microlab Prep Brochure
+The Microlab Prep packs Hamilton’s signature quality and efficiency into a compact workstation that can fit any lab. Download brochure to learn more.
+Software Download
+Download the Latest Microlab Prep Software
+The Microlab Prep software receives regular updates with bug fixes, new labware, and new features. To make sure you get the best results possible from your Prep, you should always update the software to the latest revision. This article describes how to download and install new versions of the Prep software.
+Software Download
+Microlab Prep Demo Protocols
+Demo protocols for some of the most popular methods for the Microlab Prep to help you get started automating your workflows faster than ever.
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Article
+Best Practices for Biospecimen Collection and Preservation
+Expert strategies for biospecimen collection, sample preservation, and maintaining specimen integrity. Learn how proper storage protocols protect research outcomes and support reliable test results over the long term.
+Article
+The Critical Role of PCR in Vaccine Research: An Interview
+Hamilton sits down with Dr. Brian Young, a senior scientist contracted with the Centers for Disease Control and Prevention (CDC).
+Article
+Modernizing Genomics Research with Automated Liquid Handling: A Case Study from the University of Delaware
+A compelling case study on how introducing automation to the lab can transform research efficiency and innovation.
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+FAQ
+Does benchtop automation make sense for smaller labs?
+Benchtop automation is designed for labs with limited space, budget, or throughput needs.
+FAQ
+How do I replace legacy CO-RE stop discs and o-rings on the Microlab Prep?
+When one of the 2 Independent Channels or the 8-Probe Head reaches 20,000 tip eject cycles, the Microlab Prep will recommend replacing its stop disc(s) and o-ring(s). This article describes how to perform this maintenance routine.
+Browse app notes, user guides, specification documents, and more in our Knowledge Center.
+Browse All Resources
+Webinar
+From Manual Pipetting to Fully Integrated Automated Systems
+Learn about the evolution of pipetting; from manual pipettes to fully integrated automated systems.
+Webinar
+Beyond the UI: Empowering Chemistry Through API-Driven Automation
+Learn how Hamilton’s Microlab Prep liquid handler and its newly released API serve as the key enabler for bridging experimental intent and automated liquid-handling execution.
+Webinar
+Unleash the Full Power of Your Liquid Handler with Hamilton APIs
+Join Hamilton’s automation experts for a deep dive into how Hamilton APIs unlock powerful new capabilities across our automated liquid handler platforms.
+Compare Products
+Services
+Backed by
+world-class
+service and support.
+For over 75 years, the Hamilton name has been recognized globally for its unwavering commitment to quality. That pledge extends to creating long-term customer partnerships. We're proud to offer in-depth training courses, on-site field support, custom product builds, and so much more.
+Let's Talk
+Connect with a Hamilton expert to discuss solutions for your workflow. We are here to enable your success.
+Request Type:
+Sales Inquiry
+Customize a Solution
+Technical Support
+Application Support
+Software Support
+Order Inquiry
+Find a Distributor
+General Inquiry

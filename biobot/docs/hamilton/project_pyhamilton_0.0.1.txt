@@ -1,0 +1,334 @@
+pyhamilton 0.0.1
+pip install pyhamilton==0.0.1
+Copy PIP instructions
+Newer version available (1.491.17)
+Released:
+Jul 3, 2022
+A Python interface to Hamilton liquid-handling robots
+Navigation
+Verified details
+These details have been
+verified by PyPI
+Maintainers
+StefanGolas
+Unverified details
+These details have
+not
+been verified by PyPI
+Project links
+Bug Tracker
+Homepage
+Meta
+License:
+MIT License (MIT License  Copyright (c) 2018 dgretton  Permission is hereby granted, free of charge, to any perso...)
+Author:
+Dana Gretton
+Requires:
+Python >=3.6
+Classifiers
+License
+OSI Approved :: MIT License
+Operating System
+OS Independent
+Programming Language
+Python :: 3
+Report project as malware
+Project description
+PyHamilton
+Python for Hamilton liquid handling robots
+Hamilton software only works on Windows, so the same goes for PyHamilton.
+Developed for Hamilton STAR and STARlet on Windows XP, Windows 7, and Windows 10. VANTAGE series supported with plugin. Other robot models and operating systems not supported yet.
+Contact:
+contactpyhamilton@gmail.com
+for questions, ideas, or help with installation.
+Example usage
+if
+__name__
+==
+"__main__"
+:
+from
+pyhamilton
+import
+HamiltonInterface
+,
+INITIALIZE
+with
+HamiltonInterface
+()
+as
+ham_int
+:
+ham_int
+.
+wait_on_response
+(
+ham_int
+.
+send_command
+(
+INITIALIZE
+))
+Documentation
+Available online
+.
+Installation
+Install and test the standard Hamilton software suite for your system.
+Install 32-bit python 3.6.3
+, preferably using the executable installer at
+https://www.python.org/downloads/release/python-363/
+. Python 3.7+ is known to cause an installation issue with some required pythonnet/pywin32 modules.
+Make sure git is installed.
+https://git-scm.com/download/win
+Make sure you have .NET framework 4.0 or higher installed.
+https://www.microsoft.com/en-us/download/details.aspx?id=17851
+Install Hamilton library dependencies
+HSLJson and HSLHttp by running executable installers
+"HSLJson Library v1.6 Installer.exe"
+and
+"Hamilton HSLHttp Library Installer Version 2.7.exe"
+located in
+./bin
+.
+Copy+paste the files from /library into your (path to hamilton install)/HAMILTON/Library folder
+These will ensure you have all the libraries you need in addition to the aforementioned HSLJson and HSLHttp libraries which are installed with executables.
+Update your pip and setuptools.
+> python -m pip install --upgrade pip
+> pip install --upgrade setuptools
+Install pyhamilton.
+pip install git+https://github.com/dgretton/pyhamilton.git#egg=pyhamilton
+Run.
+If you have other Python versions installed, always run pyhamilton with
+py yourmethod.py
+(the bundled Python launcher, which interprets shebangs) or
+python3 yourmethod.py
+Installation Troubleshooting
+If you encounter an error relating to HxFan (i.e., your robot does not have a fan), open pyhamilton/star-oem/VENUS_Method/STAR_OEM_Test.med, navigate to the "HxFan" grouping, and delete all commands under this grouping.
+If you would like to test your PyHamilton installation on a computer not connected to a Hamilton robot, use
+HamiltonInterface(simulate=True)
+to open your interface inside your robot script.
+If your initialization hangs (such as on initial_error_example.py), try these steps:
+a. Make sure you don't have any other program running which is communicating with the robot e.g. Venus run control
+b. Make sure the .dlls referenced in
+__init__.py
+are unblocked. See
+this StackOverflow thread
+for more details.
+Please see the list of
+Ongoing Projects
+for information on other issues with PyHamilton
+Ongoing Projects
+PyHamilton is an open-source project, and we have a ton of work to do! If you'd like to contribute to the PyHamilton project, please consider these following areas of ongoing work and don't hesitate to reach out if you want to discuss collaborating with the team.
+PyHamilton for Nimbus:
+Right now PyHamilton only works on the STAR line of liquid-handling robots, but we have recently received the appropriate libraries for expanding the framework to Hamilton Nimbus, a much more affordable and low-footprint robot. This project is in its very early stages so collaborators will have the opportunity to influence crucial design decisions.
+PyHamilton for Linux:
+One of the biggest limitations for PyHamilton, Hamilton robots, and much of lab automation in general is their exclusive dependence on Windows as an operating system. We are working to recreate the Venus application (which runs on Windows and which PyHamilton depends on in turn) as a Python library, so that PyHamilton will effectively become OS-agnostic. This is a truly massive undertaking but we have made considerable progress due to incredibly talented team member Rick Wierenga.
+Host on a package management repository:
+PyHamilton is not available on any package managers such as PyPI or Conda except by installing from this repo. This has been a nightmare for distributing updates to the user community, who must delete and reclone the package anytime they wish to update.
+Make PyHamilton compatible with recent releases of Python:
+PyHamilton is currently restricted to Python 3.6 due to its dependency tree including older versions of some packages. We'd massively appreciate any help in bringing us up to date with more recent versions of Python.
+Applications
+A high-throughput platform for feedback-controlled directed evolution
+,
+preprint
+Flexible open-source automation for robotic bioengineering
+,
+preprint
+Developed for the Sculpting Evolution Group at the MIT Media Lab
+Project details
+Verified details
+These details have been
+verified by PyPI
+Maintainers
+StefanGolas
+Unverified details
+These details have
+not
+been verified by PyPI
+Project links
+Bug Tracker
+Homepage
+Meta
+License:
+MIT License (MIT License  Copyright (c) 2018 dgretton  Permission is hereby granted, free of charge, to any perso...)
+Author:
+Dana Gretton
+Requires:
+Python >=3.6
+Classifiers
+License
+OSI Approved :: MIT License
+Operating System
+OS Independent
+Programming Language
+Python :: 3
+Release history
+Release notifications
+|
+RSS feed
+1.491.17
+Mar 20, 2023
+1.491.16
+Mar 7, 2023
+1.491.15
+Mar 7, 2023
+1.491.11
+Jan 25, 2023
+1.491.10
+Jan 25, 2023
+1.491.7
+Jan 18, 2023
+1.491.6
+Jan 10, 2023
+1.491.5
+Dec 27, 2022
+1.491.4
+Dec 27, 2022
+1.491.3
+Dec 20, 2022
+1.491.2
+Dec 5, 2022
+1.491.1
+Dec 5, 2022
+1.490.1
+Nov 26, 2022
+1.490
+Oct 29, 2022
+1.490a0
+pre-release
+Nov 5, 2022
+1.489
+Oct 28, 2022
+1.487
+Oct 17, 2022
+1.486
+Sep 8, 2022
+1.485
+Sep 4, 2022
+1.483
+Sep 4, 2022
+1.49.1
+Nov 19, 2022
+1.48
+Aug 31, 2022
+1.47
+Aug 31, 2022
+1.46
+Jul 17, 2022
+1.45
+Jul 17, 2022
+1.44
+Jul 4, 2022
+1.43
+Jul 4, 2022
+1.42
+Jul 4, 2022
+1.41
+Jul 4, 2022
+1.39
+Jul 4, 2022
+1.38
+Jul 4, 2022
+1.37
+Jul 3, 2022
+1.36
+Jul 3, 2022
+1.35
+Jul 3, 2022
+1.5
+Jul 3, 2022
+This version
+0.0.1
+Jul 3, 2022
+Download files
+Download the file for your platform. If you're not sure which to choose, learn more about
+installing packages
+.
+Source Distribution
+pyhamilton-0.0.1.tar.gz
+(6.9 MB
+view details
+)
+Uploaded
+Jul 3, 2022
+Source
+Built Distribution
+Filter files by name, interpreter, ABI, and platform.
+If you're not sure about the file name format, learn more about
+wheel file names
+.
+The dropdown lists show the available interpreters, ABIs, and platforms.
+Enable javascript to be able to filter the list of wheel files.
+Copy a direct link to the current filters
+Copy
+File name
+Interpreter
+Interpreter
+py3
+ABI
+ABI
+none
+Platform
+Platform
+any
+pyhamilton-0.0.1-py3-none-any.whl
+(915.3 kB
+view details
+)
+Uploaded
+Jul 3, 2022
+Python 3
+File details
+Details for the file
+pyhamilton-0.0.1.tar.gz
+.
+File metadata
+Download URL:
+pyhamilton-0.0.1.tar.gz
+Upload date:
+Jul 3, 2022
+Size: 6.9 MB
+Tags: Source
+Uploaded using Trusted Publishing? No
+Uploaded via: twine/4.0.1 CPython/3.9.12
+File hashes
+Hashes for pyhamilton-0.0.1.tar.gz
+Algorithm
+Hash digest
+SHA256
+29aebb12a3b1033ff8d13a2fa277ca59b2d1052b449b6d65d00bd339a9409c5f
+Copy
+MD5
+20e83667a6bf771a58a2a7601dbc3434
+Copy
+BLAKE2b-256
+154e3dd60dad096e2d94d68ca87e361a06f374d27dfed6611bc666e9a08a1ed8
+Copy
+See more details on using hashes here.
+File details
+Details for the file
+pyhamilton-0.0.1-py3-none-any.whl
+.
+File metadata
+Download URL:
+pyhamilton-0.0.1-py3-none-any.whl
+Upload date:
+Jul 3, 2022
+Size: 915.3 kB
+Tags: Python 3
+Uploaded using Trusted Publishing? No
+Uploaded via: twine/4.0.1 CPython/3.9.12
+File hashes
+Hashes for pyhamilton-0.0.1-py3-none-any.whl
+Algorithm
+Hash digest
+SHA256
+701f02d3576fe0e432399aaccd08c038889228ecc85908d9fa162b87704305f2
+Copy
+MD5
+56b58d6d2f85bbf5f2c7a27b823418a8
+Copy
+BLAKE2b-256
+c16b9896dacc182323810ffe34dc18f6561ff0f17f03772e6114a17247d281e7
+Copy
+See more details on using hashes here.

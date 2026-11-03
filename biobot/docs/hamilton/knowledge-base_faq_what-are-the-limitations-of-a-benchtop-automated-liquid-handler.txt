@@ -1,0 +1,6 @@
+What are the limitations of a benchtop automated liquid handler?
+Benchtop systems, such as the
+Microlab Prep
+, are designed for flexibility and ease of use, and they typically support lower to medium throughput and offer fewer integrations than larger automation platforms. They are best suited for routine workflows with lower throughput than high-throughput environments.
+Learn more
+about all of Hamilton's automated liquid handling platforms.

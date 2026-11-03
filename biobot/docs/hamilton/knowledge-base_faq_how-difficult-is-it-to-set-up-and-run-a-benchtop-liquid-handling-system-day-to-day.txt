@@ -1,0 +1,7 @@
+How difficult is it to set up and run a benchtop liquid handling system day to day?
+The
+Microlab Prep
+is designed for ease of use, with guided workflows and touchscreen operation. Once protocols are set up, daily use typically involves loading samples and consumables with minimal manual intervention. Maintenance routines are also guided within the system.
+For more detail on installation, maintenance, and support options available in North America for Hamilton's benchtop solutions, see the
+Services and Support brochure
+.
