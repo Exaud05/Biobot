@@ -1,224 +1,276 @@
 """
-deck_visualizer.py — LLM-generated deck visualizations
+deck_visualizer.py — Universal LLM-Driven Deck Visualization
 
-Instead of hardcoded renderers, the LLM generates a complete interactive
-HTML/CSS/JS visualization for any liquid handler protocol. The visualization
-runs in a sandboxed iframe and communicates changes via postMessage.
+Sends protocol code to the LLM → gets interactive HTML for any liquid handler.
+Handles code updates when the user modifies the deck through the visualization.
 """
 
-import json
-import os
 from openai import OpenAI
-from config import get_api_key
+from config import get_api_key, light_functions_model
 
+VISUALIZE_PROMPT = """You are an expert in laboratory automation and liquid handling robots. You will be given protocol code or a CSV picklist.
 
-VISUALIZATION_PROMPT = """You are an expert in laboratory automation AND web development.
+Your task: extract the deck layout as a JSON object. Identify the platform, the deck structure, and every piece of hardware.
 
-Your job: generate a COMPLETE, self-contained HTML page that visualizes a liquid handler deck/setup for the given protocol code. The visualization runs inside an iframe.
+Return ONLY valid JSON (no markdown, no explanation) matching this exact schema:
 
-REQUIREMENTS:
+{
+  "platform": "Human-readable platform name inferred from the input",
+  "layout_type": "grid | linear | plates",
+  "title": "Short protocol name if available",
+  "grid": {
+    "rows": 1, "cols": 1,
+    "labels": ["position_id"],
+    "note": "Only for layout_type=grid. Derive dimensions and labels from the input; these example values are not defaults."
+  },
+  "positions": [
+    {
+      "id": "slot or position identifier (e.g. '1', 'Track 3', 'A1')",
+      "labware": "Full labware API name or null if empty",
+      "labware_display": "Short display name or null",
+      "variable": "Variable name in code or null",
+      "type": "plate | tiprack | reservoir | tuberack | module | trash | carrier | empty",
+      "module": "Module name if labware sits on a module, else null",
+      "row": 0, "col": 0
+    }
+  ],
+  "instruments": [
+    {
+      "name": "Instrument display name from the input",
+      "model": "API model name from the input",
+      "mount": "left | right | channel_count | null",
+      "tipracks": ["slot ids where tipracks are"]
+    }
+  ],
+  "plates": {
+    "note": "Only for layout_type=plates. null otherwise.",
+    "source": {"name": "Source Plate", "type": "Plate type from input", "format": 384, "wells_used": ["A1","A2"]},
+    "destination": {"name": "Dest Plate", "type": "96-well", "format": 96, "wells_used": ["A1","B1"]},
+    "transfer_count": 50,
+    "volume_range": "Volume range from input"
+  },
+  "carriers": {
+    "note": "Only for layout_type=linear. null otherwise.",
+    "items": [
+      {"name": "Tip Carrier", "type": "Carrier type from input", "track": 3, "positions": [
+        {"index": 0, "labware": "50uL tips", "variable": "tips_01"},
+        {"index": 1, "labware": null}
+      ]}
+    ]
+  }
+}
 
-1. OUTPUT: Return ONLY the raw HTML. No markdown fences, no explanation. Just the HTML starting with <!DOCTYPE html>.
+RULES:
+- Choose grid for a rectangular worktable, linear for carriers on tracks, or plates for source/destination well maps based on the input.
+- Derive dimensions, position labels, instruments, capacities, and carrier types from the supplied protocol. Do not assume a robot from the file format.
+- CRITICAL: include ALL deck positions, including empty/unused ones. For grid robots, include EVERY slot in the grid (e.g. an OT-2 has slots 1-11 plus a fixed trash in slot 12 — always return all 12 with grid rows=3, cols=4). Populate grid.labels with EVERY position id in order.
+- For each position, set row and col (0-indexed) matching its physical location on the deck.
+- Use null or an empty list for information that cannot be determined from the input.
+- Return ONLY valid JSON. No trailing commas.
+"""
 
-2. VISUAL DESIGN:
-   - Dark theme: background #1a1a1a, text #e0e0e0, accent #00ff99
-   - Use modern CSS (flexbox, grid, transitions, animations)
-   - Font: system-ui, -apple-system, sans-serif
-   - Rounded corners, subtle borders (#333), smooth hover effects
-   - Make it look professional and clean
+STEPS_PROMPT = """You are an expert in laboratory automation. Given protocol code and a list of deck position IDs, extract ALL liquid-handling steps in execution order.
 
-3. DECK VISUALIZATION:
-   - Show the robot's deck layout accurately for the specific platform
-   - Display all labware in their correct positions with clear labels
-   - Show instruments/pipettes with their mount positions
-   - Color-code different types: plates (green), tipracks (blue), reservoirs (purple), trash (red)
-   - Show slot/position numbers
+Return ONLY valid JSON (no markdown, no explanation) matching this schema:
 
-4. INTERACTIVITY:
-   - Make labware DRAGGABLE between positions (HTML5 drag-and-drop)
-   - Click a position to show details (labware name, variable, wells)
-   - Double-click to change labware (show a dropdown/modal with options)
-   - Editable parameter fields for volumes, counts, etc. extracted from the code
-   - Visual feedback: hover highlights, drag ghosts, drop targets glow
+{
+  "steps": [
+    {
+      "action": "aspirate | dispense | transfer | mix | pickup_tip | drop_tip",
+      "source": {"slot": "position id from the provided list", "wells": ["A1","B1"]},
+      "destination": {"slot": "position id from the provided list", "wells": ["A1","B1"]},
+      "volume": "e.g. 100µL",
+      "description": "Human-readable step description"
+    }
+  ]
+}
 
-5. PARAMETER PANEL:
-   - Below the deck, show all editable parameters from the code
-   - Group by category (Volumes, Counts, etc.)
-   - Each parameter has a number input with the correct unit label
-   - Show the variable name and any code comment as description
+RULES:
+- source.slot and destination.slot MUST match a position id from the provided list.
+- For pickup_tip/drop_tip: use source only. Omit destination.
+- For aspirate/mix: use source only. For dispense: use destination only. For transfer: use both.
+- If individual wells cannot be determined, use an empty array [].
+- If no liquid handling steps exist, return {"steps": []}.
+- Return ONLY valid JSON. No trailing commas.
+"""
 
-6. COMMUNICATION (critical):
-   When the user makes ANY change, send it to the parent window:
-   
-   window.parent.postMessage({
-     type: 'deck_change',
-     change: {
-       type: '<move_labware|change_labware|add_labware|remove_labware|change_instrument|change_parameter>',
-       // Include relevant details for the change type:
-       // For move: from_position, to_position
-       // For change_labware: position, old_name, new_name
-       // For change_parameter: param_name, old_value, new_value
-       // For change_instrument: mount, old_name, new_name
-     }
-   }, '*');
+UPDATE_PROMPT = """You are an expert in laboratory automation. Given:
+1. Current protocol code
+2. A change the user made in the deck visualization
 
-7. PROTOCOL STEPS:
-   - Show a summary of the protocol steps at the bottom
-   - Each step shows the action, volume, and a brief description
-   
-8. SIZE: The page should fit within a 600px wide panel with vertical scrolling if needed.
+Update the code to reflect the change and return the updated code.
 
-9. FUTURE ANIMATION SUPPORT:
-   - Structure the deck elements with data attributes (data-slot, data-labware, data-well) so they can be targeted for animation later
-   - Each well/position should be individually addressable in the DOM
+Rules:
+- Change ONLY what's necessary. Keep all variables, logic, comments intact.
+- Labware change: replace the old labware name globally.
+- Slot change: update only the slot number.
+- Pipette change: also update the tiprack to a compatible one.
 
-REMEMBER: Return ONLY the HTML. No explanation text. No markdown.
+Return ONLY the updated code. No explanation, no markdown fences.
 """
 
 
-ANIMATION_PROMPT = """You are an expert in laboratory automation AND web animation.
+def _clean_llm_json(raw: str) -> str:
+    """Strip markdown fences and fix trailing commas from LLM JSON output."""
+    result = raw.strip()
+    if result.startswith("```"):
+        result = result.split("\n", 1)[1] if "\n" in result else result[3:]
+    if result.endswith("```"):
+        result = result[:-3].strip()
+    if result.startswith("json"):
+        result = result[4:].strip()
+    return _fix_json(result)
 
-Given a protocol code and the current deck visualization HTML, generate an UPDATED HTML page that includes a step-by-step animation of the protocol execution.
 
-The animation should:
-1. Show the protocol steps sequentially with a play/pause button
-2. Highlight the active wells/positions during each step
-3. Animate liquid movement (colored dots/lines moving from source to destination)
-4. Show a progress bar and step counter
-5. Allow stepping forward/backward through the protocol
-6. Use smooth CSS transitions and requestAnimationFrame for fluid motion
+def generate_visualization(code: str, api_key: str = None) -> dict:
+    """Extract deck state JSON from any protocol code using the LLM.
 
-Keep all the existing deck visualization and interactivity. ADD the animation layer on top.
+    Uses two separate LLM calls:
+    1. Extract the deck layout (positions, instruments, grid) — critical.
+    2. Extract the liquid-handling steps for animation — non-critical.
 
-Return ONLY the complete HTML. No markdown, no explanation.
+    If step extraction fails, the deck still renders without animation.
+    """
+    import json, re
+    client = OpenAI(api_key=api_key or get_api_key())
+
+    # --- Call 1: Deck layout (critical) ---
+    response = client.responses.create(
+        model=light_functions_model,
+        input=[
+            {"role": "system", "content": VISUALIZE_PROMPT},
+            {"role": "user", "content": f"Extract the deck layout from this code/CSV:\n\n{code}"}
+        ],
+    )
+
+    result = _clean_llm_json(response.output_text)
+
+    try:
+        state = json.loads(result)
+    except json.JSONDecodeError:
+        # Last resort: try to extract a JSON object from the response
+        match = re.search(r'\{[\s\S]*\}', result)
+        if match:
+            state = json.loads(_fix_json(match.group()))
+        else:
+            raise
+
+    # --- Call 2: Steps extraction (non-critical) ---
+    try:
+        pos_ids = [p.get("id", "") for p in state.get("positions", [])]
+        steps_user_msg = (
+            f"Deck position IDs: {json.dumps(pos_ids)}\n\n"
+            f"Extract the liquid-handling steps from this code:\n\n{code}"
+        )
+
+        steps_response = client.responses.create(
+            model=light_functions_model,
+            input=[
+                {"role": "system", "content": STEPS_PROMPT},
+                {"role": "user", "content": steps_user_msg}
+            ],
+        )
+
+        steps_result = _clean_llm_json(steps_response.output_text)
+        steps_data = json.loads(steps_result)
+        state["steps"] = steps_data.get("steps", [])
+    except Exception:
+        # Steps failed — deck still works, just no animation
+        state["steps"] = []
+
+    return state
+
+
+BATCH_UPDATE_PROMPT = """You are an expert in laboratory automation. Given:
+1. Current protocol code for a liquid handler
+2. A list of changes the user made on the deck
+
+Apply ALL changes to the code and return the updated version.
+
+Rules:
+- Apply every change in the list.
+- Handle coherence: if a pipette changes, update the tiprack. If a tiprack changes, check the pipette is compatible. If volumes exceed the new pipette range, adjust them.
+- For labware changes: replace the old API name with the new one everywhere it appears.
+- For additions: add the appropriate load statement in the right place.
+- For removals: remove or comment out the load statement and warn if it's referenced elsewhere.
+- Keep all other code intact — variables, logic, comments, structure.
+
+Return ONLY the updated code. No explanation, no markdown fences.
 """
 
 
-def generate_visualization(code: str, api_key: str = None) -> str:
-    """
-    Ask the LLM to generate a complete interactive HTML visualization
-    for the given protocol code.
-    
-    Returns: HTML string ready to be rendered in an iframe
-    """
-    key = api_key or os.environ.get("API_KEY") or get_api_key()
-    client = OpenAI(api_key=key)
+def update_code_from_changes(code: str, changes: list, api_key: str = None) -> str:
+    """Apply batched deck changes to protocol code using one LLM call."""
+    import json
+    client = OpenAI(api_key=api_key or get_api_key())
 
-    try:
-        response = client.responses.create(
-            model="gpt-4o-mini",
-            input=[
-                {"role": "system", "content": VISUALIZATION_PROMPT},
-                {"role": "user", "content": f"Generate an interactive deck visualization for this protocol:\n\n{code}"}
-            ],
-        )
+    changes_desc = json.dumps(changes, indent=2)
 
-        html = response.output_text.strip()
+    response = client.responses.create(
+        model=light_functions_model,
+        input=[
+            {"role": "system", "content": BATCH_UPDATE_PROMPT},
+            {"role": "user", "content": f"Current code:\n\n{code}\n\nChanges to apply:\n{changes_desc}"}
+        ],
+    )
 
-        # Clean markdown fences if present
-        if html.startswith("```"):
-            lines = html.split("\n")
-            html = "\n".join(lines[1:])
-        if html.endswith("```"):
-            html = html[:-3].strip()
-        if html.startswith("html"):
-            html = html[4:].strip()
-
-        # Ensure it starts with DOCTYPE or html tag
-        if not html.lower().startswith("<!doctype") and not html.lower().startswith("<html"):
-            html = "<!DOCTYPE html>\n<html><head><meta charset='UTF-8'></head><body>" + html + "</body></html>"
-
-        return html
-
-    except Exception as e:
-        print(f"Visualization generation error: {e}", flush=True)
-        # Return a minimal error page
-        return f"""<!DOCTYPE html>
-<html><head><meta charset="UTF-8">
-<style>body{{background:#1a1a1a;color:#ff4d4d;font-family:system-ui;padding:20px;}}</style>
-</head><body><h3>Visualization Error</h3><p>{str(e)}</p></body></html>"""
+    result = response.output_text.strip()
+    for fence in ["```python", "```csv", "```hsl", "```"]:
+        result = result.replace(fence, "")
+    return result.strip()
 
 
-def update_visualization(code: str, current_html: str, change: dict, api_key: str = None) -> dict:
-    """
-    Ask the LLM to update both the code and the visualization based on a user change.
-    
-    Returns: {"code": updated_code, "html": updated_html}
-    """
-    key = api_key or os.environ.get("API_KEY") or get_api_key()
-    client = OpenAI(api_key=key)
+CATALOG_PROMPT = """You are an expert in laboratory automation. Given a liquid handler platform and a position on the deck, return a list of compatible hardware that can be placed there.
 
-    update_prompt = """You are an expert in laboratory automation code and web development.
+Return ONLY valid JSON matching this schema:
 
-The user made a change in the deck visualization. You need to:
-1. Update the protocol CODE to reflect the change (keep all logic, comments, structure)
-2. Update the visualization HTML to reflect the new state
+{
+  "categories": [
+    {
+      "name": "Category Name",
+      "items": [
+        {"id": "api_load_name", "name": "Human-readable name", "detail": "Short description (volume, wells, etc.)"}
+      ]
+    }
+  ]
+}
 
-CRITICAL COHERENCE RULES:
-- If changing a pipette: also change the tiprack to be compatible, and adjust any volumes that exceed the new pipette's range
-- If changing labware: update any well references if the format changes (96 vs 384)
-- If moving labware: only change the slot/position number, keep everything else
-- If changing a volume parameter: update the variable assignment in the code
-- Keep ALL protocol logic (loops, conditions, steps) intact
-
-Return a JSON object with two fields:
-{"code": "<the complete updated protocol code>", "html": "<the complete updated visualization HTML>"}
-
-Return ONLY the JSON. No markdown fences, no explanation."""
-
-    try:
-        response = client.responses.create(
-            model="gpt-4o-mini",
-            input=[
-                {"role": "system", "content": update_prompt},
-                {"role": "user", "content": f"Protocol code:\n```\n{code}\n```\n\nChange:\n{json.dumps(change)}\n\nReturn the updated code and HTML:"}
-            ],
-        )
-
-        result = response.output_text.strip()
-        if result.startswith("```"):
-            result = result.split("\n", 1)[1] if "\n" in result else result[3:]
-        if result.endswith("```"):
-            result = result[:-3].strip()
-        if result.startswith("json"):
-            result = result[4:].strip()
-
-        parsed = json.loads(result)
-        return {
-            "code": parsed.get("code", code),
-            "html": parsed.get("html", current_html),
-        }
-
-    except Exception as e:
-        print(f"Visualization update error: {e}", flush=True)
-        return {"code": code, "html": current_html, "error": str(e)}
+RULES:
+- Return real, accurate hardware that is compatible with the specified platform.
+- Group by category (e.g., "Tip Racks", "Well Plates", "Reservoirs", "Tube Racks", "Modules").
+- Include the correct API load names that the platform actually uses in code.
+- For pipettes/instruments: include model names, volume ranges, and mount options.
+- Include 5-15 items per category — the most commonly used ones.
+- For the "detail" field: include key specs (volume, well count, dimensions).
+- If changing an instrument (pipette/channel), return instrument options instead of labware.
+- Return ONLY the JSON. No markdown, no explanation.
+"""
 
 
-def generate_animation(code: str, current_html: str, api_key: str = None) -> str:
-    """
-    Ask the LLM to add protocol execution animation to the visualization.
-    This is for future use — Phase 3 of the visualizer.
-    """
-    key = api_key or os.environ.get("API_KEY") or get_api_key()
-    client = OpenAI(api_key=key)
+def get_catalog(platform: str, position_type: str = "labware",
+                current: str = None, api_key: str = None) -> dict:
+    """Ask the LLM for compatible hardware options for a given platform and position."""
+    import json
+    client = OpenAI(api_key=api_key or get_api_key())
 
-    try:
-        response = client.responses.create(
-            model="gpt-4o-mini",
-            input=[
-                {"role": "system", "content": ANIMATION_PROMPT},
-                {"role": "user", "content": f"Protocol code:\n```\n{code}\n```\n\nCurrent visualization:\n```html\n{current_html}\n```\n\nAdd step-by-step protocol animation:"}
-            ],
-        )
+    prompt = f"Platform: {platform}\n"
+    prompt += f"I need to {'change' if current else 'add'} {position_type} options.\n"
+    if current:
+        prompt += f"Currently loaded: {current}\n"
+    prompt += "Return compatible options for this platform."
 
-        html = response.output_text.strip()
-        if html.startswith("```"):
-            html = html.split("\n", 1)[1] if "\n" in html else html[3:]
-        if html.endswith("```"):
-            html = html[:-3].strip()
+    response = client.responses.create(
+        model=light_functions_model,
+        input=[
+            {"role": "system", "content": CATALOG_PROMPT},
+            {"role": "user", "content": prompt}
+        ],
+    )
 
-        return html
+    return json.loads(_clean_llm_json(response.output_text))
 
-    except Exception as e:
-        print(f"Animation generation error: {e}", flush=True)
-        return current_html
+
+def _fix_json(s: str) -> str:
+    """Fix common LLM JSON issues: trailing commas."""
+    import re
+    return re.sub(r',\s*([\]}])', r'\1', s)
