@@ -9,9 +9,22 @@ import json
 from openai import OpenAI
 import sys
 import pickle
-from config import get_api_key
-from doc_loader import load_and_chunk_docs
+from config import get_api_key, biobot_model, light_functions_model
+from doc_loader import load_and_chunk_docs, get_supported_extensions
 from doc_fetcher import fetch_documentation
+from feasibility_check import check_feasibility, format_feasibility_response
+from handlers import detect_handler
+
+
+def strip_code_fences(text):
+    """Remove markdown code fences (```python ... ```) that LLMs wrap around code.
+    If the text is wrapped in fences, return the inner content; otherwise return as-is."""
+    stripped = text.strip()
+    m = re.match(r'^```\w*\s*\n([\s\S]*?)```\s*$', stripped)
+    if m:
+        return m.group(1).strip()
+    return stripped
+
 
 # ----------- ARGS & AUTH -------------
 if len(sys.argv) > 1:
@@ -29,171 +42,111 @@ def get_openai_client(api_key):
     return OpenAI(api_key=api_key)
 
 
-# ----------- HANDLER DETECTION -------------
-HANDLERS_CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "handlers.json")
-
-def load_handlers_config():
-    """Load the handler registry from handlers.json."""
-    if not os.path.exists(HANDLERS_CONFIG_PATH):
-        return {
-            "opentrons": {
-                "name": "Opentrons",
-                "docs_path": "docs/opentrons",
-                "store_path": "rag_store_opentrons.pkl",
-                "simulate_cmd": ["opentrons_simulate"],
-                "keywords": ["opentrons", "ot-2", "ot2", "ot-3", "ot3", "flex"]
-            }
-        }
-    with open(HANDLERS_CONFIG_PATH, "r") as f:
-        return json.load(f)
-
-
-def detect_handler(query, history, api_key):
-    """
-    Detect which liquid handler the user is referring to using LLM classification.
-    If the handler isn't in handlers.json, creates a dynamic entry so
-    the doc fetcher can find and download its documentation.
-    """
-    handlers = load_handlers_config()
-    available_ids = list(handlers.keys())
-    client = get_openai_client(api_key)
-
-    # Build context from recent conversation
-    recent = [m for m in history if m["role"] != "system"][-8:]
-    conversation_context = "\n".join(
-        f"{'User' if m['role'] == 'user' else 'Assistant'}: {m['content'][:500]}"
-        for m in recent
-    )
-
-    # Build the known platforms description
-    if available_ids:
-        known_list = "\n".join(
-            f'  - "{hid}" → {cfg["name"]}'
-            for hid, cfg in handlers.items()
-        )
-    else:
-        known_list = "  (none configured)"
-
-    response = client.responses.create(
-        model="gpt-5.4",
-        input=[
-            {
-                "role": "system",
-                "content": f"""You are an expert in lab automation and liquid handling robots.
-
-Your task: identify which liquid handling PLATFORM (robot/instrument) the user is requesting a protocol for.
-
-Here are the platforms already configured in our system:
-{known_list}
-
-INSTRUCTIONS:
-1. Read the user's latest message AND the conversation history carefully.
-2. Identify the liquid handling platform they are referring to.
-3. If the platform matches one already configured, return its exact ID (the text in quotes above).
-4. If the platform is NOT in the list above, return a new short lowercase ID for it. Use the brand name in lowercase, no spaces (e.g., "opentrons", "beckman", "agilent", "eppendorf", "gilson", "biomek").
-5. If the user does NOT mention or imply any specific platform anywhere in the conversation, return "unknown".
-
-IMPORTANT:
-- Focus on the INSTRUMENT/ROBOT brand, not reagents, software, or lab techniques.
-- Look at the ENTIRE conversation, not just the latest message — the platform may have been mentioned earlier.
-- Common platforms include: Opentrons, Hamilton, Tecan, Beckman Coulter (Biomek), Agilent, Eppendorf, Gilson, PerkinElmer (JANUS), Formulatrix, Andrew Alliance, etc.
-
-Return ONLY the platform ID. One word, lowercase, no quotes, no explanation."""
-            },
-            {
-                "role": "user",
-                "content": f"Conversation history:\n{conversation_context}\n\nLatest message: {query}"
-            }
-        ]
-    )
-
-    detected = response.output_text.strip().lower().strip('"').replace(" ", "_")
-
-    # Known handler — return directly
-    if detected in available_ids:
-        return detected, handlers
-
-    # "unknown" — default to first available, or opentrons
-    if detected == "unknown":
-        if available_ids:
-            return available_ids[0], handlers
-        detected = "opentrons"
-
-    # New handler — ask the LLM for the proper display name
-    name_response = client.responses.create(
-        model="gpt-5.4",
-        input=[
-            {
-                "role": "system",
-                "content": "Return ONLY the official full name of this liquid handling robot platform/brand. No explanation, no punctuation, just the name (e.g., 'Opentrons OT-2', 'Hamilton STAR', 'Tecan Fluent')."
-            },
-            {
-                "role": "user",
-                "content": f"Platform ID: {detected}"
-            }
-        ]
-    )
-    handler_name = name_response.output_text.strip().strip("'\"")
-
-    print(f"STEP:Detected new platform: {handler_name} (not in config — will search for docs)...", flush=True)
-    time.sleep(2)
-
-    handlers[detected] = {
-        "name": handler_name,
-        "docs_path": f"docs/{detected}",
-        "store_path": f"rag_store_{detected}.pkl",
-        "simulate_cmd": None,
-        "validation_strategy": "llm_review",
-        "output_type": "file",
-        "keywords": [detected]
-    }
-
-    # Save to handlers.json so it persists across sessions
-    try:
-        with open(HANDLERS_CONFIG_PATH, "w") as f:
-            json.dump(handlers, f, indent=4)
-        print(f"STEP:Added {handler_name} to handlers config", flush=True)
-    except Exception as e:
-        print(f"WARNING: Could not save to handlers.json: {e}", flush=True)
-
-    return detected, handlers
-
-
 # ----------- SUFFICIENCY CHECK -------------
+SUFFICIENCY_PROMPT = """You are BioBot, an expert assistant in lab automation and liquid handling robots.
+ 
+Your job is to check whether a user's protocol request contains enough information to generate a working script.
+ 
+If the request has enough information (considering the full conversation history), reply with exactly: SUFFICIENT
+ 
+If information is missing, you MUST ask ALL your questions AT ONCE in a single response. Do NOT hold back questions for follow-ups — ask everything you need in one shot so the user only has to answer once, then code generates immediately.
+ 
+Reply with ONLY a valid JSON object (no markdown, no explanation) following this EXACT structure:
+ 
+{
+  "message": "A short friendly message explaining what you need",
+  "questions": [
+    {
+      "id": "unique_id",
+      "question": "The question text",
+      "type": "single or multiple",
+      "options": [
+        {"value": "internal_value", "label": "Display label shown to user"},
+        {"value": "another_value", "label": "Another option"}
+      ],
+      "allow_other": false
+    }
+  ]
+}
+ 
+RULES:
+- NEVER ask about information the user already provided. Read the conversation carefully. If the user named their robot, do NOT ask which platform. If they mentioned a pipette, do NOT ask which pipette. Only ask what is genuinely missing.
+- ASK EVERYTHING AT ONCE. After the user answers, code generates immediately. No follow-up rounds.
+- Ask which software/API interface the user uses if it is not specified.
+- "type": "single" = user picks ONE option (radio buttons).
+- "type": "multiple" = user picks ONE OR MORE (checkboxes).
+- "allow_other": true = adds a text field for custom answers.
+- Include practical, common options with reasonable defaults.
+- For pipettes: include volume ranges in labels.
+- For labware: include well counts and volumes.
+- ALWAYS include this as the LAST question to let the user add optional details:
+  {"id": "remarks", "question": "Any additional specifications or remarks? (optional — leave empty if none)", "type": "single", "options": [{"value": "none", "label": "No, generate the protocol"}], "allow_other": true}
+- Return ONLY "SUFFICIENT" or the JSON. Nothing else.
+"""
+ 
+ 
 def check_sufficient_info(query, history, api_key):
+    """
+    Check if the user's request has enough info for code generation.
+    If not, output structured questions as JSON for the frontend to render.
+    """
+    import json
+    import sys
+ 
+    # Skip if the user already answered structured questions
+    if query.strip().startswith("[PROTOCOL_PARAMS]"):
+        return
+ 
+    # Also skip if any recent message in history contains answered params
+    for m in (history or [])[-3:]:
+        if m.get("role") == "user" and "[PROTOCOL_PARAMS]" in m.get("content", ""):
+            return
+ 
     client = get_openai_client(api_key)
-
-    recent = [m for m in history if m["role"] != "system"][-8:]
+ 
+    recent = [m for m in history if m["role"] != "system"][-6:]
     conversation = "\n".join(
-        f"{'User' if m['role'] == 'user' else 'Assistant'}: {m['content'][:500]}"
+        f"{'User' if m['role'] == 'user' else 'Assistant'}: {m['content'][:400]}"
         for m in recent
     )
-
+ 
     response = client.responses.create(
-        model="gpt-4o-mini",
+        model=light_functions_model,
         input=[
-            {
-                "role": "system",
-                "content": """You are BioBot, an expert assistant in lab automation and liquid handling robots.
-
-DO NOT GENERATE CODE, your job is only to check whether a user's protocol request contains enough information to generate a working script.
-
-If you judge that there are enough infomations in the whole conversation, cause you were given the conversation history for that, ONLY reply with exactly: SUFFICIENT , nothing more.
-Ask kindly for more informations if you assume that there are not enough informations in order to generate the code. You are specialized, you know what informations to ask depending on the user query. 
-Always suggest kindly a default set up in order to help the user when he does not provide you with sufficient informations.
-If the user asks you to use a default set up, complete a setup, choose some parameters along with the infos he gave you, do it and don't ask for informations then. This means that you will reply ONLY with exactly : SUFFICIENT."""
-            },
-            {
-                "role": "user",
-                "content": f"Conversation so far:\n{conversation}\n\nLatest request: {query}"
-            }
-        ]
+            {"role": "system", "content": SUFFICIENCY_PROMPT},
+            {"role": "user", "content": f"Conversation so far:\n{conversation}\n\nLatest request: {query}"}
+        ],
     )
-
+ 
     answer = response.output_text.strip()
-    if answer != "SUFFICIENT":
-        print(answer, flush=True)
-        sys.exit(0)
+ 
+    if answer == "SUFFICIENT":
+        return  # Continue to code generation
+ 
+    # Try to parse as structured questions JSON
+    try:
+        # Clean markdown fences if present
+        cleaned = answer
+        if cleaned.startswith("```"):
+            cleaned = cleaned.split("\n", 1)[1] if "\n" in cleaned else cleaned[3:]
+        if cleaned.endswith("```"):
+            cleaned = cleaned[:-3].strip()
+        if cleaned.startswith("json"):
+            cleaned = cleaned[4:].strip()
+ 
+        questions = json.loads(cleaned)
+ 
+        # Validate structure
+        if "questions" in questions and isinstance(questions["questions"], list):
+            # Output as structured questions marker
+            print("QUESTIONS:" + json.dumps(questions), flush=True)
+            sys.exit(0)
+    except (json.JSONDecodeError, KeyError):
+        pass
+ 
+    # Fallback: output as plain text (old behavior)
+    print(answer, flush=True)
+    sys.exit(0)
 
 
 def consolidate_request(query, history, api_key):
@@ -206,7 +159,7 @@ def consolidate_request(query, history, api_key):
     )
 
     response = client.responses.create(
-        model="gpt-4o-mini",
+        model=light_functions_model,
         input=[
             {
                 "role": "system",
@@ -248,7 +201,7 @@ def get_text_embedding_with_retry(text, retries=5, delay=2):
 
 
 # ----------- COMPLETION -------------
-def run_gpt(user_message, model="gpt-5.5"):
+def run_gpt(user_message, model=biobot_model):
     client = get_openai_client(user_api_key)
     messages = [
         {
@@ -282,13 +235,29 @@ def validate_simulation(code, handler_config, save_path="generated_script.py"):
     with open(save_path, "w") as f:
         f.write(code)
 
-    result = subprocess.run(simulate_cmd + [save_path], capture_output=True, text=True)
-    stdout, stderr = result.stdout, result.stderr
+    full_cmd = simulate_cmd + [save_path]
+    print(f"STEP:Running simulation: {' '.join(full_cmd)}", flush=True)
 
-    if "Error" not in stderr and "Traceback" not in stderr and stdout.strip():
+    try:
+        result = subprocess.run(
+            full_cmd,
+            capture_output=True, text=True, timeout=120
+        )
+    except subprocess.TimeoutExpired:
+        return False, "Simulation timed out after 120 seconds."
+
+    # Primary check: return code (0 = success for any CLI tool)
+    if result.returncode == 0:
+        print(f"STEP:Simulation passed (exit code 0)", flush=True)
         return True, ""
-    else:
-        return False, stderr.strip()
+
+    # Non-zero return code — build useful feedback from stderr + stdout
+    feedback_parts = []
+    if result.stderr.strip():
+        feedback_parts.append(result.stderr.strip())
+    if result.stdout.strip():
+        feedback_parts.append(result.stdout.strip())
+    return False, "\n".join(feedback_parts) if feedback_parts else "Simulation failed (non-zero exit code)."
 
 
 def validate_llm_review(code, handler_config, context_chunks, question):
@@ -304,7 +273,7 @@ def validate_llm_review(code, handler_config, context_chunks, question):
 
     client = get_openai_client(user_api_key)
     response = client.responses.create(
-        model="gpt-5.4",
+        model=biobot_model,
         tools=[{"type": "web_search"}],
         input=[
             {
@@ -408,7 +377,7 @@ def load_or_build_index(handler_id, handler_config, chunk_size=3000):
         if os.path.exists(docs_path):
             for root, dirs, files in os.walk(docs_path):
                 for f in files:
-                    if os.path.splitext(f)[1].lower() in ('.rst', '.pdf', '.txt'):
+                    if os.path.splitext(f)[1].lower() in get_supported_extensions():
                         has_local_docs = True
                         break
                 if has_local_docs:
@@ -456,7 +425,7 @@ def load_or_build_index(handler_id, handler_config, chunk_size=3000):
 
 
 # ----------- MAIN PIPELINE -------------
-def run_query_and_fix(question, chunks, chunk_sources, index, handler_config, max_attempts=3):
+def run_query_and_fix(question, chunks, chunk_sources, index, handler_config, max_attempts=5):
     print("STEP:Analyzing your request...", flush=True)
     question_embedding = np.array([get_text_embedding_with_retry(question)])
 
@@ -469,14 +438,8 @@ def run_query_and_fix(question, chunks, chunk_sources, index, handler_config, ma
     handler_name = handler_config["name"]
     strategy = handler_config.get("validation_strategy", "llm_review")
     output_type = handler_config.get("output_type", "script")
-    
-    prompt_nodoc = f"""
-Given your prior knowledge, answer the query.
-Generate a complete, functional {output_type} script for the {handler_name} platform.
-Query: {question}
-"""
 
-    prompt = f"""
+    prompt_rag = f"""
 Context information is below.
 ---------------------
 {context}
@@ -494,14 +457,13 @@ Query: {question}
     for attempt in range(1, max_attempts + 1):
         
         if attempt == 1:
-            response = run_gpt(prompt_nodoc)
-            code = response
-        
+            response = run_gpt(prompt_rag)
+            code = strip_code_fences(response)
+
         else:
-            
             response = run_gpt(prompt)
-            code = response
-            
+            code = strip_code_fences(response)
+
         if not code:
             break
 
@@ -561,8 +523,29 @@ if not os.environ.get("BIOBOT_SKIP_SUFFICIENT_CHECK"):
 # 2. Consolidate the request
 consolidated_query = consolidate_request(user_query, chat_history, user_api_key)
 
+# 2b. Feasibility check — is the protocol physically/logically possible?
+print("STEP:Checking protocol feasibility...", flush=True)
+feasibility_result = check_feasibility(consolidated_query, user_api_key)
+
+if feasibility_result is not None:
+    if not feasibility_result.get("feasible"):
+        # Protocol is NOT feasible — tell user and stop
+        print(format_feasibility_response(feasibility_result), flush=True)
+        sys.exit(0)
+    else:
+        # Feasible with warnings — print them inline and continue
+        warnings_msg = format_feasibility_response(feasibility_result)
+        print(warnings_msg, flush=True)
+
 # 3. Detect which handler the user needs
-handler_id, handlers = detect_handler(user_query, chat_history, user_api_key)
+handler_id, handlers = detect_handler(consolidated_query, chat_history, user_api_key)
+if handler_id is None:
+    print("QUESTIONS:" + json.dumps({
+        "message": "Which robot or instrument should this protocol use?",
+        "questions": [{"id": "platform", "question": "Robot/instrument and model",
+                       "type": "single", "options": []}]
+    }), flush=True)
+    sys.exit(0)
 handler_config = handlers[handler_id]
 print(f"STEP:Detected platform: {handler_config['name']}", flush=True)
 time.sleep(1)
