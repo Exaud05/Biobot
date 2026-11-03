@@ -115,6 +115,11 @@ if (sidebarOverlay) {
 }
 
 // --- Escape HTML ---
+// Fix invalid JSON from LLMs (trailing commas before ] or })
+function fixTrailingCommas(jsonStr) {
+  return jsonStr.replace(/,\s*([\]}])/g, '$1');
+}
+
 function escapeHtml(unsafe) {
   return unsafe
     .replace(/&/g, "&amp;")
@@ -281,14 +286,14 @@ function buildCodeBlock(code, format = "python") {
 }
 
 // --- Create a message element ---
-function addMessage(text, sender) {
+function addMessage(text, sender, messageId = null) {
   const div = document.createElement("div");
   div.className = `chat-message ${sender === "user" ? "chat-user" : "chat-bot"}`;
   chatHistoryElem.appendChild(div);
   scrollToBottom();
 
   if (sender === "user") {
-    div.textContent = text;
+    renderUserMessage(div, text, messageId);
     scrollToBottom();
     return div;
   }
@@ -296,6 +301,92 @@ function addMessage(text, sender) {
   // For bot: initially empty, we'll stream into this div
   div._buffer = "";
   return div;
+}
+
+// --- Edit a saved prompt and regenerate its continuation ---
+function renderUserMessage(div, text, messageId) {
+  div.replaceChildren();
+  const content = document.createElement("div");
+  content.className = "user-message-content";
+  content.textContent = text.replace(/^\[PROTOCOL_PARAMS\]\n?/, "");
+  div.appendChild(content);
+  if (!messageId) return;
+
+  const editBtn = document.createElement("button");
+  editBtn.className = "message-edit-btn";
+  editBtn.title = "Edit prompt";
+  editBtn.setAttribute("aria-label", "Edit prompt");
+  editBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-12 12-6 1 1-6Z"/><path d="m14 5 5 5"/></svg>';
+  editBtn.addEventListener("click", () => {
+    if (isTyping) return;
+    const chatId = currentChatId;
+    const textarea = document.createElement("textarea");
+    textarea.className = "message-edit-input";
+    textarea.setAttribute("aria-label", "Edit your prompt");
+    textarea.value = content.textContent;
+    const note = document.createElement("div");
+    note.className = "message-edit-note";
+    note.textContent = "Saving replaces the replies and messages after this prompt.";
+    const actions = document.createElement("div");
+    actions.className = "message-edit-actions";
+    const save = document.createElement("button");
+    save.className = "message-edit-btn";
+    save.title = "Save & regenerate";
+    save.setAttribute("aria-label", "Save & regenerate");
+    save.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>';
+    save.addEventListener("click", () => {
+      const edited = textarea.value.trim();
+      if (!edited || isTyping || currentChatId !== chatId) return;
+      const message = text.startsWith("[PROTOCOL_PARAMS]") ? "[PROTOCOL_PARAMS]\n" + edited : edited;
+      sendMessage({ message, messageId, div });
+    });
+    const cancel = document.createElement("button");
+    cancel.className = "message-edit-btn";
+    cancel.title = "Cancel editing";
+    cancel.setAttribute("aria-label", "Cancel editing");
+    cancel.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg>';
+    cancel.addEventListener("click", () => renderUserMessage(div, text, messageId));
+    textarea.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") cancel.click();
+    });
+    actions.append(save, cancel);
+    const editor = document.createElement("div");
+    editor.className = "user-message-content";
+    editor.appendChild(textarea);
+    div.replaceChildren(editor, note, actions);
+    textarea.focus();
+  });
+  const copyBtn = document.createElement("button");
+  copyBtn.className = "message-edit-btn";
+  copyBtn.title = "Copy prompt";
+  copyBtn.setAttribute("aria-label", "Copy prompt");
+  copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  copyBtn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(content.textContent);
+      copyBtn.title = "Copied!";
+      copyBtn.setAttribute("aria-label", "Copied!");
+      setTimeout(() => {
+        copyBtn.title = "Copy prompt";
+        copyBtn.setAttribute("aria-label", "Copy prompt");
+      }, 1500);
+    } catch (error) {
+      copyBtn.title = "Unable to copy. Please select the text and copy it.";
+    }
+  });
+  const regenerateBtn = document.createElement("button");
+  regenerateBtn.className = "message-edit-btn";
+  regenerateBtn.title = "Regenerate response (replaces following messages)";
+  regenerateBtn.setAttribute("aria-label", "Regenerate response");
+  regenerateBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 7a7 7 0 0 1 11.6-2L20 8M4 16l2.3 3A7 7 0 0 0 17.9 17"/></svg>';
+  regenerateBtn.addEventListener("click", () => {
+    if (isTyping) return;
+    sendMessage({ message: text, messageId, div });
+  });
+  const actions = document.createElement("div");
+  actions.className = "message-edit-actions";
+  actions.append(copyBtn, editBtn, regenerateBtn);
+  div.appendChild(actions);
 }
 
 // --- Append chunk to bot message (handles code blocks) ---
@@ -336,7 +427,7 @@ function appendChunkToBotMessage(div, chunk) {
 
 // --- Load chat history ---
 async function loadChatHistory(chatId) {
-  if (!chatId) return;
+  if (!chatId || isTyping) return;
   currentChatId = chatId;
   localStorage.setItem("lastChatId", chatId);
   chatHistoryElem.innerHTML = "";
@@ -358,12 +449,102 @@ async function loadChatHistory(chatId) {
     }
 
     const messages = await res.json();
-    for (const msg of messages) {
+    for (let msgIdx = 0; msgIdx < messages.length; msgIdx++) {
+      const msg = messages[msgIdx];
       if (msg.role === "user") {
-        addMessage(msg.content, "user", false);
+        // Strip [PROTOCOL_PARAMS] marker for display
+        addMessage(msg.content || "", "user", msg.id);
       } else if (msg.role === "assistant") {
+        const content = msg.content || "";
+
+        // Skip null/empty messages
+        if (!content || content === "null" || content === "None") continue;
+
+        // Skip encrypted-but-unreadable messages
+        if (content.startsWith("gAAAAAB") || content === "[Message encrypted with a previous password]") {
+          const botDiv = addMessage("", "bot");
+          botDiv.innerHTML = `<span style="color:#888;font-style:italic">${content.startsWith("gAAAAAB") ? "[Message from a previous session]" : content}</span>`;
+          continue;
+        }
+
         const botDiv = addMessage("", "bot");
-        appendChunkToBotMessage(botDiv, msg.content);
+
+        // Check for structured questions (with or without markers/fences)
+        if (content.includes("__QUESTIONS__:") || content.includes('"questions"')) {
+          let questionsJson = content;
+          if (questionsJson.includes("__QUESTIONS__:")) {
+            questionsJson = questionsJson.split("__QUESTIONS__:").pop();
+          }
+          questionsJson = questionsJson.replace(/^```\w*\s*\n?/, "").replace(/\n?```\s*$/, "").trim();
+
+          try {
+            const questionsData = JSON.parse(fixTrailingCommas(questionsJson));
+            if (questionsData.questions) {
+              // Look ahead: were these questions already answered?
+              const nextUserMsg = messages.slice(msgIdx + 1).find(m => m.role === "user");
+              const wasAnswered = nextUserMsg && nextUserMsg.content && nextUserMsg.content.includes("[PROTOCOL_PARAMS]");
+
+              if (wasAnswered) {
+                // Show read-only summary of the answers
+                const answersText = nextUserMsg.content.replace(/^\[PROTOCOL_PARAMS\]\n?/, "");
+                const answerLines = answersText.split("\n").filter(l => l.trim());
+
+                let html = `<div class="questions-summary">`;
+                html += `<div class="summary-title">${escapeHtml(questionsData.message || "Your selections:")}</div>`;
+                for (const line of answerLines) {
+                  const qMark = line.indexOf("?");
+                  if (qMark > -1) {
+                    html += `<div class="summary-item"><span class="summary-q">${escapeHtml(line.substring(0, qMark + 1))}</span><span class="summary-a">${escapeHtml(line.substring(qMark + 1).trim())}</span></div>`;
+                  } else {
+                    html += `<div class="summary-item"><span class="summary-a">${escapeHtml(line)}</span></div>`;
+                  }
+                }
+                html += `</div>`;
+                botDiv.innerHTML = html;
+              } else if (window.renderQuestionsForm) {
+                // Not yet answered — show interactive form
+                window.renderQuestionsForm(botDiv, questionsData);
+              }
+              continue;
+            }
+          } catch (e) {
+            // Fall through to regular rendering
+          }
+        }
+
+        // Check for markdown-fenced code blocks
+        const codeBlockRegex = /```(\w*)\s*\n([\s\S]*?)```/g;
+        let match;
+        let lastIndex = 0;
+        let hasCodeBlock = false;
+
+        while ((match = codeBlockRegex.exec(content)) !== null) {
+          hasCodeBlock = true;
+          // Text before the code block
+          const before = content.slice(lastIndex, match.index).trim();
+          if (before) {
+            const textP = document.createElement("p");
+            textP.innerHTML = escapeHtml(before).replace(/\n/g, "<br>");
+            botDiv.appendChild(textP);
+          }
+          // The code block itself
+          const format = match[1] || detectFormat(match[2]);
+          botDiv.appendChild(buildCodeBlock(match[2], format));
+          lastIndex = codeBlockRegex.lastIndex;
+        }
+
+        if (hasCodeBlock) {
+          // Text after the last code block
+          const after = content.slice(lastIndex).trim();
+          if (after) {
+            const textP = document.createElement("p");
+            textP.innerHTML = escapeHtml(after).replace(/\n/g, "<br>");
+            botDiv.appendChild(textP);
+          }
+        } else {
+          // No markdown fences — render as plain text
+          botDiv.innerHTML = escapeHtml(content).replace(/\n/g, "<br>");
+        }
       }
     }
   } catch (e) {
@@ -511,6 +692,7 @@ function selectChatListItem(chatId) {
 
 // --- Create new chat ---
 async function createNewChat() {
+  if (isTyping) return;
   try {
     const res = await fetch("/chat", { method: "POST" });
     if (!res.ok) throw new Error("Error creating chat");
@@ -584,21 +766,25 @@ function typewriterAppend(div, text, delay = 18) {
 }
 
 // --- Send message ---
-async function sendMessage() {
+async function sendMessage(edit = {}) {
   const input = document.getElementById("user-input");
-  const message = input.value.trim();
-  if (!message || !currentChatId) return;
+  const message = edit.message || input.value.trim();
+  if (!message || !currentChatId || isTyping) return;
+  const chatId = currentChatId;
+  isTyping = true;
+  sendBtn.disabled = true;
 
   // User just sent a message — re-enable auto-scroll
   autoScrollEnabled = true;
 
-  addMessage(message, "user");
-  input.value = "";
-  input.style.height = "auto";
+  const userDiv = edit.messageId ? edit.div : addMessage(message, "user");
+  if (!edit.messageId) {
+    input.value = "";
+    input.style.height = "auto";
+  }
 
   const thinkingInterval = addThinkingMessage();
 
-  let apiKey = localStorage.getItem("userApiKey") || "";
   let botDiv = null;
   let firstChunkReceived = false;
   let statusDiv = null;
@@ -606,10 +792,10 @@ async function sendMessage() {
   let finalRagCode = null;
 
   try {
-    const res = await fetch(`/chat/${currentChatId}/stream`, {
+    const res = await fetch(`/chat/${chatId}/stream`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message, api_key: apiKey }),
+      body: JSON.stringify({ message, message_id: edit.messageId }),
     });
 
     // Handle session expiration — show message, then redirect to login
@@ -628,6 +814,21 @@ async function sendMessage() {
       return;
     }
 
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}));
+      throw new Error(error.error || "Unable to send your prompt.");
+    }
+    const messageId = Number(res.headers.get("X-User-Message-Id"));
+    if (edit.messageId) {
+      let next = userDiv.nextElementSibling;
+      while (next) {
+        const following = next.nextElementSibling;
+        if (next.id !== "thinking-message") next.remove();
+        next = following;
+      }
+      if (window.clearDeckPanel) window.clearDeckPanel();
+    }
+    renderUserMessage(userDiv, message, messageId || edit.messageId);
     if (!res.body) throw new Error("No response body");
 
     const reader = res.body.getReader();
@@ -671,8 +872,20 @@ async function sendMessage() {
           botDiv = addMessage("", "bot");
         }
 
+        // --- Structured questions from sufficiency check ---
+        if (contentPart.includes("__QUESTIONS__:")) {
+          const questionsJson = contentPart.split("__QUESTIONS__:").pop().trim();
+          try {
+            const questionsData = JSON.parse(fixTrailingCommas(questionsJson));
+            if (window.renderQuestionsForm) {
+              window.renderQuestionsForm(botDiv, questionsData);
+            }
+          } catch (e) {
+            appendChunkToBotMessage(botDiv, questionsJson);
+          }
+        }
         // --- RAG failure: message + code ---
-        if (contentPart.includes("__FAILED_CODE__:")) {
+        else if (contentPart.includes("__FAILED_CODE__:")) {
           const failedContent = contentPart.split("__FAILED_CODE__:").pop();
           const sepParts = failedContent.split("___CODE_SEP___");
           const message = (sepParts[0] || "").trim();
@@ -711,7 +924,7 @@ async function sendMessage() {
 
     // Parse deck ONCE after streaming is fully complete (final code only)
     if (finalRagCode && window.parseDeckFromCode && finalRagCode.length > 50) {
-      window.parseDeckFromCode(finalRagCode, { chatId: currentChatId, forceReparse: true });
+      window.parseDeckFromCode(finalRagCode);
     }
 
   } catch (err) {
@@ -720,8 +933,13 @@ async function sendMessage() {
     if (thinkingElem) thinkingElem.remove();
 
     const errorDiv = addMessage("", "bot");
-    appendChunkToBotMessage(errorDiv, "Error: Unable to get a response. Please try again.");
+    appendChunkToBotMessage(errorDiv, "Error: " + err.message);
     console.error(err);
+  } finally {
+    clearInterval(thinkingInterval);
+    document.getElementById("thinking-message")?.remove();
+    isTyping = false;
+    sendBtn.disabled = false;
   }
 }
 
