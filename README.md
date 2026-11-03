@@ -203,4 +203,6 @@ LLM review; an administrator can install a simulator and configure `simulate_cmd
 and `validation_strategy` in the runtime registry when needed. Resetting with
 `docker compose down -v` also removes downloaded documentation and the registry.
 
+
+Project group : https://github.com/brsynth/BioBot
 ---
