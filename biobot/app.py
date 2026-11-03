@@ -1,4 +1,4 @@
-__version__ = "1.0.1"
+__version__ = "1.3.0"
 
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session, flash, Response, stream_with_context
 import uuid
@@ -12,35 +12,39 @@ import psycopg2.extras
 import psycopg2.errors
 
 from engine import process_user_query
-from config import get_api_key, get_db_connection
+from config import get_api_key, get_db_connection, biobot_model, get_flask_secret_key
 from crypt import generate_salt, derive_key, encrypt, decrypt
+from handlers import detect_handler, load_handlers_config
 
 # ---------------------
 # App & DB init
 # ---------------------
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "super_secret_key")
-if not app.secret_key:
-    raise RuntimeError(
-        "FLASK_SECRET_KEY environment variable is not set. "
-        "Generate one with: python3 -c 'import secrets; print(secrets.token_hex(32))' "
-        "and add it to your .env file. Never change this value, or all existing "
-        "user sessions will be invalidated."
-    )
+app.secret_key = get_flask_secret_key()
 app.config["SESSION_PERMANENT"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = 86400  # 24 hours in seconds
-
-MODEL_NAME = "gpt-5"
 
 # ---------------------
 # Encryption helpers
 # ---------------------
 def get_encryption_key():
-    """Retrieve the user's encryption key from the session."""
+    """Retrieve the user's encryption key from the session (for API keys only)."""
     key = session.get("encryption_key")
     if key:
         return key.encode("utf-8") if isinstance(key, str) else key
     return None
+
+
+def _get_server_key():
+    """Derive a stable encryption key from FLASK_SECRET_KEY (for chat messages).
+    This key never changes, so messages survive password resets."""
+    if not hasattr(_get_server_key, "_cached"):
+        from crypt import derive_key
+        # Use a fixed salt derived from the secret key itself
+        import hashlib
+        salt = hashlib.sha256(app.secret_key.encode()).hexdigest()[:32]
+        _get_server_key._cached = derive_key(app.secret_key, salt)
+    return _get_server_key._cached
 
 
 def _is_encrypted(text):
@@ -51,7 +55,7 @@ def _is_encrypted(text):
 
 
 def encrypt_text(text):
-    """Encrypt text using the session encryption key."""
+    """Encrypt text using the user's session key (for API keys)."""
     key = get_encryption_key()
     if key and text:
         return encrypt(text, key)
@@ -60,27 +64,56 @@ def encrypt_text(text):
 
 def decrypt_text(ciphertext):
     """
-    Decrypt text using the session encryption key.
+    Decrypt text using the session encryption key. (for API key.)
     - If content is encrypted and key is available → decrypt normally
     - If content is encrypted but key is missing → return None (caller must handle)
     - If content is NOT encrypted (legacy plaintext) → return as-is
     """
     if not ciphertext:
         return ciphertext
-
     if not _is_encrypted(ciphertext):
-        # Legacy unencrypted data — return as-is
         return ciphertext
-
-    # Content is encrypted — we need the key
     key = get_encryption_key()
     if not key:
-        return None  # Signal that decryption failed — caller must handle
-
+        return None
     try:
         return decrypt(ciphertext, key)
     except Exception:
-        return None  # Corrupted or wrong key
+        return None
+
+
+def encrypt_message(text):
+    """Encrypt a chat message using the server key (survives password resets)."""
+    if text:
+        return encrypt(text, _get_server_key())
+    return text
+
+
+def decrypt_message(ciphertext):
+    """
+    Decrypt a chat message. Tries server key first, then user key (migration),
+    then returns the raw text as fallback.
+    """
+    if not ciphertext:
+        return ciphertext
+    if not _is_encrypted(ciphertext):
+        return ciphertext
+
+    # Try server key first (new messages)
+    try:
+        return decrypt(ciphertext, _get_server_key())
+    except Exception:
+        pass
+
+    # Try user key (old messages encrypted before this change)
+    user_key = get_encryption_key()
+    if user_key:
+        try:
+            return decrypt(ciphertext, user_key)
+        except Exception:
+            pass
+
+    return "[Message encrypted with a previous password]"
 
 # ---------------------
 # DB helper wrappers
@@ -136,7 +169,7 @@ def register():
         email = request.form["email"]
         raw_password = request.form["password"]
         password = generate_password_hash(raw_password)
-        api_key = request.form.get("api_key", "").strip() or get_api_key()
+        api_key = request.form.get("api_key", "").strip() or get_api_key(required=False)
         role = request.form.get("role", "")
         country = request.form.get("country", "")
         salt = generate_salt()
@@ -243,6 +276,129 @@ def logout():
 
 
 # ---------------------
+# Password Reset
+# ---------------------
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    if request.method == "GET":
+        return render_template("forgot_password.html")
+
+    email = request.form.get("email", "").strip()
+    if not email:
+        flash("Please enter your email address.", "error")
+        return redirect("/forgot-password")
+
+    conn = None
+    try:
+        conn = get_db_connection()
+        user = fetchone_dict(conn, "SELECT id, first_name FROM users WHERE email = %s", (email,))
+
+        if user:
+            import secrets
+            from datetime import timedelta
+            token = secrets.token_urlsafe(48)
+            expires = datetime.now() + timedelta(hours=1)
+
+            execute(conn,
+                "DELETE FROM password_reset_tokens WHERE user_id = %s AND used = FALSE",
+                (user["id"],), commit=True)
+
+            execute(conn,
+                "INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES (%s, %s, %s)",
+                (user["id"], token, expires), commit=True)
+
+            try:
+                from email_service import send_password_reset_email, is_email_configured
+                if is_email_configured():
+                    reset_url = request.host_url.rstrip("/") + f"/reset-password/{token}"
+                    send_password_reset_email(email, reset_url, user.get("first_name", ""))
+                else:
+                    print(f"SMTP not configured. Reset token for {email}: {token}")
+            except Exception as e:
+                print(f"Email send error: {e}")
+
+    except Exception as e:
+        print(f"Forgot password error: {e}")
+    finally:
+        if conn:
+            conn.close()
+
+    flash("If an account with that email exists, we've sent a password reset link.", "success")
+    return redirect("/forgot-password")
+
+
+@app.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    conn = None
+    try:
+        conn = get_db_connection()
+        row = fetchone_dict(conn,
+            """SELECT t.id, t.user_id, t.expires_at, t.used, u.email
+               FROM password_reset_tokens t
+               JOIN users u ON t.user_id = u.id
+               WHERE t.token = %s""",
+            (token,))
+    finally:
+        if conn:
+            conn.close()
+
+    if not row:
+        flash("Invalid or expired reset link.", "error")
+        return redirect("/forgot-password")
+    if row["used"]:
+        flash("This reset link has already been used.", "error")
+        return redirect("/forgot-password")
+    if row["expires_at"] < datetime.now():
+        flash("This reset link has expired. Please request a new one.", "error")
+        return redirect("/forgot-password")
+
+    if request.method == "GET":
+        return render_template("reset_password.html", token=token)
+
+    new_password = request.form.get("password", "")
+    confirm_password = request.form.get("confirm_password", "")
+
+    if not new_password or len(new_password) < 6:
+        flash("Password must be at least 6 characters.", "error")
+        return redirect(f"/reset-password/{token}")
+    if new_password != confirm_password:
+        flash("Passwords do not match.", "error")
+        return redirect(f"/reset-password/{token}")
+
+    conn = None
+    try:
+        conn = get_db_connection()
+        new_hash = generate_password_hash(new_password)
+
+        # Re-encrypt the default API key with the new password
+        new_salt = generate_salt()
+        new_enc_key = derive_key(new_password, new_salt)
+        default_api_key = get_api_key(required=False)
+        encrypted_default = encrypt(default_api_key, new_enc_key)
+
+        execute(conn,
+            "UPDATE users SET password = %s, api_key = %s, encryption_salt = %s WHERE id = %s",
+            (new_hash, encrypted_default, new_salt, row["user_id"]),
+            commit=True)
+
+        execute(conn,
+            "UPDATE password_reset_tokens SET used = TRUE WHERE id = %s",
+            (row["id"],), commit=True)
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(f"Password reset error: {e}")
+        flash("An error occurred. Please try again.", "error")
+        return redirect(f"/reset-password/{token}")
+    finally:
+        if conn:
+            conn.close()
+
+    flash("Password reset successful! You can now log in with your new password.", "success")
+    return redirect("/login")
+
+
+# ---------------------
 # Main routes
 # ---------------------
 @app.route("/")
@@ -285,21 +441,21 @@ def create_chat():
         conn = get_db_connection()
         execute(conn,
             "INSERT INTO chat_names (chat_id, user_id, name) VALUES (%s, %s, %s)",
-            (chat_id, user_id, encrypt_text(title)),
+            (chat_id, user_id, encrypt_message(title)),
             commit=True
         )
 
         system_message = SYSTEM_PROMPT["content"]
         execute(conn,
             "INSERT INTO chat_history (user_id, chat_id, role, content) VALUES (%s, %s, %s, %s)",
-            (user_id, chat_id, "system", encrypt_text(system_message)),
+            (user_id, chat_id, "system", encrypt_message(system_message)),
             commit=True
         )
 
         intro_message = "Hello, I'm Biobot 🤖 — your assistant specialized in lab automation."
         execute(conn,
             "INSERT INTO chat_history (user_id, chat_id, role, content) VALUES (%s, %s, %s, %s)",
-            (user_id, chat_id, "assistant", encrypt_text(intro_message)),
+            (user_id, chat_id, "assistant", encrypt_message(intro_message)),
             commit=True
         )
     except Exception as e:
@@ -338,7 +494,7 @@ def chat(chat_id):
         # insert user message (encrypted)
         execute(conn,
             "INSERT INTO chat_history (user_id, chat_id, role, content, created_at) VALUES (%s, %s, %s, %s, %s)",
-            (user_id, chat_id, "user", encrypt_text(user_message), datetime.now().isoformat()),
+            (user_id, chat_id, "user", encrypt_message(user_message), datetime.now().isoformat()),
             commit=True
         )
 
@@ -354,10 +510,10 @@ def chat(chat_id):
             conn.close()
 
     user_api_key = decrypt_text(user["api_key"]) if user and user.get("api_key") else None
-    messages = [{"role": r["role"], "content": decrypt_text(r["content"])} for r in rows]
+    messages = [{"role": r["role"], "content": decrypt_message(r["content"])} for r in rows]
 
     # call your engine
-    bot_reply = process_user_query(user_message, messages, MODEL_NAME, api_key=user_api_key)
+    bot_reply = process_user_query(user_message, messages, biobot_model, api_key=user_api_key)
 
     # save bot response (encrypted)
     conn = None
@@ -365,20 +521,20 @@ def chat(chat_id):
         conn = get_db_connection()
         execute(conn,
             "INSERT INTO chat_history (user_id, chat_id, role, content, created_at) VALUES (%s, %s, %s, %s, %s)",
-            (user_id, chat_id, "assistant", encrypt_text(bot_reply), datetime.now().isoformat()),
+            (user_id, chat_id, "assistant", encrypt_message(bot_reply), datetime.now().isoformat()),
             commit=True
         )
 
         # rename chat if still "New chat"
         title_row = fetchone_dict(conn, "SELECT name FROM chat_names WHERE chat_id = %s AND user_id = %s", (chat_id, user_id))
-        if title_row and decrypt_text(title_row.get("name")) == "New chat":
+        if title_row and decrypt_message(title_row.get("name")) == "New chat":
             preview_words = user_message.strip().split()
             preview = " ".join(preview_words[:5])
             if len(preview_words) > 5:
                 preview += "..."
             execute(conn,
                 "UPDATE chat_names SET name = %s WHERE chat_id = %s AND user_id = %s",
-                (encrypt_text(preview), chat_id, user_id),
+                (encrypt_message(preview), chat_id, user_id),
                 commit=True
             )
     except Exception as e:
@@ -398,10 +554,18 @@ def chat_stream(chat_id):
     if not user_id:
         return jsonify({"error": "Not logged in"}), 403
 
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     user_message = data.get("message")
-    if not user_message:
+    if not isinstance(user_message, str) or not user_message.strip():
         return jsonify({"error": "Message required"}), 400
+    user_message = user_message.strip()
+    edit_id = data.get("message_id")
+    if edit_id is not None and (type(edit_id) is not int or edit_id <= 0):
+        return jsonify({"error": "Invalid message ID"}), 400
+
+    if not get_encryption_key():
+        session.clear()
+        return jsonify({"error": "Your session has expired. Please log in again."}), 401
 
     conn = None
     try:
@@ -409,21 +573,37 @@ def chat_stream(chat_id):
 
         # verify chat exists
         chat_exists = fetchone_dict(conn,
-            "SELECT 1 FROM chat_names WHERE chat_id = %s AND user_id = %s",
+            "SELECT 1 FROM chat_names WHERE chat_id = %s AND user_id = %s FOR UPDATE",
             (chat_id, user_id)
         )
         if not chat_exists:
             return jsonify({"error": "Chat not found"}), 404
 
-        # insert user message immediately (encrypted)
-        execute(conn,
-            """
-            INSERT INTO chat_history (user_id, chat_id, role, content, created_at)
-            VALUES (%s, %s, %s, %s, %s)
-            """,
-            (user_id, chat_id, "user", encrypt_text(user_message), datetime.now().isoformat()),
-            commit=True
-        )
+        user = fetchone_dict(conn, "SELECT api_key FROM users WHERE id = %s", (user_id,))
+        user_api_key = decrypt_text(user["api_key"]) if user and user.get("api_key") else None
+        if not user_api_key or not user_api_key.startswith("sk-"):
+            return jsonify({"error": "Please add a valid OpenAI API key in Settings."}), 400
+
+        encrypted_prompt = encrypt_message(user_message)
+        if edit_id is not None:
+            target = fetchone_dict(conn,
+                "SELECT id FROM chat_history WHERE id = %s AND chat_id = %s AND user_id = %s AND role = 'user' FOR UPDATE",
+                (edit_id, chat_id, user_id))
+            if not target:
+                return jsonify({"error": "Message not found"}), 404
+            execute(conn,
+                "UPDATE chat_history SET content = %s WHERE id = %s AND chat_id = %s AND user_id = %s",
+                (encrypted_prompt, edit_id, chat_id, user_id))
+            execute(conn,
+                "DELETE FROM chat_history WHERE chat_id = %s AND user_id = %s AND id > %s",
+                (chat_id, user_id, edit_id))
+            message_id = edit_id
+            conn.commit()
+        else:
+            row = execute(conn,
+                "INSERT INTO chat_history (user_id, chat_id, role, content) VALUES (%s, %s, 'user', %s) RETURNING id",
+                (user_id, chat_id, encrypted_prompt), commit=True, returning=True)
+            message_id = row["id"]
 
         # ensure intro message exists (only once per chat)
         # Count assistant messages instead of LIKE match (content is encrypted)
@@ -438,7 +618,7 @@ def chat_stream(chat_id):
                 INSERT INTO chat_history (user_id, chat_id, role, content, created_at)
                 VALUES (%s, %s, %s, %s, %s)
                 """,
-                (user_id, chat_id, "assistant", encrypt_text(intro_message), datetime.now().isoformat()),
+                (user_id, chat_id, "assistant", encrypt_message(intro_message), datetime.now().isoformat()),
                 commit=True
             )
 
@@ -448,43 +628,16 @@ def chat_stream(chat_id):
             SELECT role, content
             FROM chat_history
             WHERE user_id = %s AND chat_id = %s
-            ORDER BY created_at
+            ORDER BY id
             """,
             (user_id, chat_id)
         )
 
-        user = fetchone_dict(conn, "SELECT api_key FROM users WHERE id = %s", (user_id,))
     finally:
         if conn:
             conn.close()
 
-    # --- Validate session and encryption BEFORE any decryption ---
-    enc_key = get_encryption_key()
-    if not enc_key:
-        # Session lost — clear it and tell the frontend
-        session.clear()
-        return jsonify({"error": "Your session has expired. Please log in again."}), 401
-
-    # Decrypt API key first — it's the clearest test of whether encryption is working
-    user_api_key = decrypt_text(user["api_key"]) if user and user.get("api_key") else None
-
-    if not user_api_key:
-        return Response(
-            "No API key found. Please add your OpenAI API key in Settings.",
-            mimetype="text/plain"
-        )
-
-    if not user_api_key.startswith("sk-"):
-        # Decryption failed — the key was encrypted with a different encryption key.
-        # This happens when the encryption salt was regenerated. Instead of locking
-        # the user out, ask them to re-enter their API key.
-        return Response(
-            "Your API key could not be read. Please update it in Settings.",
-            mimetype="text/plain"
-        )
-
-    # Decrypt chat history for the LLM (enc_key is validated above, so this is safe)
-    messages = [{"role": r["role"], "content": decrypt_text(r["content"])} for r in rows]
+    messages = [{"role": r["role"], "content": decrypt_message(r["content"])} for r in rows]
 
     # ---- STREAM RESPONSE ----
     def generate():
@@ -495,7 +648,7 @@ def chat_stream(chat_id):
         from engine import RAG_STATUS_PREFIX, FAILED_CODE_MARKER, FORMAT_MARKER
         
         try:
-            result = process_user_query(user_message, messages, MODEL_NAME, api_key=user_api_key)
+            result = process_user_query(user_message, messages, biobot_model, api_key=user_api_key)
             if result is None:
                 yield "Sorry, I couldn't process your request. Please try again."
                 return
@@ -523,6 +676,10 @@ def chat_stream(chat_id):
             error_msg = str(e).lower()
             if "auth" in error_msg or "api key" in error_msg or "401" in error_msg or "403" in error_msg:
                 yield "Your API key appears to be invalid or expired. Please update it in Settings."
+            elif "credit_balance_exhausted" in error_msg:
+                yield "Your OpenAI API account has no credits remaining. Add credits in OpenAI billing, or use another API key in Settings."
+            elif any(code in error_msg for code in ("insufficient_quota", "spend_limit_exceeded", "usage_limit_exceeded")):
+                yield "Your OpenAI API account has reached its billing or usage limit. Check your OpenAI billing and limits, or use another API key in Settings."
             elif "rate limit" in error_msg or "429" in error_msg:
                 yield "Rate limit reached. Please wait a moment and try again."
             elif "model" in error_msg or "404" in error_msg:
@@ -560,8 +717,8 @@ def chat_stream(chat_id):
 
                 # else: normal text (general/out response) — save as-is
 
-            # Encrypt before saving
-            encrypted_content = encrypt(save_content, enc_key) if enc_key and save_content else save_content
+            # Encrypt before saving (using server key — survives password resets)
+            encrypted_content = encrypt_message(save_content)
 
             # Save assistant message after streaming finishes
             conn2 = None
@@ -570,9 +727,14 @@ def chat_stream(chat_id):
                 execute(conn2,
                     """
                     INSERT INTO chat_history (user_id, chat_id, role, content, created_at)
-                    VALUES (%s, %s, %s, %s, %s)
+                    SELECT %s, %s, %s, %s, %s
+                    WHERE EXISTS (
+                        SELECT 1 FROM chat_history
+                        WHERE id = %s AND chat_id = %s AND user_id = %s AND content = %s
+                    )
                     """,
-                    (user_id, chat_id, "assistant", encrypted_content, datetime.now().isoformat()),
+                    (user_id, chat_id, "assistant", encrypted_content, datetime.now().isoformat(),
+                     message_id, chat_id, user_id, encrypted_prompt),
                     commit=True
                 )
 
@@ -582,16 +744,15 @@ def chat_stream(chat_id):
                     (chat_id, user_id)
                 )
                 if title_row:
-                    decrypted_name = decrypt(title_row["name"], enc_key) if enc_key else title_row["name"]
+                    decrypted_name = decrypt_message(title_row["name"])
                     if decrypted_name == "New chat":
                         preview_words = user_message.strip().split()
                         preview = " ".join(preview_words[:5])
                         if len(preview_words) > 5:
                             preview += "..."
-                        encrypted_preview = encrypt(preview, enc_key) if enc_key else preview
                         execute(conn2,
                             "UPDATE chat_names SET name = %s WHERE chat_id = %s AND user_id = %s",
-                            (encrypted_preview, chat_id, user_id),
+                            (encrypt_message(preview), chat_id, user_id),
                             commit=True
                         )
 
@@ -608,6 +769,7 @@ def chat_stream(chat_id):
         stream_with_context(generate()),
         mimetype="text/plain",
         headers={
+            "X-User-Message-Id": str(message_id),
             "Cache-Control": "no-cache",
             "X-Accel-Buffering": "no",        # Disable nginx buffering
             "Transfer-Encoding": "chunked",
@@ -625,14 +787,14 @@ def get_history(chat_id):
     try:
         conn = get_db_connection()
         rows = fetchall_dict(conn,
-            "SELECT role, content FROM chat_history WHERE user_id = %s AND chat_id = %s ORDER BY created_at",
+            "SELECT id, role, content FROM chat_history WHERE user_id = %s AND chat_id = %s ORDER BY id",
             (user_id, chat_id)
         )
     finally:
         if conn:
             conn.close()
 
-    visible_messages = [{"role": r["role"], "content": decrypt_text(r["content"])} for r in rows if r["role"] != "system"]
+    visible_messages = [{"id": r["id"], "role": r["role"], "content": decrypt_message(r["content"])} for r in rows if r["role"] != "system"]
     return jsonify(visible_messages)
 
 
@@ -681,7 +843,7 @@ def list_chats():
         if conn:
             conn.close()
 
-    return jsonify([{"chat_id": r["chat_id"], "name": decrypt_text(r["name"])} for r in rows])
+    return jsonify([{"chat_id": r["chat_id"], "name": decrypt_message(r["name"])} for r in rows])
 
 
 @app.route("/chat/<chat_id>/rename", methods=["POST"])
@@ -700,7 +862,7 @@ def rename_chat(chat_id):
         conn = get_db_connection()
         execute(conn,
             "UPDATE chat_names SET name = %s WHERE chat_id = %s AND user_id = %s",
-            (encrypt_text(new_name), chat_id, user_id),
+            (encrypt_message(new_name), chat_id, user_id),
             commit=True
         )
     finally:
@@ -781,21 +943,18 @@ def update_user_profile():
 # ---------------------
 # Deck visualizer route
 # ---------------------
-@app.route("/deck/parse", methods=["POST"])
-def parse_deck():
-    """Parse protocol code and return visualization state JSON."""
+@app.route("/deck/visualize", methods=["POST"])
+def visualize_deck():
+    """Extract deck state JSON from any protocol code using the LLM."""
     user_id = session.get("user")
     if not user_id:
         return jsonify({"error": "Not logged in"}), 403
 
     data = request.get_json()
     code = data.get("code", "")
-    context = data.get("context", "")
-    chat_id = data.get("chat_id", "")
     if not code:
         return jsonify({"error": "No code provided"}), 400
 
-    # Get user API key for LLM fallback
     user_api_key = None
     conn = None
     try:
@@ -809,114 +968,101 @@ def parse_deck():
         if conn:
             conn.close()
 
-    from deck_parser import parse_any
+    from deck_visualizer import generate_visualization
     try:
-        state = parse_any(code, context=context, api_key=user_api_key)
-
-        # Save to DB if we have a chat_id
-        if chat_id and not state.get("error"):
-            _save_deck_state(chat_id, state)
-
+        state = generate_visualization(code, api_key=user_api_key)
         return jsonify(state)
     except Exception as e:
-        return jsonify({"error": f"Parse error: {str(e)}"}), 400
+        return jsonify({"error": f"Visualization error: {str(e)}"}), 400
 
 
-@app.route("/deck/state/<chat_id>", methods=["GET"])
-def get_deck_state(chat_id):
-    """Retrieve saved deck state for a chat."""
-    user_id = session.get("user")
-    if not user_id:
-        return jsonify({"error": "Not logged in"}), 403
-
-    conn = None
-    try:
-        conn = get_db_connection()
-        # Verify chat belongs to user
-        chat = fetchone_dict(conn,
-            "SELECT 1 FROM chat_names WHERE chat_id = %s AND user_id = %s",
-            (chat_id, user_id))
-        if not chat:
-            return jsonify({"error": "Chat not found"}), 404
-
-        row = fetchone_dict(conn,
-            "SELECT deck_state FROM deck_states WHERE chat_id = %s",
-            (chat_id,))
-    finally:
-        if conn:
-            conn.close()
-
-    if row and row.get("deck_state"):
-        import json
-        try:
-            return jsonify(json.loads(row["deck_state"]))
-        except Exception:
-            return jsonify({"error": "Corrupt deck state"}), 500
-
-    return jsonify({"error": "No saved deck state"}), 404
-
-
-@app.route("/deck/state/<chat_id>", methods=["POST"])
-def save_deck_state_route(chat_id):
-    """Save/update deck state for a chat."""
+@app.route("/deck/update", methods=["POST"])
+def update_deck():
+    """Apply batched deck changes to code using the LLM, then re-extract state."""
     user_id = session.get("user")
     if not user_id:
         return jsonify({"error": "Not logged in"}), 403
 
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "No data"}), 400
+    code = data.get("code", "")
+    changes = data.get("changes", [])
+    if not code or not changes:
+        return jsonify({"error": "Missing code or changes"}), 400
 
-    _save_deck_state(chat_id, data)
-    return jsonify({"success": True})
-
-
-def _save_deck_state(chat_id, state):
-    """Helper to upsert deck state in DB."""
-    import json
+    user_api_key = None
     conn = None
     try:
         conn = get_db_connection()
-        execute(conn,
-            """INSERT INTO deck_states (chat_id, deck_state, created_at)
-               VALUES (%s, %s, NOW())
-               ON CONFLICT (chat_id)
-               DO UPDATE SET deck_state = EXCLUDED.deck_state, created_at = NOW()""",
-            (chat_id, json.dumps(state)),
-            commit=True)
-    except Exception as e:
-        if conn:
-            conn.rollback()
-        print(f"Save deck state error: {e}")
+        user = fetchone_dict(conn, "SELECT api_key FROM users WHERE id = %s", (user_id,))
+        if user and user.get("api_key"):
+            user_api_key = decrypt_text(user["api_key"])
+    except Exception:
+        pass
     finally:
         if conn:
             conn.close()
 
+    from deck_visualizer import update_code_from_changes, generate_visualization
+    try:
+        updated_code = update_code_from_changes(code, changes, api_key=user_api_key)
+        new_state = generate_visualization(updated_code, api_key=user_api_key)
+        return jsonify({"code": updated_code, "state": new_state})
+    except Exception as e:
+        return jsonify({"error": f"Update error: {str(e)}"}), 400
 
-@app.route("/deck/generate", methods=["POST"])
-def generate_deck_code():
-    """Update code based on deck changes."""
+
+@app.route("/deck/catalog", methods=["POST"])
+def deck_catalog():
+    """Get compatible hardware options for a deck position (LLM-driven)."""
     user_id = session.get("user")
     if not user_id:
         return jsonify({"error": "Not logged in"}), 403
 
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "No data provided"}), 400
+    platform = data.get("platform", "")
+    position_type = data.get("position_type", "labware")
+    current = data.get("current", None)
 
-    from deck_parser import update_slots_in_code
+    if not platform:
+        return jsonify({"error": "Platform required"}), 400
 
-    original_code = data.get("original_code", "")
-    slot_changes = data.get("slot_changes", {})
-
+    user_api_key = None
+    conn = None
     try:
-        if original_code and slot_changes:
-            code = update_slots_in_code(original_code, slot_changes)
-        else:
-            code = original_code
-        return jsonify({"code": code})
+        conn = get_db_connection()
+        user = fetchone_dict(conn, "SELECT api_key FROM users WHERE id = %s", (user_id,))
+        if user and user.get("api_key"):
+            user_api_key = decrypt_text(user["api_key"])
+    except Exception:
+        pass
+    finally:
+        if conn:
+            conn.close()
+
+    from deck_visualizer import get_catalog
+    try:
+        catalog = get_catalog(platform, position_type, current, api_key=user_api_key)
+        return jsonify(catalog)
     except Exception as e:
-        return jsonify({"error": f"Generate error: {str(e)}"}), 400
+        return jsonify({"error": f"Catalog error: {str(e)}"}), 400
+
+
+def _feedback_handler(code, chat_id, user_id):
+    """Use the same discovered platform registry as protocol generation."""
+    conn = get_db_connection()
+    try:
+        history = fetchall_dict(conn,
+            "SELECT role, content FROM chat_history WHERE chat_id = %s AND user_id = %s ORDER BY id",
+            (chat_id, user_id)) if chat_id else []
+        user = fetchone_dict(conn, "SELECT api_key FROM users WHERE id = %s", (user_id,))
+    finally:
+        conn.close()
+    api_key = (decrypt_text(user["api_key"]) if user and user.get("api_key") else None) or get_api_key()
+    history = [{"role": row["role"], "content": decrypt_message(row["content"])} for row in history]
+    platform, handlers = detect_handler(code, history, api_key)
+    if platform is None:
+        raise ValueError("Please specify the robot or instrument in your chat before saving feedback.")
+    return platform, handlers[platform]
 
 
 @app.route("/code/approve", methods=["POST"])
@@ -937,20 +1083,13 @@ def approve_code():
     if not code:
         return jsonify({"error": "No code provided"}), 400
 
-    from deck_parser import detect_platform
     import hashlib
 
-    # Detect which platform this code is for
-    platform = detect_platform(code)
-
-    # Map platform to docs folder
-    platform_folders = {
-        "opentrons_ot2": "docs/opentrons/codes",
-        "hamilton_star": "docs/hamilton/codes",
-        "echo_650": "docs/echo/codes",
-    }
-
-    folder = platform_folders.get(platform, f"docs/{platform}/codes")
+    try:
+        platform, handler = _feedback_handler(code, chat_id, user_id)
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 400
+    folder = os.path.join(os.path.dirname(__file__), handler["docs_path"], "codes")
 
     # Create folder if it doesn't exist
     os.makedirs(folder, exist_ok=True)
@@ -959,25 +1098,7 @@ def approve_code():
     code_hash = hashlib.sha256(code.encode()).hexdigest()[:12]
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    # Get user info for the file header
-    conn = None
-    username = "anonymous"
-    try:
-        conn = get_db_connection()
-        user = fetchone_dict(conn,
-            "SELECT first_name, last_name FROM users WHERE id = %s", (user_id,))
-        if user:
-            username = f"{user.get('first_name', '')} {user.get('last_name', '')}".strip()
-    finally:
-        if conn:
-            conn.close()
-
-    # Determine file extension
-    ext = ".py"
-    if platform == "echo_650":
-        ext = ".csv"
-
-    filename = f"verified_{timestamp}_{code_hash}{ext}"
+    filename = f"verified_{timestamp}_{code_hash}.txt"
     filepath = os.path.join(folder, filename)
 
     # Write the file with a header comment
@@ -987,10 +1108,6 @@ def approve_code():
 # Chat: {chat_id}
 # ---
 """
-    if ext == ".csv":
-        # CSV files don't use Python comments
-        header = ""
-
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(header + code)
 
@@ -999,42 +1116,6 @@ def approve_code():
 
     return jsonify({"success": True, "platform": platform, "file": filename})
 
-
-def _invalidate_rag_cache(platform):
-    """Delete the cached RAG pickle file so the index rebuilds with new docs."""
-    import json
-
-    # Check handlers.json for the store_path
-    handlers_path = "handlers.json"
-    if os.path.exists(handlers_path):
-        try:
-            with open(handlers_path) as f:
-                handlers = json.load(f)
-            for handler in handlers.values() if isinstance(handlers, dict) else handlers:
-                h = handler if isinstance(handler, dict) else {}
-                if h.get("name", "").lower() in platform.lower() or \
-                   platform in h.get("keywords", []):
-                    store = h.get("store_path", "")
-                    if store and os.path.exists(store):
-                        os.remove(store)
-                        print(f"Invalidated RAG cache: {store}")
-                    return
-        except Exception as e:
-            print(f"Cache invalidation error: {e}")
-
-    # Fallback: try common store paths
-    common_stores = {
-        "opentrons_ot2": "rag_store.pkl",
-        "hamilton_star": "rag_store_hamilton.pkl",
-        "echo_650": "rag_store_echo.pkl",
-    }
-    store = common_stores.get(platform)
-    if store and os.path.exists(store):
-        os.remove(store)
-        print(f"Invalidated RAG cache: {store}")
-        
-        
- 
 
 @app.route("/code/reject", methods=["POST"])
 def reject_code():
@@ -1050,38 +1131,20 @@ def reject_code():
  
     if not code or not remark:
         return jsonify({"error": "Code and remark are required"}), 400
- 
-    from deck_parser import detect_platform
+
     import hashlib
  
-    platform = detect_platform(code)
+    try:
+        platform, handler = _feedback_handler(code, chat_id, user_id)
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 400
     code_hash = hashlib.sha256(code.encode()).hexdigest()[:12]
- 
-    platform_folders = {
-        "opentrons_ot2": "docs/opentrons/failed_codes",
-        "hamilton_star": "docs/hamilton/failed_codes",
-        "echo_650": "docs/echo/failed_codes",
-    }
- 
-    folder = platform_folders.get(platform, f"docs/{platform}/failed_codes")
+    folder = os.path.join(os.path.dirname(__file__), handler["docs_path"], "failed_codes")
     os.makedirs(folder, exist_ok=True)
  
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
  
-    conn = None
-    username = "anonymous"
-    try:
-        conn = get_db_connection()
-        user = fetchone_dict(conn,
-            "SELECT first_name, last_name FROM users WHERE id = %s", (user_id,))
-        if user:
-            username = f"{user.get('first_name', '')} {user.get('last_name', '')}".strip()
-    finally:
-        if conn:
-            conn.close()
- 
-    ext = ".csv" if platform == "echo_650" else ".py"
-    filename = f"failed_{timestamp}_{code_hash}{ext}"
+    filename = f"failed_{timestamp}_{code_hash}.txt"
     filepath = os.path.join(folder, filename)
  
     header = f"""# FAILED PROTOCOL — DO NOT USE AS A WORKING EXAMPLE
@@ -1096,9 +1159,7 @@ def reject_code():
 # Use this as a negative example to avoid generating similar errors.
 # ---
 """
-    if ext == ".csv":
-        header = f"# FAILED — {remark}\n"
- 
+
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(header + code)
  
@@ -1108,37 +1169,12 @@ def reject_code():
  
  
 def _invalidate_rag_cache(platform):
-    """Delete the cached RAG pickle file so the index rebuilds with new docs."""
-    import json
- 
-    # Check handlers.json for the store_path
-    handlers_path = "handlers.json"
-    if os.path.exists(handlers_path):
-        try:
-            with open(handlers_path) as f:
-                handlers = json.load(f)
-            for handler in handlers.values() if isinstance(handlers, dict) else handlers:
-                h = handler if isinstance(handler, dict) else {}
-                if h.get("name", "").lower() in platform.lower() or \
-                   platform in h.get("keywords", []):
-                    store = h.get("store_path", "")
-                    if store and os.path.exists(store):
-                        os.remove(store)
-                        print(f"Invalidated RAG cache: {store}")
-                    return
-        except Exception as e:
-            print(f"Cache invalidation error: {e}")
- 
-    # Fallback: try common store paths
-    common_stores = {
-        "opentrons_ot2": "rag_store.pkl",
-        "hamilton_star": "rag_store_hamilton.pkl",
-        "echo_650": "rag_store_echo.pkl",
-    }
-    store = common_stores.get(platform)
-    if store and os.path.exists(store):
-        os.remove(store)
-        print(f"Invalidated RAG cache: {store}")
+    """Invalidate the index in the discovered platform's documentation folder."""
+    handler = load_handlers_config().get(platform)
+    if handler:
+        store = os.path.join(os.path.dirname(__file__), handler["docs_path"], handler["store_path"])
+        if os.path.exists(store):
+            os.remove(store)
 
 
 if __name__ == "__main__":

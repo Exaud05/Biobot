@@ -1,8 +1,28 @@
 import psycopg2
 import os, time
+import secrets
+from pathlib import Path
+
+light_functions_model = "gpt-4o-mini"
+biobot_model = "gpt-5.6-sol"
+
+def get_flask_secret_key():
+    """Keep the generated secret across restarts so saved chats remain readable."""
+    if os.environ.get("FLASK_SECRET_KEY"):
+        return os.environ["FLASK_SECRET_KEY"]
+    path = Path(__file__).resolve().parent / "data" / "flask_secret_key"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError:
+        return path.read_text().strip()
+    with os.fdopen(fd, "w") as f:
+        key = secrets.token_hex(32)
+        f.write(key)
+    return key
 
 
-def get_api_key():
+def get_api_key(required=True):
     secret_path = "/run/secrets/biobot_api_key"
     if os.path.exists(secret_path):
         with open(secret_path, "r") as f:
@@ -10,7 +30,9 @@ def get_api_key():
     env_key = os.environ.get("API_KEY")
     if env_key:
         return env_key
-    raise ValueError("API KEY not found")
+    if required:
+        raise ValueError("No API key configured. Add your OpenAI API key in Settings.")
+    return ""
 
 
 def get_db_password():
@@ -70,6 +92,16 @@ def init_db():
                 chat_id TEXT NOT NULL REFERENCES chat_names(chat_id) ON DELETE CASCADE,
                 role TEXT NOT NULL,
                 content TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS password_reset_tokens (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                token TEXT NOT NULL UNIQUE,
+                expires_at TIMESTAMP NOT NULL,
+                used BOOLEAN DEFAULT FALSE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         """)
