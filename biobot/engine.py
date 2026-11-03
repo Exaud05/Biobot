@@ -2,15 +2,13 @@ import subprocess
 import json
 from openai import OpenAI
 import os
-from config import get_api_key
+from config import get_api_key, biobot_model, light_functions_model
     
-MODEL_NAME_CLASS = "gpt-4o-mini"
-MODEL_NAME = "gpt-5.4"
 
 def get_openai_client(api_key=None):
     return OpenAI(api_key=api_key or get_api_key())
 
-def classify_prompt(prompt, chat_history=None, model_name=MODEL_NAME_CLASS, api_key=None):
+def classify_prompt(prompt, chat_history=None, model_name=light_functions_model, api_key=None):
     client = get_openai_client(api_key)
 
     # Build a conversation snippet (last 6 non-system messages) for context
@@ -51,7 +49,7 @@ Return ONLY one word: code, general, or out. No explanation, no punctuation."""
     )
     return response.output_text.strip().lower()
 
-def run_gpt_stream(chat_history, model=MODEL_NAME, api_key=None):
+def run_gpt_stream(chat_history, model=biobot_model, api_key=None):
     client = get_openai_client(api_key)
     
     system_msg = next((m for m in chat_history if m["role"] == "system"), None)
@@ -84,8 +82,10 @@ RAG_STATUS_PREFIX = "__RAG_STATUS__:"
 RAG_STEP_PREFIX = "STEP:"
 RAG_FAILED_PREFIX = "FAILED_CODE:"
 RAG_FORMAT_PREFIX = "FORMAT:"
+RAG_QUESTIONS_PREFIX = "QUESTIONS:"
 FAILED_CODE_MARKER = "__FAILED_CODE__:"
 FORMAT_MARKER = "__FORMAT__:"
+QUESTIONS_MARKER = "__QUESTIONS__:"
 
 def process_user_query(user_query, chat_history, model, api_key=None):
     history = [msg for msg in chat_history]
@@ -122,7 +122,10 @@ def process_user_query(user_query, chat_history, model, api_key=None):
                     elif final_code_lines:
                         final_code_lines.append("\n")
                     continue
-                if trimmed.startswith(RAG_STEP_PREFIX):
+                if trimmed.startswith(RAG_QUESTIONS_PREFIX):
+                    # Structured questions from sufficiency check — pass through to frontend
+                    yield QUESTIONS_MARKER + trimmed[len(RAG_QUESTIONS_PREFIX):]
+                elif trimmed.startswith(RAG_STEP_PREFIX):
                     yield RAG_STATUS_PREFIX + trimmed[len(RAG_STEP_PREFIX):]
                 elif trimmed.startswith(RAG_FORMAT_PREFIX):
                     detected_format = trimmed[len(RAG_FORMAT_PREFIX):]
