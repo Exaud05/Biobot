@@ -1,0 +1,13 @@
+UI2/api_key.txt
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+
+*.log
+*.pid
+
+.env
+
+.venv/
